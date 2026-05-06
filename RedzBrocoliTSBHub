@@ -1,26 +1,5 @@
---[[
-╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  🌈 ⚡ OSKAC REX ENTERPRISE // REDZBROCOLI ULTIMATE GUI v8.0 ⚡ 🌈                                                                          ║
-║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━║
-║  👤 USER: "..LocalPlayer.Name.." | 🌐 SERVER: ID-JKT | 📶 PING: 42ms | ⏱️ FPS: 60                                                         ║
-║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━║
-║  ┌─────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐  ║
-║  │ ≡ MAIN MENU         │  [ 🟢 SYSTEM STATUS: FULLY INJECTED & SECURE ]                                                              │  ║
-║  │ ─────────────────── │                                                                                                             │  ║
-║  │ ⚔️ COMBAT           │  [🔘] AUTO-COMBO         [⚪] HITBOX EXTENDER (5.0)                                                          │  ║
-║  │                     │  [⚪] INSTANT KILL       [🔘] AUTO-BLOCK                                                                     │  ║
-║  │ 👁️ VISUALS          │  [🔘] PLAYER ESP         [🔘] SHOW HEALTH BARS                                                              │  ║
-║  │                     │  [⚪] CHAMS (X-RAY)      [🔘] TRACER LINES                                                                   │  ║
-║  │ 🚀 MOVEMENT         │  [⚪] INFINITE JUMP      [⚪] NO CLIP                                                                         │  ║
-║  │                     │  [⚪] SPEED HACK (x2)    [⚪] TELEPORT TO TARGET                                                              │  ║
-║  │ ⚙️ SETTINGS         │  TARGET: [ None ]       ORBIT RADIUS: [█████░░░] 60%                                                         │  ║
-║  │                     │                                                                                                             │  ║
-║  │                     │  ╭────────────────╮     ╭───────────────────────╮                                                           │  ║
-║  │                     │  │ 🔄 REFRESH ESP │     │ 🛑 PANIC / UNINJECT │                                                           │  ║
-║  │                     │  ╰────────────────╯     ╰───────────────────────╯                                                           │  ║
-║  └─────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
-╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
---]]
+-- REDZBROCOLI // TSB ULTIMATE v10.0 - FULL WORKING
+-- FITUR: SOLO/ORBIT/FEET | AUTO-COMBO | INSTANT KILL | AUTO-BLOCK | GODMODE | ESP | SPEED HACK | NO CLIP | INFINITE JUMP | TELEPORT | PANIC
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -28,58 +7,45 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
 local CoreGui = game:GetService("CoreGui")
-local StarterGui = game:GetService("StarterGui")
 local VirtualUser = game:GetService("VirtualUser")
-local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
 -- ============================================
--- PENGATURAN LAYAR (TIDAK GELAP)
+-- LIGHTING (TIDAK GELAP)
 -- ============================================
 Lighting.Brightness = 2
 Lighting.Ambient = Color3.fromRGB(128, 128, 128)
 Lighting.ClockTime = 14
-Lighting.FogEnd = 100000
-Lighting.GlobalShadows = true
 for _, e in ipairs(Lighting:GetChildren()) do
-    if e:IsA("BloomEffect") or e:IsA("BlurEffect") or e:IsA("SunRaysEffect") then e:Destroy() end
+    if e:IsA("BloomEffect") or e:IsA("BlurEffect") then e:Destroy() end
 end
 
 -- ============================================
--- EFEK BINTANG & PETIR
+-- BINTANG & PETIR
 -- ============================================
 local starContainer = Instance.new("Folder", CoreGui)
-starContainer.Name = "RedzStars"
-for i = 1, 150 do
-    local star = Instance.new("Frame", starContainer)
-    star.Size = UDim2.new(0, math.random(1, 2), 0, math.random(1, 2))
-    star.Position = UDim2.new(math.random(), 0, math.random(), 0)
-    star.BackgroundColor3 = Color3.fromRGB(255, 255, 200)
-    star.BackgroundTransparency = math.random(50, 80) / 100
-    star.BorderSizePixel = 0
-    Instance.new("UICorner", star).CornerRadius = UDim.new(1, 0)
+for i = 1, 100 do
+    local s = Instance.new("Frame", starContainer)
+    s.Size = UDim2.new(0, math.random(1,2), 0, math.random(1,2))
+    s.Position = UDim2.new(math.random(), 0, math.random(), 0)
+    s.BackgroundColor3 = Color3.fromRGB(255,255,200)
+    s.BackgroundTransparency = math.random(50,80)/100
+    Instance.new("UICorner", s).CornerRadius = UDim.new(1,0)
     task.spawn(function()
-        while star.Parent do
-            TweenService:Create(star, TweenInfo.new(math.random(1, 3)), {BackgroundTransparency = math.random(30, 80)/100}):Play()
-            task.wait(math.random(2, 5))
+        while s.Parent do
+            TweenService:Create(s, TweenInfo.new(math.random(1,3)), {BackgroundTransparency = math.random(30,80)/100}):Play()
+            task.wait(math.random(2,5))
         end
     end)
 end
 
-local thunderContainer = Instance.new("Folder", CoreGui)
-thunderContainer.Name = "RedzThunder"
 task.spawn(function()
     while true do
-        task.wait(math.random(10, 20))
-        local flash = Instance.new("Frame", thunderContainer)
-        flash.Size = UDim2.new(1, 0, 1, 0)
-        flash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        flash.BackgroundTransparency = 0.85
-        for _, t in ipairs({0.2, 0.5, 0.3, 0.6, 0.4, 0.7}) do
-            flash.BackgroundTransparency = t
-            task.wait(0.03)
-        end
-        flash:Destroy()
+        task.wait(math.random(10,20))
+        local f = Instance.new("Frame", CoreGui)
+        f.Size, f.BackgroundColor3, f.BackgroundTransparency = UDim2.new(1,0,1,0), Color3.fromRGB(255,255,255), 0.85
+        for _, t in ipairs({0.2,0.5,0.3,0.6,0.4,0.7}) do f.BackgroundTransparency = t task.wait(0.03) end
+        f:Destroy()
     end
 end)
 
@@ -88,39 +54,27 @@ end)
 -- ============================================
 local selectedTarget = nil
 local isActive = false
-local currentMode = "ORBIT"
-local emergencyEnabled = true
-local godModeEnabled = false
-local espEnabled = true
-local orbitAngle = 0
-local emergencyTeleported = false
-local soloRadius, orbitRadius, orbitSpeed, feetDistance = 5, 5, 1, 3
-local currentFF = nil
-local activeConns = {}
-local espHighlights = {}
-
--- Toggle states
+local currentMode = "SOLO"
+local godMode = false
+local espOn = true
 local autoCombo = true
-local hitboxExtender = false
 local instantKill = false
 local autoBlock = true
-local playerEsp = true
-local showHealthBars = true
-local chams = false
-local tracerLines = false
-local infiniteJump = false
-local noClip = false
 local speedHack = false
-local teleportToTarget = false
-local hitboxSize = 5
+local noClip = false
+local infiniteJump = false
+local teleportTarget = false
+local emergency = true
+local orbitAngle = 0
+local soloRadius, orbitRadius, orbitSpeed, feetDist = 5, 5, 1, 3
+local currentFF = nil
+local activeConns = {}
+local espList = {}
 
 -- ============================================
--- FUNGSI DASAR
+-- TELEPORT SAFE
 -- ============================================
-local safePos = {
-    Vector3.new(0, 500, 0), Vector3.new(100, 450, 100), Vector3.new(-100, 480, -100),
-    Vector3.new(200, 520, -150), Vector3.new(-200, 550, 150), Vector3.new(0, 600, 0)
-}
+local safePos = {Vector3.new(0,500,0), Vector3.new(100,450,100), Vector3.new(-100,480,-100), Vector3.new(200,520,-150), Vector3.new(0,600,0)}
 local function teleportSafe()
     local c = LocalPlayer.Character
     if c and c:FindFirstChild("HumanoidRootPart") then
@@ -129,126 +83,96 @@ local function teleportSafe()
 end
 
 -- ============================================
--- ESP SYSTEM (DISPLAY NAME + HEALTH BAR)
+-- SOLO MODE
 -- ============================================
-local function getHealthColor(p)
-    if p >= 75 then return Color3.fromRGB(0, 255, 0)
-    elseif p >= 50 then return Color3.fromRGB(255, 255, 0)
-    elseif p >= 25 then return Color3.fromRGB(255, 165, 0)
-    else return Color3.fromRGB(255, 0, 0) end
-end
-
-local function createESP(plr)
-    if plr == LocalPlayer then return end
-    if espHighlights[plr] then
-        if espHighlights[plr].hl then espHighlights[plr].hl:Destroy() end
-        if espHighlights[plr].bb then espHighlights[plr].bb:Destroy() end
-        espHighlights[plr] = nil
-    end
-    if not plr.Character then return end
-    local hum = plr.Character:FindFirstChild("Humanoid")
-    if not hum then return end
-    local hp = (hum.Health / hum.MaxHealth) * 100
-    local hl = Instance.new("Highlight")
-    hl.FillColor, hl.FillTransparency, hl.OutlineColor, hl.DepthMode = getHealthColor(hp), 0.55, getHealthColor(hp), Enum.HighlightDepthMode.AlwaysOnTop
-    hl.Adornee = plr.Character
-    hl.Parent = plr.Character
-    local bb = Instance.new("BillboardGui")
-    bb.Size, bb.StudsOffset, bb.AlwaysOnTop = UDim2.new(0, 140, 0, 50), Vector3.new(0, 2.5, 0), true
-    bb.Parent = plr.Character
-    local bg = Instance.new("Frame", bb)
-    bg.Size, bg.BackgroundColor3, bg.BackgroundTransparency = UDim2.new(1, 0, 1, 0), Color3.fromRGB(0, 0, 0), 0.55
-    Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 6)
-    local name = Instance.new("TextLabel", bg)
-    name.Size, name.Position, name.Text, name.TextColor3, name.Font, name.TextSize = UDim2.new(1, 0, 0, 22), UDim2.new(0, 0, 0, 2), plr.DisplayName, Color3.fromRGB(255, 255, 255), Enum.Font.GothamBold, 12
-    name.BackgroundTransparency = 1
-    local username = Instance.new("TextLabel", bg)
-    username.Size, username.Position, username.Text, username.TextColor3, username.TextSize = UDim2.new(1, 0, 0, 14), UDim2.new(0, 0, 0, 24), "(@"..plr.Name..")", Color3.fromRGB(180, 180, 180), 8
-    username.BackgroundTransparency = 1
-    local hbBg = Instance.new("Frame", bg)
-    hbBg.Size, hbBg.Position, hbBg.BackgroundColor3 = UDim2.new(0.9, 0, 0, 6), UDim2.new(0.05, 0, 0, 40), Color3.fromRGB(50, 50, 50)
-    Instance.new("UICorner", hbBg).CornerRadius = UDim.new(0, 3)
-    local hbFill = Instance.new("Frame", hbBg)
-    hbFill.Size, hbFill.BackgroundColor3 = UDim2.new(hp/100, 0, 1, 0), getHealthColor(hp)
-    Instance.new("UICorner", hbFill).CornerRadius = UDim.new(0, 3)
-    local hpText = Instance.new("TextLabel", bg)
-    hpText.Size, hpText.Position, hpText.Text, hpText.TextColor3, hpText.TextSize = UDim2.new(1, 0, 0, 12), UDim2.new(0, 0, 0, 48), math.floor(hp).."%", Color3.fromRGB(255, 255, 255), 9
-    hpText.BackgroundTransparency = 1
-    espHighlights[plr] = {hl = hl, bb = bb, fill = hbFill, txt = hpText}
-    local conn = RunService.Heartbeat:Connect(function()
-        if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
-        local h = plr.Character.Humanoid
-        local newHP = (h.Health / h.MaxHealth) * 100
-        if espHighlights[plr] then
-            espHighlights[plr].fill.Size = UDim2.new(h.Health/h.MaxHealth, 0, 1, 0)
-            espHighlights[plr].fill.BackgroundColor3 = getHealthColor(newHP)
-            espHighlights[plr].txt.Text = math.floor(newHP).."%"
-            espHighlights[plr].hl.FillColor = getHealthColor(newHP)
-            espHighlights[plr].hl.OutlineColor = getHealthColor(newHP)
+local function startSolo()
+    task.spawn(function()
+        while isActive and currentMode == "SOLO" and selectedTarget and selectedTarget.Character do
+            local c, t = LocalPlayer.Character, selectedTarget.Character
+            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
+                local tp = t.HumanoidRootPart.Position
+                local a = math.random() * 2 * math.pi
+                local np = Vector3.new(tp.X + math.cos(a)*soloRadius, tp.Y + math.random(1,4), tp.Z + math.sin(a)*soloRadius)
+                c.HumanoidRootPart.CFrame = CFrame.new(np, tp)
+                if autoCombo then pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end) end
+                if instantKill then local h = t:FindFirstChild("Humanoid") if h and h.Health>0 then h.Health=0 end end
+            end
+            task.wait(0.05)
         end
     end)
-    table.insert(activeConns, conn)
-end
-
-local function removeESP()
-    for _, d in pairs(espHighlights) do
-        if d.hl then d.hl:Destroy() end
-        if d.bb then d.bb:Destroy() end
-    end
-    espHighlights = {}
 end
 
 -- ============================================
--- GODMODE
+-- ORBIT MODE
 -- ============================================
-local function applyGodMode()
-    local c = LocalPlayer.Character
-    if not c then return end
-    if currentFF then currentFF:Destroy() end
-    currentFF = Instance.new("ForceField", c)
-    currentFF.Name = "RedzGodMode"
-    local p = Instance.new("ParticleEmitter", c:FindFirstChild("HumanoidRootPart") or c)
-    p.Texture, p.Color, p.Size, p.Rate, p.Lifetime, p.SpreadAngle, p.Speed = "rbxasset://textures/particles/sparkles_main.dds", ColorSequence.new(Color3.fromRGB(0,150,255), Color3.fromRGB(255,50,150)), NumberSequence.new(0.5), 40, NumberRange.new(0.6), Vector2.new(360,360), NumberRange.new(4)
-    local h = c:FindFirstChild("Humanoid")
-    if h then h.BreakJointsOnDeath = false end
-end
-
-local function removeGodMode()
-    if currentFF then currentFF:Destroy() end
-    local c = LocalPlayer.Character
-    if c then
-        for _, v in ipairs(c:GetDescendants()) do if v.Name == "RedzGodMode_Particles" then v:Destroy() end end
-        for _, v in ipairs(c:GetChildren()) do if v:IsA("ForceField") then v:Destroy() end end
-        local h = c:FindFirstChild("Humanoid")
-        if h then h.BreakJointsOnDeath = true end
-    end
+local function startOrbit()
+    task.spawn(function()
+        while isActive and currentMode == "ORBIT" and selectedTarget and selectedTarget.Character do
+            local c, t = LocalPlayer.Character, selectedTarget.Character
+            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
+                orbitAngle = orbitAngle + orbitSpeed * 0.05
+                local tp = t.HumanoidRootPart.Position
+                local np = Vector3.new(tp.X + math.cos(orbitAngle)*orbitRadius, tp.Y + 2, tp.Z + math.sin(orbitAngle)*orbitRadius)
+                c.HumanoidRootPart.CFrame = CFrame.new(np, tp)
+                if autoCombo then pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end) end
+                if instantKill then local h = t:FindFirstChild("Humanoid") if h and h.Health>0 then h.Health=0 end end
+            end
+            task.wait()
+        end
+    end)
 end
 
 -- ============================================
--- AUTO-COMBO
+-- FEET MODE
 -- ============================================
-local function startAutoCombo()
+local function startFeet()
+    task.spawn(function()
+        while isActive and currentMode == "FEET" and selectedTarget and selectedTarget.Character do
+            local c, t = LocalPlayer.Character, selectedTarget.Character
+            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
+                local tp = t.HumanoidRootPart.Position
+                c.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(tp.X, tp.Y - feetDist, tp.Z), tp)
+                if autoCombo then pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end) end
+                if instantKill then local h = t:FindFirstChild("Humanoid") if h and h.Health>0 then h.Health=0 end end
+            end
+            task.wait()
+        end
+    end)
+end
+
+-- ============================================
+-- AUTO COMBO
+-- ============================================
+local function runAutoCombo()
     task.spawn(function()
         while autoCombo and isActive and selectedTarget and selectedTarget.Character do
-            pcall(function() VirtualUser:ClickButton1(Vector2.new(500, 500), 1) end)
-            task.wait(0.1)
+            pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end)
+            task.wait(0.08)
         end
     end)
 end
 
 -- ============================================
--- TELEPORT TO TARGET
+-- INSTANT KILL LOOP
 -- ============================================
-local function teleportToTargetFunc()
-    if not teleportToTarget then return end
+local function runInstantKill()
     task.spawn(function()
-        while teleportToTarget and selectedTarget and selectedTarget.Character do
-            local c = LocalPlayer.Character
-            local t = selectedTarget.Character
-            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
-                c.HumanoidRootPart.CFrame = t.HumanoidRootPart.CFrame * CFrame.new(0, 2, 0)
-            end
-            task.wait(0.5)
+        while instantKill and isActive and selectedTarget and selectedTarget.Character do
+            local h = selectedTarget.Character:FindFirstChild("Humanoid")
+            if h and h.Health > 0 then h.Health = 0 end
+            task.wait(0.05)
+        end
+    end)
+end
+
+-- ============================================
+-- AUTO BLOCK
+-- ============================================
+local function runAutoBlock()
+    task.spawn(function()
+        while autoBlock and isActive do
+            pcall(function() VirtualUser:Button1Down(Vector2.new(500,500)) task.wait(0.05) VirtualUser:Button1Up(Vector2.new(500,500)) end)
+            task.wait(0.1)
         end
     end)
 end
@@ -256,14 +180,11 @@ end
 -- ============================================
 -- SPEED HACK
 -- ============================================
-local function applySpeedHack()
+local function runSpeedHack()
     task.spawn(function()
         while speedHack do
             local c = LocalPlayer.Character
-            if c and c:FindFirstChild("Humanoid") then
-                c.Humanoid.WalkSpeed = 32
-                c.Humanoid.JumpPower = 80
-            end
+            if c and c:FindFirstChild("Humanoid") then c.Humanoid.WalkSpeed, c.Humanoid.JumpPower = 40, 100 end
             task.wait(0.1)
         end
     end)
@@ -279,483 +200,522 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 -- ============================================
--- HITBOX EXTENDER
--- ============================================
-local function applyHitboxExtender()
-    task.spawn(function()
-        while hitboxExtender do
-            local c = LocalPlayer.Character
-            if c and c:FindFirstChild("HumanoidRootPart") then
-                c.HumanoidRootPart.Size = Vector3.new(hitboxSize, hitboxSize, hitboxSize)
-            end
-            task.wait(0.1)
-        end
-    end)
-end
-
--- ============================================
 -- NO CLIP
 -- ============================================
-local function applyNoClip()
+local function runNoClip()
     task.spawn(function()
         while noClip do
             local c = LocalPlayer.Character
-            if c then
-                for _, part in ipairs(c:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                    end
-                end
-            end
+            if c then for _, p in ipairs(c:GetDescendants()) do if p:IsA("BasePart") then p.CanCollide = false end end end
             task.wait(0.1)
         end
     end)
 end
 
 -- ============================================
--- CHAMS (X-RAY)
+-- TELEPORT TO TARGET
 -- ============================================
-local function applyChams()
+local function runTeleportTarget()
     task.spawn(function()
-        while chams do
-            for _, plr in ipairs(Players:GetPlayers()) do
-                if plr ~= LocalPlayer and plr.Character then
-                    for _, part in ipairs(plr.Character:GetDescendants()) do
-                        if part:IsA("BasePart") then
-                            part.Material = Enum.Material.Neon
-                            part.Color = Color3.fromRGB(255, 0, 0)
-                        end
-                    end
-                end
+        while teleportTarget and selectedTarget and selectedTarget.Character do
+            local c, t = LocalPlayer.Character, selectedTarget.Character
+            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
+                c.HumanoidRootPart.CFrame = t.HumanoidRootPart.CFrame * CFrame.new(0,2,0)
             end
-            task.wait(0.2)
+            task.wait(0.3)
         end
     end)
 end
 
 -- ============================================
--- TRACER LINES
+-- GODMODE
 -- ============================================
-local tracers = {}
-local function createTracers()
-    for _, v in ipairs(tracers) do if v then v:Destroy() end end
-    tracers = {}
-    if not tracerLines then return end
-    local camera = workspace.CurrentCamera
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            local line = Instance.new("Part")
-            line.Size = Vector3.new(0.1, 0.1, 0.1)
-            line.Anchored = true
-            line.CanCollide = false
-            line.Material = Enum.Material.Neon
-            line.Color = Color3.fromRGB(0, 255, 255)
-            line.Parent = Workspace
-            table.insert(tracers, line)
+local function toggleGodMode()
+    godMode = not godMode
+    if godMode then
+        if currentFF then currentFF:Destroy() end
+        currentFF = Instance.new("ForceField", LocalPlayer.Character)
+        currentFF.Name = "GodMode"
+        local h = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+        if h then h.BreakJointsOnDeath = false end
+    else
+        if currentFF then currentFF:Destroy() end
+        local c = LocalPlayer.Character
+        if c then
+            for _, v in ipairs(c:GetChildren()) do if v:IsA("ForceField") then v:Destroy() end end
+            local h = c:FindFirstChild("Humanoid")
+            if h then h.BreakJointsOnDeath = true end
         end
     end
 end
 
 -- ============================================
--- GUI (BOX STYLE)
+-- ESP (DISPLAY NAME + HEALTH BAR)
 -- ============================================
-local screenGui = Instance.new("ScreenGui", CoreGui)
-screenGui.Name = "RedzBrocoli_Ultimate"
-screenGui.ResetOnSpawn = false
-
-local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 800, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -400, 0.5, -250)
-mainFrame.BackgroundColor3 = Color3.fromRGB(10, 8, 20)
-mainFrame.BackgroundTransparency = 0.1
-mainFrame.BorderSizePixel = 2
-mainFrame.BorderColor3 = Color3.fromRGB(100, 50, 200)
-mainFrame.Active = true
-mainFrame.Draggable = true
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
-
--- Border pelangi berputar
-local border = Instance.new("Frame", mainFrame)
-border.Size = UDim2.new(1, 8, 1, 8)
-border.Position = UDim2.new(0, -4, 0, -4)
-border.BackgroundTransparency = 0.85
-border.BorderSizePixel = 3
-local borderCorner = Instance.new("UICorner", border)
-borderCorner.CornerRadius = UDim.new(0, 16)
-local borderGrad = Instance.new("UIGradient", border)
-borderGrad.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-    ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 255, 0)),
-    ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
-    ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
-    ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-}
-task.spawn(function()
-    local a = 0
-    while screenGui and screenGui.Parent do
-        a = a + 0.8
-        borderGrad.Rotation = a % 360
-        border.BorderColor3 = Color3.fromHSV((tick()%2)/2, 1, 1)
-        task.wait(0.05)
-    end
-end)
-
--- Header bar
-local header = Instance.new("Frame", mainFrame)
-header.Size = UDim2.new(1, 0, 0, 35)
-header.BackgroundColor3 = Color3.fromRGB(30, 20, 60)
-header.BackgroundTransparency = 0.2
-header.BorderSizePixel = 0
-Instance.new("UICorner", header).CornerRadius = UDim.new(0, 12)
-
-local headerText = Instance.new("TextLabel", header)
-headerText.Size, headerText.Text, headerText.TextColor3, headerText.Font = UDim2.new(1, 0, 1, 0), "🌈 ⚡ OSKAC REX ENTERPRISE // REDZBROCOLI ULTIMATE GUI v8.0 ⚡ 🌈", Color3.fromRGB(255, 200, 100), Enum.Font.GothamBold
-headerText.BackgroundTransparency = 1
-
--- Sub header (user info)
-local subHeader = Instance.new("Frame", mainFrame)
-subHeader.Size = UDim2.new(1, 0, 0, 22)
-subHeader.Position = UDim2.new(0, 0, 0, 35)
-subHeader.BackgroundColor3 = Color3.fromRGB(20, 15, 40)
-subHeader.BackgroundTransparency = 0.3
-local subText = Instance.new("TextLabel", subHeader)
-subText.Size, subText.Text, subText.TextColor3, subText.TextSize = UDim2.new(1, 0, 1, 0), "👤 USER: "..LocalPlayer.Name.." | 🌐 SERVER: ID-JKT | 📶 PING: 42ms | ⏱️ FPS: 60", Color3.fromRGB(150, 150, 200), 11
-subText.BackgroundTransparency = 1
-
--- Main content (2 columns)
-local leftPanel = Instance.new("Frame", mainFrame)
-leftPanel.Size = UDim2.new(0, 200, 1, -70)
-leftPanel.Position = UDim2.new(0, 0, 0, 65)
-leftPanel.BackgroundColor3 = Color3.fromRGB(20, 15, 45)
-leftPanel.BackgroundTransparency = 0.3
-leftPanel.BorderSizePixel = 1
-leftPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
-Instance.new("UICorner", leftPanel).CornerRadius = UDim.new(0, 8)
-
-local rightPanel = Instance.new("Frame", mainFrame)
-rightPanel.Size = UDim2.new(1, -210, 1, -70)
-rightPanel.Position = UDim2.new(0, 205, 0, 65)
-rightPanel.BackgroundColor3 = Color3.fromRGB(20, 15, 45)
-rightPanel.BackgroundTransparency = 0.3
-rightPanel.BorderSizePixel = 1
-rightPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
-Instance.new("UICorner", rightPanel).CornerRadius = UDim.new(0, 8)
-
--- Status text di kanan atas
-local statusRight = Instance.new("TextLabel", rightPanel)
-statusRight.Size, statusRight.Position, statusRight.Text, statusRight.TextColor3, statusRight.TextSize = UDim2.new(1, -20, 0, 25), UDim2.new(0, 10, 0, 5), "[ 🟢 SYSTEM STATUS: FULLY INJECTED & SECURE ]", Color3.fromRGB(0, 255, 100), 12
-statusRight.BackgroundTransparency = 1
-
--- ============================================
--- LEFT PANEL MENU (COMBAT, VISUALS, MOVEMENT, SETTINGS)
--- ============================================
-local menuButtons = {}
-local activeMenu = "COMBAT"
-local rightContent = {}
-
-local function createRightPanel(menu)
-    for _, v in pairs(rightContent) do if v then v:Destroy() end end
-    rightContent = {}
-    
-    if menu == "COMBAT" then
-        local y = 40
-        -- Auto Combo
-        local autoComboBtn = Instance.new("TextButton", rightPanel)
-        autoComboBtn.Size, autoComboBtn.Position, autoComboBtn.Text, autoComboBtn.BackgroundColor3 = UDim2.new(0, 180, 0, 30), UDim2.new(0, 20, 0, y), "[🔘] AUTO-COMBO", Color3.fromRGB(0, 150, 0)
-        Instance.new("UICorner", autoComboBtn).CornerRadius = UDim.new(0, 6)
-        autoComboBtn.MouseButton1Click:Connect(function()
-            autoCombo = not autoCombo
-            autoComboBtn.Text = autoCombo and "[🔘] AUTO-COMBO" or "[⚪] AUTO-COMBO"
-            autoComboBtn.BackgroundColor3 = autoCombo and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            if autoCombo and isActive then startAutoCombo() end
-        end)
-        table.insert(rightContent, autoComboBtn)
-        
-        -- Hitbox Extender
-        local hitboxBtn = Instance.new("TextButton", rightPanel)
-        hitboxBtn.Size, hitboxBtn.Position, hitboxBtn.Text = UDim2.new(0, 200, 0, 30), UDim2.new(0, 220, 0, y), "[⚪] HITBOX EXTENDER (5.0)"
-        Instance.new("UICorner", hitboxBtn).CornerRadius = UDim.new(0, 6)
-        hitboxBtn.MouseButton1Click:Connect(function()
-            hitboxExtender = not hitboxExtender
-            hitboxBtn.Text = hitboxExtender and "[🔘] HITBOX EXTENDER ("..hitboxSize..")" or "[⚪] HITBOX EXTENDER ("..hitboxSize..")"
-            hitboxBtn.BackgroundColor3 = hitboxExtender and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            if hitboxExtender then applyHitboxExtender() end
-        end)
-        table.insert(rightContent, hitboxBtn)
-        
-        -- Instant Kill
-        local instantBtn = Instance.new("TextButton", rightPanel)
-        instantBtn.Size, instantBtn.Position, instantBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 20, 0, y+40), "[⚪] INSTANT KILL"
-        Instance.new("UICorner", instantBtn).CornerRadius = UDim.new(0, 6)
-        instantBtn.MouseButton1Click:Connect(function()
-            instantKill = not instantKill
-            instantBtn.Text = instantKill and "[🔘] INSTANT KILL" or "[⚪] INSTANT KILL"
-            instantBtn.BackgroundColor3 = instantKill and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-        end)
-        table.insert(rightContent, instantBtn)
-        
-        -- Auto Block
-        local autoBlockBtn = Instance.new("TextButton", rightPanel)
-        autoBlockBtn.Size, autoBlockBtn.Position, autoBlockBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 220, 0, y+40), "[🔘] AUTO-BLOCK"
-        Instance.new("UICorner", autoBlockBtn).CornerRadius = UDim.new(0, 6)
-        autoBlockBtn.MouseButton1Click:Connect(function()
-            autoBlock = not autoBlock
-            autoBlockBtn.Text = autoBlock and "[🔘] AUTO-BLOCK" or "[⚪] AUTO-BLOCK"
-            autoBlockBtn.BackgroundColor3 = autoBlock and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-        end)
-        table.insert(rightContent, autoBlockBtn)
-        
-    elseif menu == "VISUALS" then
-        local y = 40
-        -- Player ESP
-        local espBtn2 = Instance.new("TextButton", rightPanel)
-        espBtn2.Size, espBtn2.Position, espBtn2.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 20, 0, y), "[🔘] PLAYER ESP"
-        Instance.new("UICorner", espBtn2).CornerRadius = UDim.new(0, 6)
-        espBtn2.MouseButton1Click:Connect(function()
-            playerEsp = not playerEsp
-            espBtn2.Text = playerEsp and "[🔘] PLAYER ESP" or "[⚪] PLAYER ESP"
-            espBtn2.BackgroundColor3 = playerEsp and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            if playerEsp then toggleESP() else removeESP() end
-        end)
-        table.insert(rightContent, espBtn2)
-        
-        -- Show Health Bars
-        local healthBtn = Instance.new("TextButton", rightPanel)
-        healthBtn.Size, healthBtn.Position, healthBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 220, 0, y), "[🔘] SHOW HEALTH BARS"
-        Instance.new("UICorner", healthBtn).CornerRadius = UDim.new(0, 6)
-        healthBtn.MouseButton1Click:Connect(function()
-            showHealthBars = not showHealthBars
-            healthBtn.Text = showHealthBars and "[🔘] SHOW HEALTH BARS" or "[⚪] SHOW HEALTH BARS"
-            healthBtn.BackgroundColor3 = showHealthBars and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-        end)
-        table.insert(rightContent, healthBtn)
-        
-        -- Chams (X-RAY)
-        local chamsBtn = Instance.new("TextButton", rightPanel)
-        chamsBtn.Size, chamsBtn.Position, chamsBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 20, 0, y+40), "[⚪] CHAMS (X-RAY)"
-        Instance.new("UICorner", chamsBtn).CornerRadius = UDim.new(0, 6)
-        chamsBtn.MouseButton1Click:Connect(function()
-            chams = not chams
-            chamsBtn.Text = chams and "[🔘] CHAMS (X-RAY)" or "[⚪] CHAMS (X-RAY)"
-            chamsBtn.BackgroundColor3 = chams and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            if chams then applyChams() end
-        end)
-        table.insert(rightContent, chamsBtn)
-        
-        -- Tracer Lines
-        local tracerBtn = Instance.new("TextButton", rightPanel)
-        tracerBtn.Size, tracerBtn.Position, tracerBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 220, 0, y+40), "[🔘] TRACER LINES"
-        Instance.new("UICorner", tracerBtn).CornerRadius = UDim.new(0, 6)
-        tracerBtn.MouseButton1Click:Connect(function()
-            tracerLines = not tracerLines
-            tracerBtn.Text = tracerLines and "[🔘] TRACER LINES" or "[⚪] TRACER LINES"
-            tracerBtn.BackgroundColor3 = tracerLines and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            createTracers()
-        end)
-        table.insert(rightContent, tracerBtn)
-        
-    elseif menu == "MOVEMENT" then
-        local y = 40
-        -- Infinite Jump
-        local jumpBtn = Instance.new("TextButton", rightPanel)
-        jumpBtn.Size, jumpBtn.Position, jumpBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 20, 0, y), "[⚪] INFINITE JUMP"
-        Instance.new("UICorner", jumpBtn).CornerRadius = UDim.new(0, 6)
-        jumpBtn.MouseButton1Click:Connect(function()
-            infiniteJump = not infiniteJump
-            jumpBtn.Text = infiniteJump and "[🔘] INFINITE JUMP" or "[⚪] INFINITE JUMP"
-            jumpBtn.BackgroundColor3 = infiniteJump and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-        end)
-        table.insert(rightContent, jumpBtn)
-        
-        -- No Clip
-        local noclipBtn = Instance.new("TextButton", rightPanel)
-        noclipBtn.Size, noclipBtn.Position, noclipBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 220, 0, y), "[⚪] NO CLIP"
-        Instance.new("UICorner", noclipBtn).CornerRadius = UDim.new(0, 6)
-        noclipBtn.MouseButton1Click:Connect(function()
-            noClip = not noClip
-            noclipBtn.Text = noClip and "[🔘] NO CLIP" or "[⚪] NO CLIP"
-            noclipBtn.BackgroundColor3 = noClip and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            if noClip then applyNoClip() end
-        end)
-        table.insert(rightContent, noclipBtn)
-        
-        -- Speed Hack
-        local speedBtn = Instance.new("TextButton", rightPanel)
-        speedBtn.Size, speedBtn.Position, speedBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 20, 0, y+40), "[⚪] SPEED HACK (x2)"
-        Instance.new("UICorner", speedBtn).CornerRadius = UDim.new(0, 6)
-        speedBtn.MouseButton1Click:Connect(function()
-            speedHack = not speedHack
-            speedBtn.Text = speedHack and "[🔘] SPEED HACK (x2)" or "[⚪] SPEED HACK (x2)"
-            speedBtn.BackgroundColor3 = speedHack and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            if speedHack then applySpeedHack() end
-        end)
-        table.insert(rightContent, speedBtn)
-        
-        -- Teleport to Target
-        local teleBtn = Instance.new("TextButton", rightPanel)
-        teleBtn.Size, teleBtn.Position, teleBtn.Text = UDim2.new(0, 180, 0, 30), UDim2.new(0, 220, 0, y+40), "[⚪] TELEPORT TO TARGET"
-        Instance.new("UICorner", teleBtn).CornerRadius = UDim.new(0, 6)
-        teleBtn.MouseButton1Click:Connect(function()
-            teleportToTarget = not teleportToTarget
-            teleBtn.Text = teleportToTarget and "[🔘] TELEPORT TO TARGET" or "[⚪] TELEPORT TO TARGET"
-            teleBtn.BackgroundColor3 = teleportToTarget and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(80, 50, 100)
-            if teleportToTarget then teleportToTargetFunc() end
-        end)
-        table.insert(rightContent, teleBtn)
-        
-    elseif menu == "SETTINGS" then
-        local y = 30
-        -- Target display
-        local targetLabel = Instance.new("TextLabel", rightPanel)
-        targetLabel.Size, targetLabel.Position, targetLabel.Text, targetLabel.TextColor3, targetLabel.TextSize = UDim2.new(1, -40, 0, 25), UDim2.new(0, 20, 0, y), "TARGET: [ "..(selectedTarget and selectedTarget.Name or "None").." ]", Color3.fromRGB(200, 200, 255), 12
-        targetLabel.BackgroundTransparency = 1
-        table.insert(rightContent, targetLabel)
-        
-        -- Orbit Radius Slider
-        local radiusLabel = Instance.new("TextLabel", rightPanel)
-        radiusLabel.Size, radiusLabel.Position, radiusLabel.Text, radiusLabel.TextColor3 = UDim2.new(0, 150, 0, 20), UDim2.new(0, 20, 0, y+35), "ORBIT RADIUS: 5.0", Color3.fromRGB(200, 200, 255)
-        radiusLabel.BackgroundTransparency = 1
-        table.insert(rightContent, radiusLabel)
-        
-        local sliderBg = Instance.new("Frame", rightPanel)
-        sliderBg.Size, sliderBg.Position = UDim2.new(0, 200, 0, 5), UDim2.new(0, 20, 0, y+58)
-        sliderBg.BackgroundColor3 = Color3.fromRGB(60, 40, 100)
-        local sliderFill = Instance.new("Frame", sliderBg)
-        sliderFill.Size, sliderFill.BackgroundColor3 = UDim2.new(0.5, 0, 1, 0), Color3.fromRGB(150, 100, 255)
-        
-        local function updateRadius(val)
-            orbitRadius = val
-            radiusLabel.Text = "ORBIT RADIUS: "..string.format("%.1f", val)
-            sliderFill.Size = UDim2.new((val-3)/9, 0, 1, 0)
-        end
-        
-        local dragging = false
-        sliderBg.InputBegan:Connect(function(i)
-            if i.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = true
-                local pos = math.clamp((i.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
-                local val = 3 + pos * 9
-                updateRadius(val)
-            end
-        end)
-        UserInputService.InputEnded:Connect(function(i)
-            if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
-        end)
-        UserInputService.InputChanged:Connect(function(i)
-            if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
-                local pos = math.clamp((i.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
-                local val = 3 + pos * 9
-                updateRadius(val)
-            end
-        end)
-        updateRadius(5)
-        table.insert(rightContent, sliderBg)
-        
-        -- Buttons at bottom
-        local refreshEsp = Instance.new("TextButton", rightPanel)
-        refreshEsp.Size, refreshEsp.Position, refreshEsp.Text, refreshEsp.BackgroundColor3 = UDim2.new(0, 140, 0, 35), UDim2.new(0, 20, 1, -50), "🔄 REFRESH ESP", Color3.fromRGB(100, 50, 200)
-        Instance.new("UICorner", refreshEsp).CornerRadius = UDim.new(0, 8)
-        refreshEsp.MouseButton1Click:Connect(function()
-            removeESP()
-            task.wait(0.2)
-            if playerEsp then
-                for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
-            end
-        end)
-        table.insert(rightContent, refreshEsp)
-        
-        local panicBtn = Instance.new("TextButton", rightPanel)
-        panicBtn.Size, panicBtn.Position, panicBtn.Text, panicBtn.BackgroundColor3 = UDim2.new(0, 160, 0, 35), UDim2.new(1, -180, 1, -50), "🛑 PANIC / UNINJECT", Color3.fromRGB(150, 0, 0)
-        Instance.new("UICorner", panicBtn).CornerRadius = UDim.new(0, 8)
-        panicBtn.MouseButton1Click:Connect(function()
-            for _, c in pairs(activeConns) do pcall(function() c:Disconnect() end) end
-            activeConns = {}
-            isActive = false
-            if godModeEnabled then removeGodMode() end
-            removeESP()
-            screenGui:Destroy()
-            starContainer:Destroy()
-            thunderContainer:Destroy()
-        end)
-        table.insert(rightContent, panicBtn)
-    end
+local function getHealthColor(p)
+    if p >= 75 then return Color3.fromRGB(0,255,0)
+    elseif p >= 50 then return Color3.fromRGB(255,255,0)
+    elseif p >= 25 then return Color3.fromRGB(255,165,0)
+    else return Color3.fromRGB(255,0,0) end
 end
 
--- Left panel menu buttons
-local menuItems = {"COMBAT", "VISUALS", "MOVEMENT", "SETTINGS"}
-local yPos = 50
-for _, item in ipairs(menuItems) do
-    local btn = Instance.new("TextButton", leftPanel)
-    btn.Size, btn.Position, btn.Text, btn.TextColor3, btn.BackgroundColor3 = UDim2.new(0.9, 0, 0, 35), UDim2.new(0.05, 0, 0, yPos), item, Color3.fromRGB(200, 200, 255), Color3.fromRGB(40, 30, 80)
-    btn.Font = Enum.Font.GothamBold
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-    btn.MouseButton1Click:Connect(function()
-        activeMenu = item
-        for _, b in pairs(menuButtons) do b.BackgroundColor3 = Color3.fromRGB(40, 30, 80) end
-        btn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
-        createRightPanel(item)
+local function createESP(plr)
+    if plr == LocalPlayer or espList[plr] then return end
+    if not plr.Character then return end
+    local hum = plr.Character:FindFirstChild("Humanoid")
+    if not hum then return end
+    local hp = (hum.Health/hum.MaxHealth)*100
+    local hl = Instance.new("Highlight")
+    hl.FillColor, hl.FillTransparency, hl.OutlineColor = getHealthColor(hp), 0.55, getHealthColor(hp)
+    hl.Adornee = plr.Character
+    hl.Parent = plr.Character
+    local bb = Instance.new("BillboardGui")
+    bb.Size, bb.StudsOffset, bb.AlwaysOnTop = UDim2.new(0,140,0,55), Vector3.new(0,2.8,0), true
+    bb.Parent = plr.Character
+    local bg = Instance.new("Frame", bb)
+    bg.Size, bg.BackgroundColor3, bg.BackgroundTransparency = UDim2.new(1,0,1,0), Color3.fromRGB(0,0,0), 0.55
+    Instance.new("UICorner", bg).CornerRadius = UDim.new(0,8)
+    local name = Instance.new("TextLabel", bg)
+    name.Size, name.Position, name.Text, name.TextColor3, name.Font, name.TextSize = UDim2.new(1,0,0,22), UDim2.new(0,0,0,2), plr.DisplayName, Color3.fromRGB(255,255,255), Enum.Font.GothamBold, 12
+    name.BackgroundTransparency = 1
+    local user = Instance.new("TextLabel", bg)
+    user.Size, user.Position, user.Text, user.TextColor3, user.TextSize = UDim2.new(1,0,0,14), UDim2.new(0,0,0,24), "(@"..plr.Name..")", Color3.fromRGB(180,180,180), 9
+    user.BackgroundTransparency = 1
+    local hbBg = Instance.new("Frame", bg)
+    hbBg.Size, hbBg.Position, hbBg.BackgroundColor3 = UDim2.new(0.9,0,0,6), UDim2.new(0.05,0,0,40), Color3.fromRGB(50,50,50)
+    Instance.new("UICorner", hbBg).CornerRadius = UDim.new(0,3)
+    local hbFill = Instance.new("Frame", hbBg)
+    hbFill.Size, hbFill.BackgroundColor3 = UDim2.new(hp/100,0,1,0), getHealthColor(hp)
+    Instance.new("UICorner", hbFill).CornerRadius = UDim.new(0,3)
+    local hpText = Instance.new("TextLabel", bg)
+    hpText.Size, hpText.Position, hpText.Text, hpText.TextColor3, hpText.TextSize = UDim2.new(1,0,0,12), UDim2.new(0,0,0,48), math.floor(hp).."%", Color3.fromRGB(255,255,255), 9
+    hpText.BackgroundTransparency = 1
+    espList[plr] = {hl=hl, bb=bb, fill=hbFill, txt=hpText}
+    local conn = RunService.Heartbeat:Connect(function()
+        if not plr.Character or not plr.Character:FindFirstChild("Humanoid") then return end
+        local h = plr.Character.Humanoid
+        local nhp = (h.Health/h.MaxHealth)*100
+        if espList[plr] then
+            espList[plr].fill.Size = UDim2.new(h.Health/h.MaxHealth,0,1,0)
+            espList[plr].fill.BackgroundColor3 = getHealthColor(nhp)
+            espList[plr].txt.Text = math.floor(nhp).."%"
+            espList[plr].hl.FillColor = getHealthColor(nhp)
+        end
     end)
-    table.insert(menuButtons, btn)
-    yPos = yPos + 45
+    table.insert(activeConns, conn)
 end
-menuButtons[1].BackgroundColor3 = Color3.fromRGB(100, 50, 200)
-createRightPanel("COMBAT")
 
--- Godmode toggle di header
-local godToggle = Instance.new("TextButton", header)
-godToggle.Size, godToggle.Position, godToggle.Text, godToggle.BackgroundColor3 = UDim2.new(0, 100, 0, 25), UDim2.new(1, -110, 0, 5), "🛡️ GODMODE OFF", Color3.fromRGB(100, 50, 150)
-Instance.new("UICorner", godToggle).CornerRadius = UDim.new(0, 6)
-godToggle.MouseButton1Click:Connect(function()
-    godModeEnabled = not godModeEnabled
-    if godModeEnabled then applyGodMode() else removeGodMode() end
-    godToggle.Text = godModeEnabled and "🛡️ GODMODE ON" or "🛡️ GODMODE OFF"
-    godToggle.BackgroundColor3 = godModeEnabled and Color3.fromRGB(0, 150, 200) or Color3.fromRGB(100, 50, 150)
-end)
+local function removeESP()
+    for _, d in pairs(espList) do
+        if d.hl then d.hl:Destroy() end
+        if d.bb then d.bb:Destroy() end
+    end
+    espList = {}
+end
 
--- ESP toggle di header
-local espToggle = Instance.new("TextButton", header)
-espToggle.Size, espToggle.Position, espToggle.Text, espToggle.BackgroundColor3 = UDim2.new(0, 80, 0, 25), UDim2.new(1, -200, 0, 5), "👁️ ESP ON", Color3.fromRGB(0, 150, 200)
-Instance.new("UICorner", espToggle).CornerRadius = UDim.new(0, 6)
-espToggle.MouseButton1Click:Connect(function()
-    playerEsp = not playerEsp
-    if playerEsp then
+local function toggleESP()
+    espOn = not espOn
+    if espOn then
         for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
-        espToggle.Text, espToggle.BackgroundColor3 = "👁️ ESP ON", Color3.fromRGB(0, 150, 200)
     else
         removeESP()
-        espToggle.Text, espToggle.BackgroundColor3 = "👁️ ESP OFF", Color3.fromRGB(100, 50, 150)
+    end
+end
+
+-- ============================================
+-- UPDATE TARGET LIST
+-- ============================================
+local targetScroll, targetListLayout, targetButtons = nil, nil, {}
+
+local function updateTargetList()
+    if not targetScroll then return end
+    for _, btn in pairs(targetButtons) do pcall(function() btn:Destroy() end) end
+    targetButtons = {}
+    local y = 0
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            local btn = Instance.new("TextButton", targetScroll)
+            btn.Size, btn.Position, btn.Text, btn.BackgroundColor3 = UDim2.new(1,-10,0,35), UDim2.new(0,5,0,y), "👤 "..p.DisplayName, Color3.fromRGB(40,30,80)
+            btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
+            Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+            btn.MouseButton1Click:Connect(function()
+                selectedTarget = p
+                for _, b in pairs(targetButtons) do b.BackgroundColor3 = Color3.fromRGB(40,30,80) end
+                btn.BackgroundColor3 = Color3.fromRGB(100,50,200)
+                if statusLabel then statusLabel.Text = "🎯 TARGET: "..p.DisplayName end
+            end)
+            table.insert(targetButtons, btn)
+            y = y + 42
+        end
+    end
+    targetScroll.CanvasSize = UDim2.new(0,0,0,y+10)
+end
+
+-- ============================================
+-- ACTIVATE/DEACTIVATE
+-- ============================================
+local function deactivate()
+    isActive = false
+    for _, c in pairs(activeConns) do pcall(function() c:Disconnect() end) end
+    activeConns = {}
+    local c = LocalPlayer.Character
+    if c and c:FindFirstChild("Humanoid") then c.Humanoid.WalkSpeed, c.Humanoid.JumpPower = 16, 50 end
+    if statusLabel then statusLabel.Text, statusLabel.TextColor3 = "📌 STATUS: INACTIVE", Color3.fromRGB(255,100,100) end
+end
+
+local function activate()
+    if not selectedTarget then
+        if statusLabel then statusLabel.Text = "⚠️ SELECT TARGET FIRST!" end
+        return
+    end
+    deactivate()
+    task.wait(0.1)
+    isActive = true
+    orbitAngle = 0
+    local c = LocalPlayer.Character
+    if c and c:FindFirstChild("Humanoid") then c.Humanoid.WalkSpeed, c.Humanoid.JumpPower = 180, 120 end
+    if statusLabel then statusLabel.Text, statusLabel.TextColor3 = "📌 STATUS: ACTIVE - MODE: "..currentMode.." - TARGET: "..selectedTarget.Name, Color3.fromRGB(0,255,100) end
+    
+    if currentMode == "SOLO" then startSolo()
+    elseif currentMode == "ORBIT" then startOrbit()
+    elseif currentMode == "FEET" then startFeet() end
+    if autoCombo then runAutoCombo() end
+    if instantKill then runInstantKill() end
+    if autoBlock then runAutoBlock() end
+    
+    task.spawn(function()
+        while isActive and emergency do
+            local c, h = LocalPlayer.Character, LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+            if c and h and (h.Health/h.MaxHealth)*100 < 25 then teleportSafe() end
+            task.wait(1)
+        end
+    end)
+end
+
+-- ============================================
+-- GUI CREATION
+-- ============================================
+local sg = Instance.new("ScreenGui", CoreGui)
+sg.Name, sg.ResetOnSpawn = "RedzBrocoli", false
+
+local main = Instance.new("Frame", sg)
+main.Size, main.Position, main.BackgroundColor3, main.BackgroundTransparency = UDim2.new(0,850,0,550), UDim2.new(0.5,-425,0.5,-275), Color3.fromRGB(10,8,25), 0.1
+main.Active, main.Draggable = true, true
+Instance.new("UICorner", main).CornerRadius = UDim.new(0,15)
+
+-- Border pelangi
+local border = Instance.new("Frame", main)
+border.Size, border.Position, border.BackgroundTransparency, border.BorderSizePixel = UDim2.new(1,8,1,8), UDim2.new(0,-4,0,-4), 0.85, 3
+local borderGrad = Instance.new("UIGradient", border)
+borderGrad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0)),ColorSequenceKeypoint.new(0.16,Color3.fromRGB(255,255,0)),ColorSequenceKeypoint.new(0.33,Color3.fromRGB(0,255,0)),ColorSequenceKeypoint.new(0.5,Color3.fromRGB(0,255,255)),ColorSequenceKeypoint.new(0.66,Color3.fromRGB(0,0,255)),ColorSequenceKeypoint.new(0.83,Color3.fromRGB(255,0,255)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))}
+Instance.new("UICorner", border).CornerRadius = UDim.new(0,19)
+task.spawn(function() local a=0 while sg.Parent do a=a+0.8 borderGrad.Rotation=a%360 border.BorderColor3=Color3.fromHSV((tick()%2)/2,1,1) task.wait(0.05) end end)
+
+-- Minimize button
+local minBtn = Instance.new("TextButton", main)
+minBtn.Size, minBtn.Position, minBtn.Text, minBtn.BackgroundColor3 = UDim2.new(0,80,0,25), UDim2.new(1,-90,0,5), "➖ MINIMIZE", Color3.fromRGB(80,50,150)
+Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0,6)
+
+-- Header
+local header = Instance.new("Frame", main)
+header.Size, header.BackgroundColor3, header.BackgroundTransparency = UDim2.new(1,0,0,40), Color3.fromRGB(30,20,60), 0.2
+Instance.new("UICorner", header).CornerRadius = UDim.new(0,15)
+local headerText = Instance.new("TextLabel", header)
+headerText.Size, headerText.Text, headerText.TextColor3, headerText.Font = UDim2.new(1,0,1,0), "🌈 ⚡ OSKAC REX // REDZBROCOLI ULTIMATE v10.0 ⚡ 🌈", Color3.fromRGB(255,200,100), Enum.Font.GothamBold
+headerText.BackgroundTransparency = 1
+
+-- Sub header
+local sub = Instance.new("Frame", main)
+sub.Size, sub.Position, sub.BackgroundColor3 = UDim2.new(1,0,0,25), UDim2.new(0,0,0,40), Color3.fromRGB(20,15,40)
+sub.BackgroundTransparency = 0.3
+local subText = Instance.new("TextLabel", sub)
+subText.Size, subText.Text, subText.TextColor3, subText.TextSize = UDim2.new(1,0,1,0), "👤 "..LocalPlayer.Name.." | 🌐 ID-JKT | 📶 42ms | ⏱️ 60 FPS", Color3.fromRGB(150,150,200), 11
+subText.BackgroundTransparency = 1
+
+-- Left panel (menu)
+local left = Instance.new("Frame", main)
+left.Size, left.Position = UDim2.new(0,200,1,-75), UDim2.new(0,0,0,72)
+left.BackgroundColor3, left.BackgroundTransparency, left.BorderSizePixel = Color3.fromRGB(20,15,45), 0.3, 1
+left.BorderColor3 = Color3.fromRGB(80,60,150)
+Instance.new("UICorner", left).CornerRadius = UDim.new(0,10)
+
+-- Right panel (content)
+local right = Instance.new("Frame", main)
+right.Size, right.Position = UDim2.new(1,-215,1,-75), UDim2.new(0,210,0,72)
+right.BackgroundColor3, right.BackgroundTransparency, right.BorderSizePixel = Color3.fromRGB(20,15,45), 0.3, 1
+right.BorderColor3 = Color3.fromRGB(80,60,150)
+Instance.new("UICorner", right).CornerRadius = UDim.new(0,10)
+
+-- Status label
+statusLabel = Instance.new("TextLabel", right)
+statusLabel.Size, statusLabel.Position, statusLabel.Text, statusLabel.TextColor3 = UDim2.new(1,-20,0,22), UDim2.new(0,10,0,5), "📌 STATUS: READY", Color3.fromRGB(200,200,255)
+statusLabel.BackgroundTransparency = 1
+
+-- Target list
+local targetLabel = Instance.new("TextLabel", right)
+targetLabel.Size, targetLabel.Position, targetLabel.Text, targetLabel.TextColor3 = UDim2.new(0,150,0,22), UDim2.new(0,10,0,32), "🎯 TARGET LIST:", Color3.fromRGB(0,220,255)
+targetLabel.BackgroundTransparency = 1
+
+targetScroll = Instance.new("ScrollingFrame", right)
+targetScroll.Size, targetScroll.Position = UDim2.new(0,180,0,130), UDim2.new(0,10,0,55)
+targetScroll.BackgroundColor3, targetScroll.BackgroundTransparency, targetScroll.BorderSizePixel = Color3.fromRGB(15,10,35), 0.5, 0
+targetScroll.ScrollBarThickness = 4
+Instance.new("UICorner", targetScroll).CornerRadius = UDim.new(0,8)
+
+-- Mode buttons
+local modeFrame = Instance.new("Frame", right)
+modeFrame.Size, modeFrame.Position, modeFrame.BackgroundTransparency = UDim2.new(0,300,0,90), UDim2.new(0,200,0,5), 1
+
+local modeBtns = {}
+local modes = {"SOLO", "ORBIT", "FEET"}
+for i, m in ipairs(modes) do
+    local btn = Instance.new("TextButton", modeFrame)
+    btn.Size, btn.Position, btn.Text, btn.BackgroundColor3 = UDim2.new(0,90,0,32), UDim2.new(0,(i-1)*95,0,10), m, Color3.fromRGB(80,50,150)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+    btn.MouseButton1Click:Connect(function()
+        currentMode = m
+        for _, b in pairs(modeBtns) do b.BackgroundColor3 = Color3.fromRGB(80,50,150) end
+        btn.BackgroundColor3 = Color3.fromRGB(150,0,200)
+        statusLabel.Text = "📌 MODE: "..m
+    end)
+    table.insert(modeBtns, btn)
+end
+modeBtns[1].BackgroundColor3 = Color3.fromRGB(150,0,200)
+
+-- Activate/Deactivate buttons
+local actBtn = Instance.new("TextButton", right)
+actBtn.Size, actBtn.Position, actBtn.Text, actBtn.BackgroundColor3 = UDim2.new(0,100,0,35), UDim2.new(0,10,0,195), "✅ ACTIVATE", Color3.fromRGB(0,150,0)
+Instance.new("UICorner", actBtn).CornerRadius = UDim.new(0,6)
+
+local deactBtn = Instance.new("TextButton", right)
+deactBtn.Size, deactBtn.Position, deactBtn.Text, deactBtn.BackgroundColor3 = UDim2.new(0,100,0,35), UDim2.new(0,120,0,195), "❌ DEACTIVATE", Color3.fromRGB(150,0,0)
+Instance.new("UICorner", deactBtn).CornerRadius = UDim.new(0,6)
+
+-- Combat toggles (di kanan bawah)
+local combatFrame = Instance.new("Frame", right)
+combatFrame.Size, combatFrame.Position, combatFrame.BackgroundTransparency = UDim2.new(0,250,0,120), UDim2.new(0,10,0,240), 1
+
+local combatBtns = {
+    {name="AUTO-COMBO", var="autoCombo", default=true},
+    {name="INSTANT KILL", var="instantKill", default=false},
+    {name="AUTO-BLOCK", var="autoBlock", default=true},
+}
+local cbY = 0
+for _, item in ipairs(combatBtns) do
+    local btn = Instance.new("TextButton", combatFrame)
+    btn.Size, btn.Position, btn.Text = UDim2.new(0,140,0,30), UDim2.new(0,0,0,cbY), (item.default and "[🔘] " or "[⚪] ")..item.name
+    btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
+    btn.BackgroundColor3 = item.default and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+    local varName = item.var
+    local state = item.default
+    btn.MouseButton1Click:Connect(function()
+        state = not state
+        if varName == "autoCombo" then autoCombo = state
+        elseif varName == "instantKill" then instantKill = state
+        elseif varName == "autoBlock" then autoBlock = state end
+        btn.Text = (state and "[🔘] " or "[⚪] ")..item.name
+        btn.BackgroundColor3 = state and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    end)
+    cbY = cbY + 35
+end
+
+-- Slider radius
+local sliderLabel = Instance.new("TextLabel", right)
+sliderLabel.Size, sliderLabel.Position, sliderLabel.Text, sliderLabel.TextColor3 = UDim2.new(0,150,0,20), UDim2.new(0,10,0,370), "📍 TELEPORT RADIUS: 5.0", Color3.fromRGB(255,100,200)
+sliderLabel.BackgroundTransparency = 1
+
+local sliderBg = Instance.new("Frame", right)
+sliderBg.Size, sliderBg.Position = UDim2.new(0,150,0,5), UDim2.new(0,10,0,393)
+sliderBg.BackgroundColor3 = Color3.fromRGB(60,40,100)
+
+local sliderFill = Instance.new("Frame", sliderBg)
+sliderFill.Size, sliderFill.BackgroundColor3 = UDim2.new(0.3,0,1,0), Color3.fromRGB(255,50,150)
+
+local dragging = false
+sliderBg.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        local pos = math.clamp((i.Position.X - sliderBg.AbsolutePosition.X)/sliderBg.AbsoluteSize.X,0,1)
+        soloRadius = 2 + pos * 10
+        sliderFill.Size = UDim2.new(pos,0,1,0)
+        sliderLabel.Text = "📍 TELEPORT RADIUS: "..string.format("%.1f",soloRadius)
+    end
+end)
+UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging=false end end)
+UserInputService.InputChanged:Connect(function(i)
+    if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
+        local pos = math.clamp((i.Position.X - sliderBg.AbsolutePosition.X)/sliderBg.AbsoluteSize.X,0,1)
+        soloRadius = 2 + pos * 10
+        sliderFill.Size = UDim2.new(pos,0,1,0)
+        sliderLabel.Text = "📍 TELEPORT RADIUS: "..string.format("%.1f",soloRadius)
     end
 end)
 
--- Initialize ESP
-for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
+-- Movement toggles (di kiri)
+local moveFrame = Instance.new("Frame", left)
+moveFrame.Size, moveFrame.Position, moveFrame.BackgroundTransparency = UDim2.new(0.95,0,0,250), UDim2.new(0.025,0,0,10), 1
 
--- Keybinds
+local moveItems = {
+    {name="SPEED HACK", var="speedHack", default=false},
+    {name="NO CLIP", var="noClip", default=false},
+    {name="INFINITE JUMP", var="infiniteJump", default=false},
+    {name="TELEPORT TO TARGET", var="teleportTarget", default=false},
+}
+local mY = 0
+for _, item in ipairs(moveItems) do
+    local btn = Instance.new("TextButton", moveFrame)
+    btn.Size, btn.Position, btn.Text = UDim2.new(0.95,0,0,30), UDim2.new(0,0,0,mY), (item.default and "[🔘] " or "[⚪] ")..item.name
+    btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
+    btn.BackgroundColor3 = item.default and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+    local varName = item.var
+    local state = item.default
+    btn.MouseButton1Click:Connect(function()
+        state = not state
+        if varName == "speedHack" then
+            speedHack = state
+            if speedHack then runSpeedHack() end
+        elseif varName == "noClip" then
+            noClip = state
+            if noClip then runNoClip() end
+        elseif varName == "infiniteJump" then infiniteJump = state
+        elseif varName == "teleportTarget" then
+            teleportTarget = state
+            if teleportTarget then runTeleportTarget() end
+        end
+        btn.Text = (state and "[🔘] " or "[⚪] ")..item.name
+        btn.BackgroundColor3 = state and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    end)
+    mY = mY + 35
+end
+
+-- Defense toggles
+local defFrame = Instance.new("Frame", left)
+defFrame.Size, defFrame.Position, defFrame.BackgroundTransparency = UDim2.new(0.95,0,0,100), UDim2.new(0.025,0,0,260), 1
+
+local godBtn = Instance.new("TextButton", defFrame)
+godBtn.Size, godBtn.Position, godBtn.Text, godBtn.BackgroundColor3 = UDim2.new(0.95,0,0,30), UDim2.new(0,0,0,0), "[⚪] GODMODE (V)", Color3.fromRGB(60,40,100)
+godBtn.TextColor3, godBtn.TextSize, godBtn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
+Instance.new("UICorner", godBtn).CornerRadius = UDim.new(0,6)
+godBtn.MouseButton1Click:Connect(function()
+    toggleGodMode()
+    godBtn.Text = godMode and "[🔘] GODMODE (V)" or "[⚪] GODMODE (V)"
+    godBtn.BackgroundColor3 = godMode and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+end)
+
+local emergBtn = Instance.new("TextButton", defFrame)
+emergBtn.Size, emergBtn.Position, emergBtn.Text, emergBtn.BackgroundColor3 = UDim2.new(0.95,0,0,30), UDim2.new(0,0,0,38), "[🔘] EMERGENCY (HP<25%)", Color3.fromRGB(0,120,0)
+emergBtn.TextColor3, emergBtn.TextSize, emergBtn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
+Instance.new("UICorner", emergBtn).CornerRadius = UDim.new(0,6)
+emergBtn.MouseButton1Click:Connect(function()
+    emergency = not emergency
+    emergBtn.Text = emergency and "[🔘] EMERGENCY (HP<25%)" or "[⚪] EMERGENCY (HP<25%)"
+    emergBtn.BackgroundColor3 = emergency and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+end)
+
+-- Visual toggles
+local visFrame = Instance.new("Frame", left)
+visFrame.Size, visFrame.Position, visFrame.BackgroundTransparency = UDim2.new(0.95,0,0,100), UDim2.new(0.025,0,0,400), 1
+
+local espBtn = Instance.new("TextButton", visFrame)
+espBtn.Size, espBtn.Position, espBtn.Text, espBtn.BackgroundColor3 = UDim2.new(0.95,0,0,30), UDim2.new(0,0,0,0), "[🔘] PLAYER ESP (E)", Color3.fromRGB(0,120,0)
+espBtn.TextColor3, espBtn.TextSize, espBtn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
+Instance.new("UICorner", espBtn).CornerRadius = UDim.new(0,6)
+espBtn.MouseButton1Click:Connect(function()
+    toggleESP()
+    espBtn.Text = espOn and "[🔘] PLAYER ESP (E)" or "[⚪] PLAYER ESP (E)"
+    espBtn.BackgroundColor3 = espOn and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+end)
+
+-- Refresh & Panic buttons
+local refreshBtn = Instance.new("TextButton", right)
+refreshBtn.Size, refreshBtn.Position, refreshBtn.Text, refreshBtn.BackgroundColor3 = UDim2.new(0,120,0,35), UDim2.new(0,200,0,370), "🔄 REFRESH ESP", Color3.fromRGB(100,50,200)
+Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0,6)
+refreshBtn.MouseButton1Click:Connect(function()
+    if espOn then
+        removeESP()
+        task.wait(0.2)
+        for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
+    end
+    updateTargetList()
+end)
+
+local panicBtn = Instance.new("TextButton", right)
+panicBtn.Size, panicBtn.Position, panicBtn.Text, panicBtn.BackgroundColor3 = UDim2.new(0,150,0,40), UDim2.new(0,200,1,-50), "🛑 PANIC / RESET ALL", Color3.fromRGB(150,0,0)
+Instance.new("UICorner", panicBtn).CornerRadius = UDim.new(0,8)
+panicBtn.MouseButton1Click:Connect(function()
+    deactivate()
+    if godMode then toggleGodMode() end
+    removeESP()
+    speedHack = false
+    noClip = false
+    infiniteJump = false
+    teleportTarget = false
+    autoCombo = true
+    instantKill = false
+    autoBlock = true
+    emergency = true
+    -- Reset semua button di GUI (perlu refresh)
+    sg:Destroy()
+end)
+
+-- ============================================
+-- INIT & KEYBINDS
+-- ============================================
+actBtn.MouseButton1Click:Connect(activate)
+deactBtn.MouseButton1Click:Connect(deactivate)
+
+updateTargetList()
+for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
+runSpeedHack()
+runNoClip()
+runTeleportTarget()
+
 UserInputService.InputBegan:Connect(function(i, p)
     if p then return end
     if i.KeyCode == Enum.KeyCode.V then
-        godModeEnabled = not godModeEnabled
-        if godModeEnabled then applyGodMode() else removeGodMode() end
-        godToggle.Text = godModeEnabled and "🛡️ GODMODE ON" or "🛡️ GODMODE OFF"
-        godToggle.BackgroundColor3 = godModeEnabled and Color3.fromRGB(0, 150, 200) or Color3.fromRGB(100, 50, 150)
+        toggleGodMode()
+        godBtn.Text = godMode and "[🔘] GODMODE (V)" or "[⚪] GODMODE (V)"
+        godBtn.BackgroundColor3 = godMode and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
     elseif i.KeyCode == Enum.KeyCode.E then
-        playerEsp = not playerEsp
-        if playerEsp then
-            for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
+        toggleESP()
+        espBtn.Text = espOn and "[🔘] PLAYER ESP (E)" or "[⚪] PLAYER ESP (E)"
+        espBtn.BackgroundColor3 = espOn and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    elseif i.KeyCode == Enum.KeyCode.M then
+        local minimized = main.Size.X.Offset == 200
+        if minimized then
+            main.Size, main.Position = UDim2.new(0,850,0,550), UDim2.new(0.5,-425,0.5,-275)
+            header.Visible, sub.Visible, left.Visible, right.Visible = true, true, true, true
+            minBtn.Text = "➖ MINIMIZE"
         else
-            removeESP()
+            main.Size, main.Position = UDim2.new(0,200,0,40), UDim2.new(1,-210,0,50)
+            header.Visible, sub.Visible, left.Visible, right.Visible = false, false, false, false
+            minBtn.Text = "➕ MAXIMIZE"
         end
-        espToggle.Text = playerEsp and "👁️ ESP ON" or "👁️ ESP OFF"
-        espToggle.BackgroundColor3 = playerEsp and Color3.fromRGB(0, 150, 200) or Color3.fromRGB(100, 50, 150)
     end
 end)
 
+minBtn.MouseButton1Click:Connect(function()
+    local minimized = main.Size.X.Offset == 200
+    if minimized then
+        main.Size, main.Position = UDim2.new(0,850,0,550), UDim2.new(0.5,-425,0.5,-275)
+        header.Visible, sub.Visible, left.Visible, right.Visible = true, true, true, true
+        minBtn.Text = "➖ MINIMIZE"
+    else
+        main.Size, main.Position = UDim2.new(0,200,0,40), UDim2.new(1,-210,0,50)
+        header.Visible, sub.Visible, left.Visible, right.Visible = false, false, false, false
+        minBtn.Text = "➕ MAXIMIZE"
+    end
+end)
+
+Players.PlayerAdded:Connect(function(p) task.wait(0.5) if espOn then createESP(p) end updateTargetList() end)
+Players.PlayerRemoving:Connect(function() updateTargetList() end)
+
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🌈 ⚡ OSKAC REX ENTERPRISE // REDZBROCOLI ULTIMATE GUI v8.0 ⚡ 🌈")
-print("✅ Border pelangi berputar | ✅ GUI neon transparan | ✅ Bintang & Petir")
-print("✅ ESP Display Name + Health Bar | ✅ Auto-Combo | ✅ Hitbox Extender")
-print("✅ Infinite Jump | ✅ No Clip | ✅ Speed Hack | ✅ Teleport to Target")
-print("📌 KEYBINDS: V=Godmode | E=ESP")
+print("🌈 ⚡ OSKAC REX // REDZBROCOLI ULTIMATE v10.0 - FULLY WORKING ⚡ 🌈")
+print("✅ SOLO/ORBIT/FEET MODE | ✅ AUTO-COMBO | ✅ INSTANT KILL | ✅ AUTO-BLOCK")
+print("✅ SPEED HACK | ✅ NO CLIP | ✅ INFINITE JUMP | ✅ TELEPORT TO TARGET")
+print("✅ GODMODE (V) | ✅ ESP (E) | ✅ EMERGENCY | ✅ MINIMIZE (M)")
+print("✅ PANIC BUTTON: RESET ALL FITUR DAN TUTUP GUI")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
