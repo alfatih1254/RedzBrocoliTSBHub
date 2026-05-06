@@ -1,37 +1,52 @@
 --[[
-╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║                                                                                                                       ║
-║   ██████╗ ███████╗██████╗ ███████╗ ██████╗ ██████╗  ██████╗  ██████╗ ██╗     ██╗                                    ║
-║   ██╔══██╗██╔════╝██╔══██╗██╔════╝██╔═══██╗██╔══██╗██╔══██╗██╔═══██╗██║     ██║                                    ║
-║   ██████╔╝█████╗  ██║  ██║█████╗  ██║   ██║██████╔╝██████╔╝██║   ██║██║     ██║                                    ║
-║   ██╔══██╗██╔══╝  ██║  ██║██╔══╝  ██║   ██║██╔══██╗██╔══██╗██║   ██║██║     ██║                                    ║
-║   ██║  ██║███████╗██████╔╝███████╗╚██████╔╝██║  ██║██████╔╝╚██████╔╝███████╗██║                                    ║
-║   ╚═╝  ╚═╝╚══════╝╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚══════╝╚═╝                                    ║
-║                                                                                                                       ║
-║                          REDZBROCOLI // THE STRONGEST BATTLEGROUNDS ULTIMATE                                          ║
-║                                       VERSION 5.0 - ESP FULL + HEALTH BAR                                              ║
-║                                                                                                                       ║
-║   FITUR LENGKAP:                                                                                                      ║
-║   ✅ SOLO HACK - Teleport random di sekitar target (Radius slider 2-12)                                               ║
-║   ✅ ORBIT - Berputar mengelilingi target (Jarak slider 3-12, Kecepatan slider 0.3-3)                                ║
-║   ✅ FEET - Diam di bawah target (Jarak vertikal slider 1-10)                                                         ║
-║   ✅ GODMODE - Tekan V (Perisai biru FORCEFIELD, INVINCIBLE, Anti ragdoll)                                            ║
-║   ✅ EMERGENCY - Auto teleport ke tempat aman saat HP < 25% (Bisa toggle ON/OFF)                                      ║
-║   ✅ ESP FULL - Highlight semua pemain + persentase darah + warna sesuai darah                                         ║
-║   ✅ Bintang berkedip di background + Efek petir menyambar                                                             ║
-║   ✅ Animated gradient border + Glass morphism UI                                                                     ║
-║                                                                                                                       ║
-║   KEYBINDS:                                                                                                           ║
-║   📌 Insert = Activate Mode                                                                                           ║
-║   📌 Delete = Deactivate Mode                                                                                         ║
-║   📌 V = Toggle Godmode (Blue Shield)                                                                                 ║
-║   📌 E = Toggle ESP (Full Highlight + Health Bar)                                                                     ║
-║                                                                                                                       ║
-╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                                                                                                   ║
+║   ██████╗ ███████╗██████╗ ███████╗ ██████╗ ██████╗  ██████╗  ██████╗ ██╗     ██╗                                                                                ║
+║   ██╔══██╗██╔════╝██╔══██╗██╔════╝██╔═══██╗██╔══██╗██╔══██╗██╔═══██╗██║     ██║                                                                                ║
+║   ██████╔╝█████╗  ██║  ██║█████╗  ██║   ██║██████╔╝██████╔╝██║   ██║██║     ██║                                                                                ║
+║   ██╔══██╗██╔══╝  ██║  ██║██╔══╝  ██║   ██║██╔══██╗██╔══██╗██║   ██║██║     ██║                                                                                ║
+║   ██║  ██║███████╗██████╔╝███████╗╚██████╔╝██║  ██║██████╔╝╚██████╔╝███████╗██║                                                                                ║
+║   ╚═╝  ╚═╝╚══════╝╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚══════╝╚═╝                                                                                ║
+║                                                                                                                                                                   ║
+║                          ██████╗ ███████╗██████╗ ███████╗██████╗ ██████╗  ██████╗  ██████╗ ██████╗ ██╗     ██╗                                                   ║
+║                          ██╔══██╗██╔════╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔═══██╗██║     ██║                                                   ║
+║                          ██████╔╝█████╗  ██║  ██║█████╗  ██████╔╝██████╔╝██║  ██║██║     ██║   ██║██║     ██║                                                   ║
+║                          ██╔══██╗██╔══╝  ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██║  ██║██║     ██║   ██║██║     ██║                                                   ║
+║                          ██║  ██║███████╗██████╔╝███████╗██║  ██║██║  ██║██████╔╝╚██████╗╚██████╔╝███████╗██║                                                   ║
+║                          ╚═╝  ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═════╝ ╚══════╝╚═╝                                                   ║
+║                                                                                                                                                                   ║
+║                                     REDZBROCOLI // THE STRONGEST BATTLEGROUNDS ULTIMATE                                                                          ║
+║                                                  VERSION 7.0 - ULTRA MODERN                                                                                       ║
+║                                                                                                                                                                   ║
+║   ╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗ ║
+║   ║                                                                                                                                                             ║ ║
+║   ║   🎮 FITUR LENGKAP:                                                                                                                                         ║ ║
+║   ║      ✅ SOLO HACK - Teleport random di sekitar target (Radius slider 2-12)                                                                                  ║ ║
+║   ║      ✅ ORBIT - Berputar mengelilingi target (Jarak slider 3-12, Kecepatan slider 0.3-3)                                                                   ║ ║
+║   ║      ✅ FEET - Diam di bawah target (Jarak vertikal slider 1-10)                                                                                            ║ ║
+║   ║      ✅ GODMODE - Tekan V (Perisai biru FORCEFIELD + Particle Effect + Anti ragdoll + Invincible)                                                           ║ ║
+║   ║      ✅ EMERGENCY - Auto teleport ke tempat aman saat HP < 25% (Bisa toggle ON/OFF)                                                                         ║ ║
+║   ║      ✅ ESP FULL - Display Name + Health Bar + Persentase Darah + Warna sesuai HP (Tekan E)                                                                 ║ ║
+║   ║      ✅ Bintang berkedip 150+ di background + Efek petir menyambar setiap 8-20 detik                                                                        ║ ║
+║   ║      ✅ Animated rainbow gradient border + Glass morphism UI + Neon glow effect                                                                             ║ ║
+║   ║      ✅ Smooth animations + Hover effects + Particle effects pada tombol                                                                                    ║ ║
+║   ║      ✅ Auto refresh target list + Highlight target terpilih (warna ungu neon)                                                                              ║ ║
+║   ║                                                                                                                                                             ║ ║
+║   ╠═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣ ║
+║   ║                                                                                                                                                             ║ ║
+║   ║   📌 KEYBOARD SHORTCUTS:                                                                                                                                    ║ ║
+║   ║      INSERT = Activate selected mode                                                                                                                        ║ ║
+║   ║      DELETE = Deactivate all modes                                                                                                                          ║ ║
+║   ║      V = Toggle Godmode (Blue Shield + Particle Effect)                                                                                                     ║ ║
+║   ║      E = Toggle ESP FULL (Display Name + Health Bar + Persentase)                                                                                           ║ ║
+║   ║                                                                                                                                                             ║ ║
+║   ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝ ║
+║                                                                                                                                                                   ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 --]]
 
 -- ============================================
--- SECTION 1: LOADING SERVICES & VARIABLES
+-- SECTION 1: LOADING SERVICES & CORE SETUP
 -- ============================================
 
 local Players = game:GetService("Players")
@@ -44,12 +59,11 @@ local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 local VirtualUser = game:GetService("VirtualUser")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
+local SoundService = game:GetService("SoundService")
 local LocalPlayer = Players.LocalPlayer
-local playerName = LocalPlayer.Name
 
 -- ============================================
--- SECTION 2: LIGHTING SETUP (BIAR NORMAL)
+-- SECTION 2: LIGHTING & ATMOSPHERE SETUP
 -- ============================================
 
 local originalBrightness = Lighting.Brightness
@@ -57,12 +71,16 @@ local originalAmbient = Lighting.Ambient
 local originalClockTime = Lighting.ClockTime
 local originalFogEnd = Lighting.FogEnd
 local originalGlobalShadows = Lighting.GlobalShadows
+local originalColorShiftTop = Lighting.ColorShift_Top
+local originalColorShiftBottom = Lighting.ColorShift_Bottom
 
 Lighting.Brightness = 2
-Lighting.Ambient = Color3.fromRGB(128, 128, 128)
+Lighting.Ambient = Color3.fromRGB(60, 40, 100)
 Lighting.ClockTime = 14
 Lighting.FogEnd = 100000
 Lighting.GlobalShadows = true
+Lighting.ColorShift_Top = Color3.fromRGB(180, 100, 255)
+Lighting.ColorShift_Bottom = Color3.fromRGB(100, 50, 180)
 
 -- Hapus efek yang mengganggu
 local effectsToDestroy = {"BloomEffect", "BlurEffect", "SunRaysEffect", "ColorCorrectionEffect"}
@@ -74,6 +92,13 @@ for _, effectName in ipairs(effectsToDestroy) do
     end
 end
 
+-- Tambah Bloom effect yang bagus
+local bloom = Instance.new("BloomEffect")
+bloom.Intensity = 0.15
+bloom.Size = 16
+bloom.Threshold = 0.8
+bloom.Parent = Lighting
+
 -- ============================================
 -- SECTION 3: GLOBAL VARIABLES
 -- ============================================
@@ -81,12 +106,12 @@ end
 -- Status variables
 local selectedTarget = nil
 local isActive = false
-local currentMode = "SOLO"  -- SOLO, ORBIT, FEET
+local currentMode = "SOLO"
 local emergencyEnabled = true
 local godModeEnabled = false
-local espEnabled = true  -- ESP ON by default
-local isInvisible = false  -- reserved untuk future feature
-local isAntiRagdoll = false -- reserved
+local espEnabled = true
+local isInvisible = false
+local isAntiRagdoll = false
 
 -- Movement variables
 local orbitAngle = 0
@@ -96,11 +121,10 @@ local lastTeleportTime = 0
 -- Connection storage
 local activeConnections = {}
 local godModeConnections = {}
-local visualConnections = {}
 local espConnections = {}
-local espHighlights = {}  -- Store all ESP highlights
+local visualConnections = {}
 
--- GUI elements (will be created later)
+-- GUI elements
 local screenGui = nil
 local godModeBtn = nil
 local godModeStatus = nil
@@ -110,19 +134,16 @@ local soloSliderCard = nil
 local orbitSliderCard = nil
 local feetSliderCard = nil
 
--- Slider values with ranges
+-- Slider values
 local soloRadius = 5
 local soloRadiusMin = 2
 local soloRadiusMax = 12
-
 local orbitRadius = 5
 local orbitRadiusMin = 3
 local orbitRadiusMax = 12
-
 local orbitSpeed = 1
 local orbitSpeedMin = 0.3
 local orbitSpeedMax = 3
-
 local feetDistance = 3
 local feetDistanceMin = 1
 local feetDistanceMax = 10
@@ -130,6 +151,9 @@ local feetDistanceMax = 10
 -- Highlight system
 local currentHighlight = nil
 local highlightConnection = nil
+
+-- ESP system
+local espHighlights = {}
 
 -- ForceField for Godmode
 local currentForceField = nil
@@ -153,339 +177,72 @@ local deactivateBtn = nil
 local emergencyToggle = nil
 
 -- ============================================
--- SECTION 4: ESP SYSTEM (FULL HIGHLIGHT + HEALTH BAR)
--- ============================================
-
--- Function to get color based on health percentage
-local function getHealthColor(healthPercent)
-    if healthPercent >= 75 then
-        return Color3.fromRGB(0, 255, 0)      -- Hijau (75-100%)
-    elseif healthPercent >= 50 then
-        return Color3.fromRGB(255, 255, 0)    -- Kuning (50-75%)
-    elseif healthPercent >= 25 then
-        return Color3.fromRGB(255, 165, 0)    -- Orange (25-50%)
-    else
-        return Color3.fromRGB(255, 0, 0)      -- Merah (0-25%)
-    end
-end
-
--- Function to create ESP for a player
-local function createESPForPlayer(player)
-    if player == LocalPlayer then return end
-    
-    -- Hapus ESP lama jika ada
-    if espHighlights[player] then
-        if espHighlights[player].highlight then
-            espHighlights[player].highlight:Destroy()
-        end
-        if espHighlights[player].billboard then
-            espHighlights[player].billboard:Destroy()
-        end
-        espHighlights[player] = nil
-    end
-    
-    -- Tunggu karakter ada
-    if not player.Character then return end
-    
-    local character = player.Character
-    local humanoid = character:FindFirstChild("Humanoid")
-    if not humanoid then return end
-    
-    -- Buat Highlight untuk outline
-    local highlight = Instance.new("Highlight")
-    highlight.Name = "Redz_ESP_Highlight"
-    highlight.FillTransparency = 0.7
-    highlight.OutlineTransparency = 0.2
-    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    highlight.Adornee = character
-    highlight.Parent = character
-    
-    -- Buat BillboardGui untuk health bar dan nama
-    local billboard = Instance.new("BillboardGui")
-    billboard.Name = "Redz_ESP_Billboard"
-    billboard.Size = UDim2.new(0, 120, 0, 50)
-    billboard.StudsOffset = Vector3.new(0, 2.5, 0)
-    billboard.AlwaysOnTop = true
-    billboard.Parent = character
-    
-    -- Frame utama untuk background
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Size = UDim2.new(1, 0, 1, 0)
-    mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    mainFrame.BackgroundTransparency = 0.5
-    mainFrame.BorderSizePixel = 0
-    mainFrame.Parent = billboard
-    
-    local mainCorner = Instance.new("UICorner")
-    mainCorner.CornerRadius = UDim.new(0, 6)
-    mainCorner.Parent = mainFrame
-    
-    -- Nama player
-    local nameLabel = Instance.new("TextLabel")
-    nameLabel.Size = UDim2.new(1, 0, 0, 20)
-    nameLabel.Position = UDim2.new(0, 0, 0, 0)
-    nameLabel.Text = player.Name
-    nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    nameLabel.TextSize = 12
-    nameLabel.Font = Enum.Font.GothamBold
-    nameLabel.BackgroundTransparency = 1
-    nameLabel.Parent = mainFrame
-    
-    -- Health bar background
-    local healthBg = Instance.new("Frame")
-    healthBg.Size = UDim2.new(0.9, 0, 0, 10)
-    healthBg.Position = UDim2.new(0.05, 0, 0, 22)
-    healthBg.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    healthBg.BorderSizePixel = 0
-    healthBg.Parent = mainFrame
-    
-    local healthBgCorner = Instance.new("UICorner")
-    healthBgCorner.CornerRadius = UDim.new(0, 4)
-    healthBgCorner.Parent = healthBg
-    
-    -- Health bar fill
-    local healthFill = Instance.new("Frame")
-    healthFill.Size = UDim2.new(1, 0, 1, 0)
-    healthFill.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    healthFill.BorderSizePixel = 0
-    healthFill.Parent = healthBg
-    
-    local healthFillCorner = Instance.new("UICorner")
-    healthFillCorner.CornerRadius = UDim.new(0, 4)
-    healthFillCorner.Parent = healthFill
-    
-    -- Health text
-    local healthText = Instance.new("TextLabel")
-    healthText.Size = UDim2.new(1, 0, 0, 16)
-    healthText.Position = UDim2.new(0, 0, 0, 34)
-    healthText.Text = "100%"
-    healthText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    healthText.TextSize = 10
-    healthText.Font = Enum.Font.Gotham
-    healthText.BackgroundTransparency = 1
-    healthText.Parent = mainFrame
-    
-    -- Store ESP data
-    espHighlights[player] = {
-        highlight = highlight,
-        billboard = billboard,
-        healthFill = healthFill,
-        healthText = healthText,
-        nameLabel = nameLabel
-    }
-    
-    -- Update health bar periodically
-    local updateConnection = RunService.Heartbeat:Connect(function()
-        if not player.Character or not player.Character:FindFirstChild("Humanoid") then
-            -- Jika karakter tidak ada, tunggu respawn
-            return
-        end
-        
-        local currentHumanoid = player.Character.Humanoid
-        local health = currentHumanoid.Health
-        local maxHealth = currentHumanoid.MaxHealth
-        local healthPercent = (health / maxHealth) * 100
-        local fillPercent = math.clamp(health / maxHealth, 0, 1)
-        
-        -- Update health bar
-        if espHighlights[player] and espHighlights[player].healthFill then
-            espHighlights[player].healthFill.Size = UDim2.new(fillPercent, 0, 1, 0)
-            espHighlights[player].healthFill.BackgroundColor3 = getHealthColor(healthPercent)
-            espHighlights[player].healthText.Text = string.format("%.0f%%", healthPercent)
-            
-            -- Update highlight color berdasarkan health
-            if espHighlights[player].highlight then
-                espHighlights[player].highlight.FillColor = getHealthColor(healthPercent)
-                espHighlights[player].highlight.FillTransparency = 0.5
-                espHighlights[player].highlight.OutlineColor = getHealthColor(healthPercent)
-                espHighlights[player].highlight.OutlineTransparency = 0.1
-            end
-        end
-    end)
-    
-    -- Store connection for cleanup
-    table.insert(espConnections, updateConnection)
-    
-    -- Handle character respawn
-    local respawnConnection = player.CharacterAdded:Connect(function(newCharacter)
-        task.wait(0.2)
-        if espEnabled then
-            createESPForPlayer(player)
-        end
-    end)
-    table.insert(espConnections, respawnConnection)
-end
-
--- Function to remove all ESP
-local function removeAllESP()
-    for player, data in pairs(espHighlights) do
-        if data.highlight then
-            pcall(function() data.highlight:Destroy() end)
-        end
-        if data.billboard then
-            pcall(function() data.billboard:Destroy() end)
-        end
-    end
-    espHighlights = {}
-    
-    for _, conn in pairs(espConnections) do
-        pcall(function() conn:Disconnect() end)
-    end
-    espConnections = {}
-end
-
--- Function to toggle ESP
-local function toggleESP()
-    espEnabled = not espEnabled
-    
-    if espEnabled then
-        -- Apply ESP to all players
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer then
-                createESPForPlayer(player)
-            end
-        end
-        
-        if espBtn then
-            espBtn.Text = "👁️ ESP ON"
-            espBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 200)
-        end
-        if espStatus then
-            espStatus.Text = "ACTIVE - Full Highlight + Health Bar"
-            espStatus.TextColor3 = Color3.fromRGB(0, 255, 200)
-        end
-        
-        pcall(function()
-            StarterGui:SetCore("SendNotification", {
-                Title = "👁️ ESP ACTIVATED",
-                Text = "All players are now highlighted with health bars!",
-                Duration = 2
-            })
-        end)
-    else
-        removeAllESP()
-        
-        if espBtn then
-            espBtn.Text = "👁️ ESP OFF"
-            espBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 150)
-        end
-        if espStatus then
-            espStatus.Text = "INACTIVE"
-            espStatus.TextColor3 = Color3.fromRGB(200, 150, 200)
-        end
-        
-        pcall(function()
-            StarterGui:SetCore("SendNotification", {
-                Title = "👁️ ESP DEACTIVATED",
-                Text = "Highlights and health bars removed!",
-                Duration = 2
-            })
-        end)
-    end
-end
-
--- Function to update ESP for all players (called when players join/leave)
-local function updateAllESP()
-    if not espEnabled then return end
-    
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            if not espHighlights[player] then
-                createESPForPlayer(player)
-            end
-        end
-    end
-end
-
--- ============================================
--- SECTION 5: SAFE POSITIONS (UNTUK EMERGENCY)
+-- SECTION 4: SAFE POSITIONS (UNTUK EMERGENCY)
 -- ============================================
 
 local safePositions = {
-    Vector3.new(0, 500, 0),
-    Vector3.new(100, 450, 100),
-    Vector3.new(-100, 480, -100),
-    Vector3.new(200, 520, -150),
-    Vector3.new(-200, 550, 150),
-    Vector3.new(150, 490, -200),
-    Vector3.new(-150, 510, 200),
-    Vector3.new(300, 530, 50),
-    Vector3.new(-300, 560, -50),
-    Vector3.new(50, 600, 50),
-    Vector3.new(-50, 580, -50),
-    Vector3.new(250, 500, -250),
-    Vector3.new(-250, 520, 250),
-    Vector3.new(350, 480, 50),
-    Vector3.new(-350, 510, -50),
-    Vector3.new(180, 550, -180),
-    Vector3.new(-180, 540, 180),
-    Vector3.new(120, 600, -120),
-    Vector3.new(-120, 590, 120),
-    Vector3.new(0, 650, 0),
+    Vector3.new(0, 500, 0), Vector3.new(100, 450, 100), Vector3.new(-100, 480, -100),
+    Vector3.new(200, 520, -150), Vector3.new(-200, 550, 150), Vector3.new(150, 490, -200),
+    Vector3.new(-150, 510, 200), Vector3.new(300, 530, 50), Vector3.new(-300, 560, -50),
+    Vector3.new(50, 600, 50), Vector3.new(-50, 580, -50), Vector3.new(250, 500, -250),
+    Vector3.new(-250, 520, 250), Vector3.new(350, 480, 50), Vector3.new(-350, 510, -50),
+    Vector3.new(180, 550, -180), Vector3.new(-180, 540, 180), Vector3.new(120, 600, -120),
+    Vector3.new(-120, 590, 120), Vector3.new(0, 650, 0), Vector3.new(400, 550, 400),
+    Vector3.new(-400, 560, -400), Vector3.new(500, 500, -300), Vector3.new(-500, 520, 300),
+    Vector3.new(250, 650, -250), Vector3.new(-250, 640, 250)
 }
 
--- Function to find the safest position (farthest from all players)
 local function findSafestPosition()
     local players = Players:GetPlayers()
     local bestPosition = safePositions[1]
     local bestDistance = 0
-
+    
     for _, pos in ipairs(safePositions) do
         local minDistanceToPlayer = math.huge
-
         for _, player in ipairs(players) do
-            if player ~= LocalPlayer then
-                local character = player.Character
-                if character and character:FindFirstChild("HumanoidRootPart") then
-                    local rootPart = character.HumanoidRootPart
-                    local distance = (pos - rootPart.Position).Magnitude
-                    if distance < minDistanceToPlayer then
-                        minDistanceToPlayer = distance
-                    end
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (pos - player.Character.HumanoidRootPart.Position).Magnitude
+                if distance < minDistanceToPlayer then
+                    minDistanceToPlayer = distance
                 end
             end
         end
-
         if minDistanceToPlayer > bestDistance then
             bestDistance = minDistanceToPlayer
             bestPosition = pos
         end
     end
-
     return bestPosition
 end
 
--- Function to teleport to safe place
 local function teleportToSafePlace()
     local character = LocalPlayer.Character
     if not character then return false end
-
     local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return false end
-
+    
     local safePos = findSafestPosition()
     humanoidRootPart.CFrame = CFrame.new(safePos)
-
-    -- Optional: Add visual effect for teleport
+    
+    -- Visual effect for teleport
     local teleportEffect = Instance.new("Part")
-    teleportEffect.Size = Vector3.new(5, 1, 5)
+    teleportEffect.Size = Vector3.new(6, 1, 6)
     teleportEffect.Position = safePos - Vector3.new(0, 3, 0)
     teleportEffect.Anchored = true
     teleportEffect.CanCollide = false
-    teleportEffect.Transparency = 0.5
+    teleportEffect.Transparency = 0.3
     teleportEffect.BrickColor = BrickColor.new("Bright violet")
+    teleportEffect.Material = Enum.Material.Neon
     teleportEffect.Parent = Workspace
-
-    TweenService:Create(teleportEffect, TweenInfo.new(0.5), {Transparency = 1}):Play()
-    task.delay(0.5, function()
-        teleportEffect:Destroy()
-    end)
-
+    Instance.new("UICorner", teleportEffect).CornerRadius = UDim.new(1, 0)
+    
+    TweenService:Create(teleportEffect, TweenInfo.new(0.5), {Transparency = 1, Size = Vector3.new(8, 1, 8)}):Play()
+    task.delay(0.5, function() pcall(function() teleportEffect:Destroy() end) end)
     return true
 end
 
 -- ============================================
--- SECTION 6: VISUAL EFFECTS (STARS & THUNDER)
+-- SECTION 5: VISUAL EFFECTS (STARS & THUNDER)
 -- ============================================
 
 -- Star container
@@ -493,7 +250,6 @@ local starContainer = Instance.new("Folder")
 starContainer.Name = "Redz_StarEffects"
 starContainer.Parent = CoreGui
 
--- Function to create a single star
 local function createStar()
     local star = Instance.new("Frame")
     star.Size = UDim2.new(0, math.random(1, 3), 0, math.random(1, 3))
@@ -502,12 +258,11 @@ local function createStar()
     star.BackgroundTransparency = math.random(30, 70) / 100
     star.BorderSizePixel = 0
     star.Parent = starContainer
-
+    
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(1, 0)
     corner.Parent = star
-
-    -- Twinkling animation
+    
     task.spawn(function()
         while star and star.Parent do
             local targetTransparency = math.random(20, 80) / 100
@@ -516,13 +271,13 @@ local function createStar()
             task.wait(math.random(2, 5))
         end
     end)
-
     return star
 end
 
--- Create 150 stars
-for i = 1, 150 do
+-- Create 200 stars
+for i = 1, 200 do
     createStar()
+    task.wait(0.01)
 end
 
 -- Thunder effect container
@@ -530,7 +285,6 @@ local thunderContainer = Instance.new("Folder")
 thunderContainer.Name = "Redz_ThunderEffects"
 thunderContainer.Parent = CoreGui
 
--- Function to create lightning flash
 local function createLightningFlash()
     local lightning = Instance.new("Frame")
     lightning.Size = UDim2.new(1, 0, 1, 0)
@@ -538,169 +292,292 @@ local function createLightningFlash()
     lightning.BackgroundTransparency = 0.8
     lightning.BorderSizePixel = 0
     lightning.Parent = thunderContainer
-
-    -- Simulate lightning flash
-    local flashSequence = {0.2, 0.5, 0.3, 0.6, 0.4, 0.7}
+    
+    local flashSequence = {0.2, 0.5, 0.3, 0.6, 0.4, 0.7, 0.3, 0.8}
     for _, transparency in ipairs(flashSequence) do
         lightning.BackgroundTransparency = transparency
         task.wait(0.03)
     end
-
     lightning:Destroy()
 end
 
--- Random lightning strikes
 task.spawn(function()
     while true do
-        local waitTime = math.random(8, 20)
-        task.wait(waitTime)
+        task.wait(math.random(8, 20))
         createLightningFlash()
     end
 end)
 
 -- ============================================
--- SECTION 7: GODMODE SYSTEM (FORCEFIELD)
+-- SECTION 6: ESP SYSTEM (DISPLAY NAME + HEALTH)
 -- ============================================
 
--- Function to apply Godmode effects (ForceField + Particles)
+local function getHealthColor(percent)
+    if percent >= 75 then return Color3.fromRGB(0, 255, 0)
+    elseif percent >= 50 then return Color3.fromRGB(255, 255, 0)
+    elseif percent >= 25 then return Color3.fromRGB(255, 165, 0)
+    else return Color3.fromRGB(255, 0, 0) end
+end
+
+local function createESP(player)
+    if player == LocalPlayer then return end
+    if espHighlights[player] then
+        if espHighlights[player].highlight then pcall(function() espHighlights[player].highlight:Destroy() end) end
+        if espHighlights[player].billboard then pcall(function() espHighlights[player].billboard:Destroy() end) end
+        espHighlights[player] = nil
+    end
+    
+    if not player.Character then return end
+    local character = player.Character
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not humanoid then return end
+    
+    local healthPercent = (humanoid.Health / humanoid.MaxHealth) * 100
+    
+    -- Highlight
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "Redz_ESP"
+    highlight.FillColor = getHealthColor(healthPercent)
+    highlight.FillTransparency = 0.55
+    highlight.OutlineColor = getHealthColor(healthPercent)
+    highlight.OutlineTransparency = 0.15
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Adornee = character
+    highlight.Parent = character
+    
+    -- Billboard
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "Redz_ESP_Billboard"
+    billboard.Size = UDim2.new(0, 160, 0, 65)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = character
+    
+    -- Background glass
+    local bg = Instance.new("Frame", billboard)
+    bg.Size = UDim2.new(1, 0, 1, 0)
+    bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    bg.BackgroundTransparency = 0.55
+    bg.BorderSizePixel = 0
+    Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 8)
+    
+    -- Display Name
+    local displayName = Instance.new("TextLabel", bg)
+    displayName.Size = UDim2.new(1, 0, 0, 24)
+    displayName.Position = UDim2.new(0, 0, 0, 2)
+    displayName.Text = player.DisplayName
+    displayName.TextColor3 = Color3.fromRGB(255, 255, 255)
+    displayName.TextSize = 14
+    displayName.Font = Enum.Font.GothamBold
+    displayName.BackgroundTransparency = 1
+    displayName.TextStrokeTransparency = 0.3
+    displayName.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    
+    -- Username (small)
+    local userName = Instance.new("TextLabel", bg)
+    userName.Size = UDim2.new(1, 0, 0, 16)
+    userName.Position = UDim2.new(0, 0, 0, 26)
+    userName.Text = "(@" .. player.Name .. ")"
+    userName.TextColor3 = Color3.fromRGB(180, 180, 180)
+    userName.TextSize = 9
+    userName.Font = Enum.Font.Gotham
+    userName.BackgroundTransparency = 1
+    
+    -- Health Bar Background
+    local healthBg = Instance.new("Frame", bg)
+    healthBg.Size = UDim2.new(0.9, 0, 0, 8)
+    healthBg.Position = UDim2.new(0.05, 0, 0, 44)
+    healthBg.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    healthBg.BorderSizePixel = 0
+    Instance.new("UICorner", healthBg).CornerRadius = UDim.new(0, 4)
+    
+    -- Health Bar Fill
+    local healthFill = Instance.new("Frame", healthBg)
+    healthFill.Size = UDim2.new(healthPercent / 100, 0, 1, 0)
+    healthFill.BackgroundColor3 = getHealthColor(healthPercent)
+    healthFill.BorderSizePixel = 0
+    Instance.new("UICorner", healthFill).CornerRadius = UDim.new(0, 4)
+    
+    -- Health Text
+    local healthText = Instance.new("TextLabel", bg)
+    healthText.Size = UDim2.new(1, 0, 0, 14)
+    healthText.Position = UDim2.new(0, 0, 0, 54)
+    healthText.Text = math.floor(healthPercent) .. "%"
+    healthText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    healthText.TextSize = 10
+    healthText.Font = Enum.Font.Gotham
+    healthText.BackgroundTransparency = 1
+    
+    espHighlights[player] = {
+        highlight = highlight,
+        billboard = billboard,
+        healthFill = healthFill,
+        healthText = healthText,
+        healthPercent = healthPercent
+    }
+    
+    -- Update health
+    local updateConnection = RunService.Heartbeat:Connect(function()
+        if not player.Character or not player.Character:FindFirstChild("Humanoid") then return end
+        local currentHumanoid = player.Character.Humanoid
+        local newPercent = (currentHumanoid.Health / currentHumanoid.MaxHealth) * 100
+        local fillPercent = currentHumanoid.Health / currentHumanoid.MaxHealth
+        
+        if espHighlights[player] then
+            if espHighlights[player].healthFill then
+                espHighlights[player].healthFill.Size = UDim2.new(fillPercent, 0, 1, 0)
+                espHighlights[player].healthFill.BackgroundColor3 = getHealthColor(newPercent)
+                espHighlights[player].healthText.Text = math.floor(newPercent) .. "%"
+            end
+            if espHighlights[player].highlight then
+                espHighlights[player].highlight.FillColor = getHealthColor(newPercent)
+                espHighlights[player].highlight.OutlineColor = getHealthColor(newPercent)
+            end
+        end
+    end)
+    table.insert(espConnections, updateConnection)
+end
+
+local function removeAllESP()
+    for player, data in pairs(espHighlights) do
+        if data.highlight then pcall(function() data.highlight:Destroy() end) end
+        if data.billboard then pcall(function() data.billboard:Destroy() end) end
+    end
+    espHighlights = {}
+end
+
+local function toggleESP()
+    espEnabled = not espEnabled
+    if espEnabled then
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then createESP(player) end
+        end
+        if espBtn then
+            espBtn.Text = "👁️ ESP ON"
+            espBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 200)
+        end
+        if espStatus then
+            espStatus.Text = "ACTIVE - Display Name + Health Bar"
+            espStatus.TextColor3 = Color3.fromRGB(0, 255, 200)
+        end
+        pcall(function()
+            StarterGui:SetCore("SendNotification", {
+                Title = "👁️ ESP ACTIVATED",
+                Text = "Display Name + Health Bar + Persentase",
+                Duration = 2
+            })
+        end)
+    else
+        removeAllESP()
+        if espBtn then
+            espBtn.Text = "👁️ ESP OFF"
+            espBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 150)
+        end
+        if espStatus then
+            espStatus.Text = "INACTIVE"
+            espStatus.TextColor3 = Color3.fromRGB(200, 150, 200)
+        end
+    end
+end
+
+-- ============================================
+-- SECTION 7: GODMODE SYSTEM
+-- ============================================
+
 local function applyGodMode()
     local character = LocalPlayer.Character
     if not character then return false end
-
-    -- Remove old ForceField if exists
-    if currentForceField then
-        pcall(function() currentForceField:Destroy() end)
-        currentForceField = nil
-    end
-
-    -- Create new ForceField (Blue shield)
+    
+    if currentForceField then pcall(function() currentForceField:Destroy() end) end
+    
     currentForceField = Instance.new("ForceField")
-    currentForceField.Name = "Redz_GodMode_ForceField"
+    currentForceField.Name = "Redz_GodMode_FF"
     currentForceField.Parent = character
-
-    -- Create particle effects for visual flair
+    
+    -- Particle effect
     local particleEmitter = Instance.new("ParticleEmitter")
     particleEmitter.Name = "Redz_GodMode_Particles"
     particleEmitter.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-    particleEmitter.Color = ColorSequence.new(
-        Color3.fromRGB(0, 150, 255),
-        Color3.fromRGB(255, 50, 150),
-        Color3.fromRGB(0, 200, 255)
-    )
+    particleEmitter.Color = ColorSequence.new(Color3.fromRGB(0, 150, 255), Color3.fromRGB(255, 50, 150))
     particleEmitter.Size = NumberSequence.new(0.5)
-    particleEmitter.Rate = 50
+    particleEmitter.Rate = 45
     particleEmitter.Lifetime = NumberRange.new(0.6)
     particleEmitter.SpreadAngle = Vector2.new(360, 360)
-    particleEmitter.VelocityInheritance = 0
     particleEmitter.Speed = NumberRange.new(4)
-    particleEmitter.Enabled = true
-
-    -- Attach particles to HumanoidRootPart or character
+    
     local rootPart = character:FindFirstChild("HumanoidRootPart")
     if rootPart then
         particleEmitter.Parent = rootPart
     else
         particleEmitter.Parent = character
     end
-
-    -- Anti ragdoll and invincibility
+    
     local humanoid = character:FindFirstChild("Humanoid")
     if humanoid then
         humanoid.BreakJointsOnDeath = false
         humanoid.AutoRotate = true
         humanoid.PlatformStand = false
     end
-
+    
     return true
 end
 
--- Function to remove Godmode effects
 local function removeGodMode()
-    -- Remove ForceField
-    if currentForceField then
-        pcall(function() currentForceField:Destroy() end)
-        currentForceField = nil
-    end
-
-    -- Remove particles
+    if currentForceField then pcall(function() currentForceField:Destroy() end) end
+    currentForceField = nil
+    
     local character = LocalPlayer.Character
     if character then
-        -- Remove all ForceFields
         for _, child in ipairs(character:GetChildren()) do
-            if child:IsA("ForceField") then
-                child:Destroy()
-            end
+            if child:IsA("ForceField") then child:Destroy() end
         end
-
-        -- Remove particles
         for _, descendant in ipairs(character:GetDescendants()) do
-            if descendant.Name == "Redz_GodMode_Particles" then
-                descendant:Destroy()
-            end
+            if descendant.Name == "Redz_GodMode_Particles" then descendant:Destroy() end
         end
-
-        -- Restore humanoid properties
         local humanoid = character:FindFirstChild("Humanoid")
-        if humanoid then
-            humanoid.BreakJointsOnDeath = true
-        end
+        if humanoid then humanoid.BreakJointsOnDeath = true end
     end
 end
 
--- Function to keep Godmode alive (prevents it from being removed by game)
 local function keepGodModeAlive()
     task.spawn(function()
         while screenGui and screenGui.Parent and godModeEnabled do
             local character = LocalPlayer.Character
             if character then
-                -- Check if ForceField exists, if not recreate it
                 local hasForceField = false
                 for _, child in ipairs(character:GetChildren()) do
-                    if child:IsA("ForceField") and child.Name == "Redz_GodMode_ForceField" then
+                    if child:IsA("ForceField") and child.Name == "Redz_GodMode_FF" then
                         hasForceField = true
                         currentForceField = child
                         break
                     end
                 end
-
                 if not hasForceField then
                     currentForceField = Instance.new("ForceField")
-                    currentForceField.Name = "Redz_GodMode_ForceField"
+                    currentForceField.Name = "Redz_GodMode_FF"
                     currentForceField.Parent = character
                 end
-
-                -- Anti ragdoll check
                 local humanoid = character:FindFirstChild("Humanoid")
-                if humanoid then
-                    humanoid.BreakJointsOnDeath = false
-                    if humanoid.PlatformStand then
-                        humanoid.PlatformStand = false
-                    end
-                end
+                if humanoid then humanoid.BreakJointsOnDeath = false end
             end
             task.wait(0.3)
         end
     end)
 end
 
--- Toggle Godmode function
 local function toggleGodMode()
     godModeEnabled = not godModeEnabled
-
     if godModeEnabled then
         applyGodMode()
         keepGodModeAlive()
-
         if godModeBtn then
             godModeBtn.Text = "🛡️ GODMODE ON"
             godModeBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 200)
         end
         if godModeStatus then
-            godModeStatus.Text = "⚡ ACTIVE - BLUE SHIELD ⚡"
+            godModeStatus.Text = "⚡ ACTIVE - Blue Shield ⚡"
             godModeStatus.TextColor3 = Color3.fromRGB(0, 255, 200)
         end
-
-        -- Notification
         pcall(function()
             StarterGui:SetCore("SendNotification", {
                 Title = "🛡️ GODMODE ACTIVATED",
@@ -710,7 +587,6 @@ local function toggleGodMode()
         end)
     else
         removeGodMode()
-
         if godModeBtn then
             godModeBtn.Text = "🛡️ GODMODE OFF"
             godModeBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 150)
@@ -719,67 +595,43 @@ local function toggleGodMode()
             godModeStatus.Text = "○ INACTIVE ○"
             godModeStatus.TextColor3 = Color3.fromRGB(200, 150, 200)
         end
-
-        -- Notification
-        pcall(function()
-            StarterGui:SetCore("SendNotification", {
-                Title = "🛡️ GODMODE DEACTIVATED",
-                Text = "You are now vulnerable again.",
-                Duration = 2
-            })
-        end)
     end
 end
 
 -- ============================================
--- SECTION 8: TARGET HIGHLIGHT SYSTEM (UNTUK SELECTED TARGET)
+-- SECTION 8: TARGET HIGHLIGHT SYSTEM
 -- ============================================
 
--- Remove current highlight
 local function removeHighlight()
-    if currentHighlight then
-        pcall(function() currentHighlight:Destroy() end)
-        currentHighlight = nil
-    end
-    if highlightConnection then
-        pcall(function() highlightConnection:Disconnect() end)
-        highlightConnection = nil
-    end
+    if currentHighlight then pcall(function() currentHighlight:Destroy() end) end
+    if highlightConnection then pcall(function() highlightConnection:Disconnect() end) end
 end
 
--- Apply highlight to target player (selected target only)
 local function applyHighlightToTarget(target)
     removeHighlight()
-
-    if not target then return end
-
+    if not target or not target.Character then return end
+    
     local character = target.Character
-    if not character then return end
-
     local highlight = Instance.new("Highlight")
-    highlight.Name = "Redz_Target_Highlight"
+    highlight.Name = "Redz_Target_HL"
     highlight.FillColor = Color3.fromRGB(255, 0, 255)
     highlight.FillTransparency = 0.35
-    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+    highlight.OutlineColor = Color3.fromRGB(255, 100, 255)
     highlight.OutlineTransparency = 0.15
     highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     highlight.Adornee = character
     highlight.Parent = character
-
     currentHighlight = highlight
-
-    -- Watch for character respawn
+    
     highlightConnection = target.CharacterAdded:Connect(function(newCharacter)
         task.wait(0.2)
         if selectedTarget == target then
-            if currentHighlight then
-                pcall(function() currentHighlight:Destroy() end)
-            end
+            if currentHighlight then pcall(function() currentHighlight:Destroy() end) end
             local newHighlight = Instance.new("Highlight")
-            newHighlight.Name = "Redz_Target_Highlight"
+            newHighlight.Name = "Redz_Target_HL"
             newHighlight.FillColor = Color3.fromRGB(255, 0, 255)
             newHighlight.FillTransparency = 0.35
-            newHighlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+            newHighlight.OutlineColor = Color3.fromRGB(255, 100, 255)
             newHighlight.OutlineTransparency = 0.15
             newHighlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
             newHighlight.Adornee = newCharacter
@@ -793,46 +645,35 @@ end
 -- SECTION 9: TARGET LIST MANAGEMENT
 -- ============================================
 
--- Update the target list UI
 local function updateTargetList()
     if not targetScroll then return end
-
-    -- Clear existing buttons
+    
     for _, child in ipairs(targetScroll:GetChildren()) do
-        if child:IsA("TextButton") then
-            child:Destroy()
-        end
+        if child:IsA("TextButton") then child:Destroy() end
     end
-
-    -- Get all other players
+    
     local enemies = {}
     for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            table.insert(enemies, player)
-        end
+        if player ~= LocalPlayer then table.insert(enemies, player) end
     end
-
-    -- Update player count label
+    
     if playerCountLabel then
         playerCountLabel.Text = "👥 " .. #Players:GetPlayers() .. " Players | ⚔️ " .. #enemies .. " Enemies"
     end
-
-    -- If no enemies, show message
+    
     if #enemies == 0 then
-        local emptyLabel = Instance.new("TextLabel")
+        local emptyLabel = Instance.new("TextLabel", targetScroll)
         emptyLabel.Size = UDim2.new(1, -20, 0, 40)
         emptyLabel.Text = "✨ No other players in server ✨"
         emptyLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
         emptyLabel.BackgroundTransparency = 1
-        emptyLabel.Parent = targetScroll
         return
     end
-
-    -- Create button for each enemy
+    
     for _, enemy in ipairs(enemies) do
-        local button = Instance.new("TextButton")
+        local button = Instance.new("TextButton", targetScroll)
         button.Size = UDim2.new(1, -20, 0, 48)
-        button.Text = "  👤  " .. enemy.Name .. "  ▶  CLICK TO TARGET"
+        button.Text = "  👤  " .. enemy.DisplayName .. "  ▶  CLICK TO TARGET"
         button.TextColor3 = Color3.fromRGB(220, 220, 255)
         button.TextXAlignment = Enum.TextXAlignment.Left
         button.TextSize = 12
@@ -840,30 +681,20 @@ local function updateTargetList()
         button.BackgroundColor3 = Color3.fromRGB(40, 15, 80)
         button.BackgroundTransparency = 0.45
         button.BorderSizePixel = 0
-        button.Parent = targetScroll
-
-        local buttonCorner = Instance.new("UICorner")
-        buttonCorner.CornerRadius = UDim.new(0, 10)
-        buttonCorner.Parent = button
-
-        -- Hover effect
+        Instance.new("UICorner", button).CornerRadius = UDim.new(0, 10)
+        
         button.MouseEnter:Connect(function()
             TweenService:Create(button, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play()
         end)
         button.MouseLeave:Connect(function()
             TweenService:Create(button, TweenInfo.new(0.1), {BackgroundTransparency = 0.45}):Play()
         end)
-
-        -- Click handler
+        
         button.MouseButton1Click:Connect(function()
-            -- Remove previous highlight
             removeHighlight()
-
-            -- Set new target
             selectedTarget = enemy
             applyHighlightToTarget(enemy)
-
-            -- Update button styles
+            
             for _, btn in ipairs(targetScroll:GetChildren()) do
                 if btn:IsA("TextButton") then
                     btn.BackgroundColor3 = Color3.fromRGB(40, 15, 80)
@@ -871,30 +702,26 @@ local function updateTargetList()
                     btn.TextColor3 = Color3.fromRGB(220, 220, 255)
                 end
             end
-
+            
             button.BackgroundColor3 = Color3.fromRGB(0, 150, 200)
             button.BackgroundTransparency = 0.15
             button.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-            -- Update status
+            
             if statusText then
                 if isActive then
-                    statusText.Text = "🎯 " .. currentMode .. " | " .. enemy.Name
+                    statusText.Text = "🎯 " .. currentMode .. " | " .. enemy.DisplayName
                 else
-                    statusText.Text = "TARGET SELECTED: " .. enemy.Name
+                    statusText.Text = "TARGET: " .. enemy.DisplayName
                 end
             end
-
-            -- Flash effect on target
-            local char = enemy.Character
-            if char then
-                for _, part in ipairs(char:GetDescendants()) do
+            
+            local character = enemy.Character
+            if character then
+                for _, part in ipairs(character:GetDescendants()) do
                     if part:IsA("BasePart") then
                         local originalColor = part.Color
                         part.Color = Color3.fromRGB(255, 100, 200)
-                        task.delay(0.2, function()
-                            pcall(function() part.Color = originalColor end)
-                        end)
+                        task.delay(0.2, function() pcall(function() part.Color = originalColor end) end)
                     end
                 end
             end
@@ -906,23 +733,19 @@ end
 -- SECTION 10: EMERGENCY TELEPORT SYSTEM
 -- ============================================
 
--- Emergency teleport check (runs automatically)
 local function emergencyTeleportCheck()
-    if not emergencyEnabled then return false end
-    if emergencyTeleported then return false end
-
+    if not emergencyEnabled or emergencyTeleported then return false end
+    
     local character = LocalPlayer.Character
     if not character then return false end
-
     local humanoid = character:FindFirstChild("Humanoid")
     if not humanoid then return false end
-
+    
     local hpPercent = (humanoid.Health / humanoid.MaxHealth) * 100
-
+    
     if hpPercent < 25 then
         emergencyTeleported = true
-
-        -- Stop all active mode activities
+        
         if isActive then
             for _, connection in pairs(activeConnections) do
                 pcall(function() connection:Disconnect() end)
@@ -930,54 +753,39 @@ local function emergencyTeleportCheck()
             activeConnections = {}
             isActive = false
         end
-
-        -- Teleport to safe place
-        local success = teleportToSafePlace()
-
-        if success then
-            if statusText then
-                statusText.Text = "🚨 EMERGENCY: TELEPORTED TO SAFE PLACE!"
-            end
-            if led then
-                led.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
-            end
-
-            -- Flash LED effect
-            for i = 1, 3 do
-                if led then
-                    led.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-                end
-                task.wait(0.1)
-                if led then
-                    led.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
-                end
-                task.wait(0.1)
-            end
-
-            -- Notification
-            pcall(function()
-                StarterGui:SetCore("SendNotification", {
-                    Title = "🚨 EMERGENCY ESCAPE",
-                    Text = "HP below 25%! Teleported to safe location!",
-                    Duration = 3
-                })
-            end)
+        
+        teleportToSafePlace()
+        
+        if statusText then
+            statusText.Text = "🚨 EMERGENCY: TELEPORTED!"
         end
-
-        -- Reset emergency flag after 10 seconds
+        if led then
+            led.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+            for i = 1, 3 do
+                led.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+                task.wait(0.1)
+                led.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+                task.wait(0.1)
+            end
+        end
+        
+        pcall(function()
+            StarterGui:SetCore("SendNotification", {
+                Title = "🚨 EMERGENCY ESCAPE",
+                Text = "HP below 25%! Teleported to safe location!",
+                Duration = 3
+            })
+        end)
+        
         task.delay(10, function()
             emergencyTeleported = false
-            if not isActive and statusText and led then
-                if not godModeEnabled then
-                    led.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-                end
-                statusText.Text = "MODE: INACTIVE | TARGET: " .. (selectedTarget and selectedTarget.Name or "NONE")
+            if not isActive and statusText and led and not godModeEnabled then
+                led.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+                statusText.Text = "MODE: INACTIVE | TARGET: " .. (selectedTarget and selectedTarget.DisplayName or "NONE")
             end
         end)
-
         return true
     end
-
     return false
 end
 
@@ -985,7 +793,6 @@ end
 -- SECTION 11: MODE ACTIVATION & DEACTIVATION
 -- ============================================
 
--- Clean up all active connections
 local function cleanup()
     for _, connection in pairs(activeConnections) do
         pcall(function() connection:Disconnect() end)
@@ -993,8 +800,7 @@ local function cleanup()
     activeConnections = {}
     isActive = false
     emergencyTeleported = false
-
-    -- Restore character speed
+    
     local character = LocalPlayer.Character
     if character then
         local humanoid = character:FindFirstChild("Humanoid")
@@ -1004,8 +810,7 @@ local function cleanup()
             humanoid.BreakJointsOnDeath = originalBreakJoints
         end
     end
-
-    -- Restore target speed if exists
+    
     if selectedTarget and selectedTarget.Character then
         local targetHumanoid = selectedTarget.Character:FindFirstChild("Humanoid")
         if targetHumanoid then
@@ -1013,22 +818,18 @@ local function cleanup()
             targetHumanoid.JumpPower = originalJumpPower
         end
     end
-
-    -- Update UI
+    
     if not godModeEnabled and led then
         led.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     end
     if statusText then
-        statusText.Text = "MODE: INACTIVE | TARGET: " .. (selectedTarget and selectedTarget.Name or "NONE")
+        statusText.Text = "MODE: INACTIVE | TARGET: " .. (selectedTarget and selectedTarget.DisplayName or "NONE")
     end
 end
 
--- Activate selected mode
 local function activateMode()
     if not selectedTarget then
-        if statusText then
-            statusText.Text = "⚠️ PLEASE SELECT A TARGET FIRST!"
-        end
+        if statusText then statusText.Text = "⚠️ SELECT TARGET FIRST!" end
         pcall(function()
             StarterGui:SetCore("SendNotification", {
                 Title = "⚠️ NO TARGET",
@@ -1038,51 +839,42 @@ local function activateMode()
         end)
         return
     end
-
-    -- Clean up previous session
+    
     cleanup()
     task.wait(0.1)
-
-    -- Set active flags
     isActive = true
     orbitAngle = 0
     emergencyTeleported = false
-
-    -- Update UI
+    
     if led then
         led.BackgroundColor3 = Color3.fromRGB(0, 200, 150)
     end
     if statusText then
-        statusText.Text = "⚡ " .. currentMode .. " | TARGET: " .. selectedTarget.Name
+        statusText.Text = "⚡ " .. currentMode .. " | TARGET: " .. selectedTarget.DisplayName
     end
-
-    -- Get character and ensure it exists
+    
     local character = LocalPlayer.Character
     if not character then
         LocalPlayer.CharacterAdded:Wait()
         character = LocalPlayer.Character
     end
-
-    -- Apply speed boost
+    
     if character and character:FindFirstChild("Humanoid") then
         local humanoid = character.Humanoid
         originalWalkSpeed = humanoid.WalkSpeed
         originalJumpPower = humanoid.JumpPower
         originalBreakJoints = humanoid.BreakJointsOnDeath
-
         humanoid.WalkSpeed = 180
         humanoid.JumpPower = 120
     end
-
-    -- Freeze target
+    
     if selectedTarget and selectedTarget.Character then
         local targetHumanoid = selectedTarget.Character:FindFirstChild("Humanoid")
         if targetHumanoid then
             targetHumanoid.WalkSpeed = 0
             targetHumanoid.JumpPower = 0
         end
-
-        -- Watch for target respawn to re-freeze
+        
         local targetRespawnConnection = selectedTarget.CharacterAdded:Connect(function(newCharacter)
             task.wait(0.3)
             if isActive and selectedTarget and newCharacter then
@@ -1095,141 +887,96 @@ local function activateMode()
         end)
         table.insert(activeConnections, targetRespawnConnection)
     end
-
-    -- Emergency monitor
-    local emergencyConnection = RunService.Stepped:Connect(emergencyTeleportCheck)
-    table.insert(activeConnections, emergencyConnection)
-
-    -- ============================================
-    -- MODE: SOLO HACK (Random teleport around target)
-    -- ============================================
+    
+    table.insert(activeConnections, RunService.Stepped:Connect(emergencyTeleportCheck))
+    
+    -- SOLO MODE
     if currentMode == "SOLO" then
         local soloConnection = RunService.RenderStepped:Connect(function()
             if not isActive or emergencyTeleported then return end
-
             local myCharacter = LocalPlayer.Character
             if not myCharacter or not myCharacter:FindFirstChild("HumanoidRootPart") then return end
-
             if not selectedTarget or not selectedTarget.Character then return end
             local targetRoot = selectedTarget.Character:FindFirstChild("HumanoidRootPart")
             if not targetRoot then return end
-
-            local targetPosition = targetRoot.Position
+            
+            local targetPos = targetRoot.Position
             local randomAngle = math.random() * 2 * math.pi
-            local radius = soloRadius
-            local x = targetPosition.X + math.cos(randomAngle) * radius
-            local z = targetPosition.Z + math.sin(randomAngle) * radius
+            local x = targetPos.X + math.cos(randomAngle) * soloRadius
+            local z = targetPos.Z + math.sin(randomAngle) * soloRadius
             local yOffset = math.random(1, 4)
-            local newPosition = Vector3.new(x, targetPosition.Y + yOffset, z)
-
-            -- Teleport and face target
-            myCharacter.HumanoidRootPart.CFrame = CFrame.new(newPosition, targetPosition)
-
-            -- Auto attack
-            pcall(function()
-                VirtualUser:ClickButton1(Vector2.new(500, 500), 1)
-            end)
+            local newPos = Vector3.new(x, targetPos.Y + yOffset, z)
+            
+            myCharacter.HumanoidRootPart.CFrame = CFrame.new(newPos, targetPos)
+            pcall(function() VirtualUser:ClickButton1(Vector2.new(500, 500), 1) end)
         end)
         table.insert(activeConnections, soloConnection)
-
-    -- ============================================
-    -- MODE: ORBIT (Circle around target)
-    -- ============================================
+    
+    -- ORBIT MODE
     elseif currentMode == "ORBIT" then
         local orbitConnection = RunService.RenderStepped:Connect(function()
             if not isActive or emergencyTeleported then return end
-
             local myCharacter = LocalPlayer.Character
             if not myCharacter or not myCharacter:FindFirstChild("HumanoidRootPart") then return end
-
             if not selectedTarget or not selectedTarget.Character then return end
             local targetRoot = selectedTarget.Character:FindFirstChild("HumanoidRootPart")
             if not targetRoot then return end
-
+            
             orbitAngle = orbitAngle + orbitSpeed * 0.05
-            local targetPosition = targetRoot.Position
-            local x = targetPosition.X + math.cos(orbitAngle) * orbitRadius
-            local z = targetPosition.Z + math.sin(orbitAngle) * orbitRadius
-            local newPosition = Vector3.new(x, targetPosition.Y + 2, z)
-
-            -- Teleport and face target
-            myCharacter.HumanoidRootPart.CFrame = CFrame.new(newPosition, targetPosition)
-
-            -- Auto attack
-            pcall(function()
-                VirtualUser:ClickButton1(Vector2.new(500, 500), 1)
-            end)
+            local targetPos = targetRoot.Position
+            local x = targetPos.X + math.cos(orbitAngle) * orbitRadius
+            local z = targetPos.Z + math.sin(orbitAngle) * orbitRadius
+            local newPos = Vector3.new(x, targetPos.Y + 2, z)
+            
+            myCharacter.HumanoidRootPart.CFrame = CFrame.new(newPos, targetPos)
+            pcall(function() VirtualUser:ClickButton1(Vector2.new(500, 500), 1) end)
         end)
         table.insert(activeConnections, orbitConnection)
-
-    -- ============================================
-    -- MODE: FEET (Stay below target)
-    -- ============================================
+    
+    -- FEET MODE
     elseif currentMode == "FEET" then
         local feetConnection = RunService.RenderStepped:Connect(function()
             if not isActive or emergencyTeleported then return end
-
             local myCharacter = LocalPlayer.Character
             if not myCharacter or not myCharacter:FindFirstChild("HumanoidRootPart") then return end
-
             if not selectedTarget or not selectedTarget.Character then return end
             local targetRoot = selectedTarget.Character:FindFirstChild("HumanoidRootPart")
             if not targetRoot then return end
-
-            local targetPosition = targetRoot.Position
-            local newPosition = Vector3.new(targetPosition.X, targetPosition.Y - feetDistance, targetPosition.Z)
-
-            -- Teleport and face target
-            myCharacter.HumanoidRootPart.CFrame = CFrame.new(newPosition, targetPosition)
-
-            -- Auto attack
-            pcall(function()
-                VirtualUser:ClickButton1(Vector2.new(500, 500), 1)
-            end)
+            
+            local targetPos = targetRoot.Position
+            local newPos = Vector3.new(targetPos.X, targetPos.Y - feetDistance, targetPos.Z)
+            
+            myCharacter.HumanoidRootPart.CFrame = CFrame.new(newPos, targetPos)
+            pcall(function() VirtualUser:ClickButton1(Vector2.new(500, 500), 1) end)
         end)
         table.insert(activeConnections, feetConnection)
     end
-
-    -- ============================================
-    -- COMMON CONNECTIONS FOR ALL MODES
-    -- ============================================
-
-    -- Keep target frozen
+    
+    -- Freeze target
     local freezeConnection = RunService.Stepped:Connect(function()
         if isActive and not emergencyTeleported and selectedTarget and selectedTarget.Character then
             local targetHumanoid = selectedTarget.Character:FindFirstChild("Humanoid")
             if targetHumanoid then
-                if targetHumanoid.WalkSpeed ~= 0 then
-                    targetHumanoid.WalkSpeed = 0
-                end
-                if targetHumanoid.JumpPower ~= 0 then
-                    targetHumanoid.JumpPower = 0
-                end
+                if targetHumanoid.WalkSpeed ~= 0 then targetHumanoid.WalkSpeed = 0 end
+                if targetHumanoid.JumpPower ~= 0 then targetHumanoid.JumpPower = 0 end
             end
         end
     end)
     table.insert(activeConnections, freezeConnection)
-
-    -- Keep player speed boosted
+    
+    -- Speed preserver
     local speedConnection = RunService.Heartbeat:Connect(function()
-        if isActive and not emergencyTeleported then
-            local myCharacter = LocalPlayer.Character
-            if myCharacter then
-                local myHumanoid = myCharacter:FindFirstChild("Humanoid")
-                if myHumanoid then
-                    if myHumanoid.WalkSpeed ~= 180 then
-                        myHumanoid.WalkSpeed = 180
-                    end
-                    if myHumanoid.JumpPower ~= 120 then
-                        myHumanoid.JumpPower = 120
-                    end
-                end
+        if isActive and not emergencyTeleported and LocalPlayer.Character then
+            local myHumanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+            if myHumanoid then
+                if myHumanoid.WalkSpeed ~= 180 then myHumanoid.WalkSpeed = 180 end
+                if myHumanoid.JumpPower ~= 120 then myHumanoid.JumpPower = 120 end
             end
         end
     end)
     table.insert(activeConnections, speedConnection)
-
-    -- LED blinking animation
+    
+    -- LED animation
     local blinkConnection = RunService.Heartbeat:Connect(function()
         if isActive and not emergencyTeleported and led then
             local brightness = (math.sin(tick() * 15) + 1) / 2
@@ -1244,22 +991,56 @@ local function activateMode()
 end
 
 -- ============================================
--- SECTION 12: UI CREATION (ULTRA MODERN)
+-- SECTION 12: SLIDER FUNCTIONS
 -- ============================================
 
--- Create main ScreenGui
+local function setupSlider(sliderBg, sliderFill, valueLabel, minVal, maxVal, callback, initialVal)
+    local dragging = false
+    local function updateSlider(input)
+        local pos = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
+        sliderFill.Size = UDim2.new(pos, 0, 1, 0)
+        local val = minVal + (maxVal - minVal) * pos
+        valueLabel.Text = string.format("%.1f", val)
+        callback(val)
+    end
+    
+    sliderBg.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            updateSlider(input)
+        end
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then updateSlider(input) end
+    end)
+    
+    local initPos = (initialVal - minVal) / (maxVal - minVal)
+    sliderFill.Size = UDim2.new(initPos, 0, 1, 0)
+    valueLabel.Text = string.format("%.1f", initialVal)
+    callback(initialVal)
+end
+
+-- ============================================
+-- SECTION 13: UI CREATION (ULTRA MODERN)
+-- ============================================
+
 screenGui = Instance.new("ScreenGui")
 screenGui.Name = "RedzBrocoli_TSB_Ultimate"
 screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 screenGui.Parent = CoreGui
 
--- Main Frame (Glass morphism)
+-- Main Frame (Glassmorphism)
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 550, 0, 800)
-mainFrame.Position = UDim2.new(0.5, -275, 0.5, -400)
+mainFrame.Size = UDim2.new(0, 580, 0, 800)
+mainFrame.Position = UDim2.new(0.5, -290, 0.5, -400)
 mainFrame.BackgroundColor3 = Color3.fromRGB(10, 5, 25)
-mainFrame.BackgroundTransparency = 0.08
+mainFrame.BackgroundTransparency = 0.06
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
 mainFrame.Active = true
@@ -1267,10 +1048,10 @@ mainFrame.Draggable = true
 mainFrame.Parent = screenGui
 
 local mainCorner = Instance.new("UICorner")
-mainCorner.CornerRadius = UDim.new(0, 25)
+mainCorner.CornerRadius = UDim.new(0, 28)
 mainCorner.Parent = mainFrame
 
--- Animated gradient border
+-- Animated Gradient Border
 local borderGradient = Instance.new("UIGradient")
 borderGradient.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 200)),
@@ -1282,22 +1063,22 @@ borderGradient.Color = ColorSequence.new{
 borderGradient.Rotation = 45
 
 local glowBorder = Instance.new("Frame")
-glowBorder.Size = UDim2.new(1, 6, 1, 6)
-glowBorder.Position = UDim2.new(0, -3, 0, -3)
+glowBorder.Size = UDim2.new(1, 8, 1, 8)
+glowBorder.Position = UDim2.new(0, -4, 0, -4)
 glowBorder.BackgroundColor3 = Color3.fromRGB(255, 0, 200)
-glowBorder.BackgroundTransparency = 0.7
+glowBorder.BackgroundTransparency = 0.75
 glowBorder.BorderSizePixel = 0
 glowBorder.Parent = mainFrame
 
 local glowCorner = Instance.new("UICorner")
-glowCorner.CornerRadius = UDim.new(0, 28)
+glowCorner.CornerRadius = UDim.new(0, 32)
 glowCorner.Parent = glowBorder
 
--- Animate border rotation
+-- Border animation
 task.spawn(function()
     local angle = 0
     while screenGui and screenGui.Parent do
-        angle = angle + 1
+        angle = angle + 0.8
         borderGradient.Rotation = angle % 360
         task.wait(0.05)
     end
@@ -1305,13 +1086,13 @@ end)
 
 -- Header Section
 local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 80)
+header.Size = UDim2.new(1, 0, 0, 90)
 header.BackgroundColor3 = Color3.fromRGB(20, 10, 50)
-header.BackgroundTransparency = 0.15
+header.BackgroundTransparency = 0.12
 header.Parent = mainFrame
 
 local headerCorner = Instance.new("UICorner")
-headerCorner.CornerRadius = UDim.new(0, 25)
+headerCorner.CornerRadius = UDim.new(0, 28)
 headerCorner.Parent = header
 
 local headerGradient = Instance.new("UIGradient")
@@ -1322,21 +1103,30 @@ headerGradient.Color = ColorSequence.new{
 }
 headerGradient.Parent = header
 
--- Lightning icon
+-- Lightning icon with animation
 local lightningIcon = Instance.new("TextLabel")
-lightningIcon.Size = UDim2.new(0, 50, 0, 50)
-lightningIcon.Position = UDim2.new(0, 15, 0, 15)
+lightningIcon.Size = UDim2.new(0, 55, 0, 55)
+lightningIcon.Position = UDim2.new(0, 18, 0, 18)
 lightningIcon.Text = "⚡"
 lightningIcon.TextColor3 = Color3.fromRGB(255, 255, 100)
-lightningIcon.TextSize = 40
+lightningIcon.TextSize = 45
 lightningIcon.Font = Enum.Font.GothamBlack
 lightningIcon.BackgroundTransparency = 1
 lightningIcon.Parent = header
 
+task.spawn(function()
+    while screenGui and screenGui.Parent do
+        lightningIcon.TextColor3 = Color3.fromRGB(255, 255, 100)
+        task.wait(0.1)
+        lightningIcon.TextColor3 = Color3.fromRGB(255, 200, 50)
+        task.wait(0.1)
+    end
+end)
+
 -- Title
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -80, 0, 40)
-titleLabel.Position = UDim2.new(0, 75, 0, 10)
+titleLabel.Size = UDim2.new(1, -90, 0, 45)
+titleLabel.Position = UDim2.new(0, 85, 0, 12)
 titleLabel.Text = "REDZBROCOLI"
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleLabel.TextScaled = true
@@ -1346,8 +1136,8 @@ titleLabel.Parent = header
 
 -- Subtitle
 local subtitleLabel = Instance.new("TextLabel")
-subtitleLabel.Size = UDim2.new(1, -80, 0, 25)
-subtitleLabel.Position = UDim2.new(0, 75, 0, 50)
+subtitleLabel.Size = UDim2.new(1, -90, 0, 25)
+subtitleLabel.Position = UDim2.new(0, 85, 0, 55)
 subtitleLabel.Text = "THE STRONGEST BATTLEGROUNDS ULTIMATE + ESP"
 subtitleLabel.TextColor3 = Color3.fromRGB(200, 150, 255)
 subtitleLabel.TextSize = 12
@@ -1357,8 +1147,8 @@ subtitleLabel.Parent = header
 
 -- Scroll Panel
 local scrollPanel = Instance.new("ScrollingFrame")
-scrollPanel.Size = UDim2.new(1, -20, 1, -100)
-scrollPanel.Position = UDim2.new(0, 10, 0, 90)
+scrollPanel.Size = UDim2.new(1, -25, 1, -110)
+scrollPanel.Position = UDim2.new(0, 12, 0, 100)
 scrollPanel.BackgroundTransparency = 1
 scrollPanel.BorderSizePixel = 0
 scrollPanel.ScrollBarThickness = 5
@@ -1366,64 +1156,64 @@ scrollPanel.ScrollBarImageColor3 = Color3.fromRGB(200, 0, 255)
 scrollPanel.Parent = mainFrame
 
 local scrollLayout = Instance.new("UIListLayout")
-scrollLayout.Padding = UDim.new(0, 15)
+scrollLayout.Padding = UDim.new(0, 18)
 scrollLayout.SortOrder = Enum.SortOrder.LayoutOrder
 scrollLayout.Parent = scrollPanel
 
 scrollLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    scrollPanel.CanvasSize = UDim2.new(0, 0, 0, scrollLayout.AbsoluteContentSize.Y + 20)
+    scrollPanel.CanvasSize = UDim2.new(0, 0, 0, scrollLayout.AbsoluteContentSize.Y + 30)
 end)
 
 -- ============================================
--- SECTION 13: TARGET CARD (Modern Glass)
+-- SECTION 14: TARGET CARD
 -- ============================================
 
 local targetCard = Instance.new("Frame")
-targetCard.Size = UDim2.new(1, 0, 0, 290)
+targetCard.Size = UDim2.new(1, 0, 0, 300)
 targetCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-targetCard.BackgroundTransparency = 0.15
+targetCard.BackgroundTransparency = 0.12
 targetCard.BorderSizePixel = 0
 targetCard.Parent = scrollPanel
 
 local targetCardCorner = Instance.new("UICorner")
-targetCardCorner.CornerRadius = UDim.new(0, 18)
+targetCardCorner.CornerRadius = UDim.new(0, 20)
 targetCardCorner.Parent = targetCard
 
-local targetGlow = Instance.new("Frame")
-targetGlow.Size = UDim2.new(1, 4, 1, 4)
-targetGlow.Position = UDim2.new(0, -2, 0, -2)
-targetGlow.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
-targetGlow.BackgroundTransparency = 0.85
-targetGlow.BorderSizePixel = 1
-targetGlow.BorderColor3 = Color3.fromRGB(0, 200, 255)
-targetGlow.Parent = targetCard
+local targetCardGlow = Instance.new("Frame")
+targetCardGlow.Size = UDim2.new(1, 6, 1, 6)
+targetCardGlow.Position = UDim2.new(0, -3, 0, -3)
+targetCardGlow.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
+targetCardGlow.BackgroundTransparency = 0.8
+targetCardGlow.BorderSizePixel = 1
+targetCardGlow.BorderColor3 = Color3.fromRGB(0, 200, 255)
+targetCardGlow.Parent = targetCard
 
-local targetGlowCorner = Instance.new("UICorner")
-targetGlowCorner.CornerRadius = UDim.new(0, 20)
-targetGlowCorner.Parent = targetGlow
+local targetCardGlowCorner = Instance.new("UICorner")
+targetCardGlowCorner.CornerRadius = UDim.new(0, 22)
+targetCardGlowCorner.Parent = targetCardGlow
 
 local targetIcon = Instance.new("TextLabel")
-targetIcon.Size = UDim2.new(0, 45, 0, 45)
-targetIcon.Position = UDim2.new(0, 15, 0, 12)
+targetIcon.Size = UDim2.new(0, 50, 0, 50)
+targetIcon.Position = UDim2.new(0, 18, 0, 15)
 targetIcon.Text = "🎯"
-targetIcon.TextSize = 28
+targetIcon.TextSize = 32
 targetIcon.BackgroundTransparency = 1
 targetIcon.Parent = targetCard
 
 local targetTitleLabel = Instance.new("TextLabel")
-targetTitleLabel.Size = UDim2.new(1, -120, 0, 30)
-targetTitleLabel.Position = UDim2.new(0, 70, 0, 15)
+targetTitleLabel.Size = UDim2.new(1, -130, 0, 32)
+targetTitleLabel.Position = UDim2.new(0, 80, 0, 18)
 targetTitleLabel.Text = "SELECT TARGET"
 targetTitleLabel.TextColor3 = Color3.fromRGB(0, 220, 255)
 targetTitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 targetTitleLabel.Font = Enum.Font.GothamBold
-targetTitleLabel.TextSize = 16
+targetTitleLabel.TextSize = 17
 targetTitleLabel.BackgroundTransparency = 1
 targetTitleLabel.Parent = targetCard
 
 refreshBtn = Instance.new("TextButton")
-refreshBtn.Size = UDim2.new(0, 90, 0, 32)
-refreshBtn.Position = UDim2.new(1, -105, 0, 15)
+refreshBtn.Size = UDim2.new(0, 95, 0, 34)
+refreshBtn.Position = UDim2.new(1, -110, 0, 18)
 refreshBtn.Text = "⟳ REFRESH"
 refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 refreshBtn.TextSize = 11
@@ -1437,8 +1227,8 @@ refreshCorner.CornerRadius = UDim.new(0, 12)
 refreshCorner.Parent = refreshBtn
 
 playerCountLabel = Instance.new("TextLabel")
-playerCountLabel.Size = UDim2.new(1, -150, 0, 20)
-playerCountLabel.Position = UDim2.new(0, 70, 0, 48)
+playerCountLabel.Size = UDim2.new(1, -160, 0, 22)
+playerCountLabel.Position = UDim2.new(0, 80, 0, 52)
 playerCountLabel.Text = "Loading players..."
 playerCountLabel.TextColor3 = Color3.fromRGB(180, 180, 220)
 playerCountLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -1448,76 +1238,88 @@ playerCountLabel.BackgroundTransparency = 1
 playerCountLabel.Parent = targetCard
 
 targetScroll = Instance.new("ScrollingFrame")
-targetScroll.Size = UDim2.new(1, -20, 0, 200)
-targetScroll.Position = UDim2.new(0, 10, 0, 75)
+targetScroll.Size = UDim2.new(1, -25, 0, 210)
+targetScroll.Position = UDim2.new(0, 12, 0, 80)
 targetScroll.BackgroundColor3 = Color3.fromRGB(15, 5, 40)
-targetScroll.BackgroundTransparency = 0.4
+targetScroll.BackgroundTransparency = 0.35
 targetScroll.BorderSizePixel = 0
 targetScroll.ScrollBarThickness = 6
 targetScroll.ScrollBarImageColor3 = Color3.fromRGB(0, 200, 255)
 targetScroll.Parent = targetCard
 
 local targetScrollCorner = Instance.new("UICorner")
-targetScrollCorner.CornerRadius = UDim.new(0, 12)
+targetScrollCorner.CornerRadius = UDim.new(0, 14)
 targetScrollCorner.Parent = targetScroll
 
 local targetListLayout = Instance.new("UIListLayout")
-targetListLayout.Padding = UDim.new(0, 8)
+targetListLayout.Padding = UDim.new(0, 10)
 targetListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 targetListLayout.Parent = targetScroll
 
 targetListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    targetScroll.CanvasSize = UDim2.new(0, 0, 0, targetListLayout.AbsoluteContentSize.Y + 10)
+    targetScroll.CanvasSize = UDim2.new(0, 0, 0, targetListLayout.AbsoluteContentSize.Y + 15)
 end)
 
 -- ============================================
--- SECTION 14: ESP CARD
+-- SECTION 15: ESP CARD
 -- ============================================
 
 local espCard = Instance.new("Frame")
-espCard.Size = UDim2.new(1, 0, 0, 110)
+espCard.Size = UDim2.new(1, 0, 0, 120)
 espCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-espCard.BackgroundTransparency = 0.15
+espCard.BackgroundTransparency = 0.12
 espCard.BorderSizePixel = 0
 espCard.Parent = scrollPanel
 
-local espCorner = Instance.new("UICorner")
-espCorner.CornerRadius = UDim.new(0, 18)
-espCorner.Parent = espCard
+local espCardCorner = Instance.new("UICorner")
+espCardCorner.CornerRadius = UDim.new(0, 20)
+espCardCorner.Parent = espCard
+
+local espCardGlow = Instance.new("Frame")
+espCardGlow.Size = UDim2.new(1, 6, 1, 6)
+espCardGlow.Position = UDim2.new(0, -3, 0, -3)
+espCardGlow.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+espCardGlow.BackgroundTransparency = 0.8
+espCardGlow.BorderSizePixel = 1
+espCardGlow.BorderColor3 = Color3.fromRGB(0, 255, 100)
+espCardGlow.Parent = espCard
+
+local espCardGlowCorner = Instance.new("UICorner")
+espCardGlowCorner.CornerRadius = UDim.new(0, 22)
+espCardGlowCorner.Parent = espCardGlow
 
 local espIcon = Instance.new("TextLabel")
-espIcon.Size = UDim2.new(0, 45, 0, 45)
-espIcon.Position = UDim2.new(0, 15, 0, 12)
+espIcon.Size = UDim2.new(0, 50, 0, 50)
+espIcon.Position = UDim2.new(0, 18, 0, 15)
 espIcon.Text = "👁️"
-espIcon.TextSize = 32
+espIcon.TextSize = 34
 espIcon.BackgroundTransparency = 1
 espIcon.Parent = espCard
 
 local espTitle = Instance.new("TextLabel")
-espTitle.Size = UDim2.new(1, -70, 0, 28)
-espTitle.Position = UDim2.new(0, 70, 0, 12)
+espTitle.Size = UDim2.new(1, -130, 0, 32)
+espTitle.Position = UDim2.new(0, 80, 0, 18)
 espTitle.Text = "ESP FULL (Tekan E)"
-espTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
+espTitle.TextColor3 = Color3.fromRGB(0, 255, 150)
 espTitle.TextXAlignment = Enum.TextXAlignment.Left
 espTitle.Font = Enum.Font.GothamBold
-espTitle.TextSize = 16
+espTitle.TextSize = 17
 espTitle.BackgroundTransparency = 1
 espTitle.Parent = espCard
 
 local espDesc = Instance.new("TextLabel")
-espDesc.Size = UDim2.new(1, -70, 0, 20)
-espDesc.Position = UDim2.new(0, 70, 0, 42)
-espDesc.Text = "Highlight semua pemain + Health bar + Persentase darah"
+espDesc.Size = UDim2.new(1, -130, 0, 22)
+espDesc.Position = UDim2.new(0, 80, 0, 52)
+espDesc.Text = "Display Name + Health Bar + Persentase + Warna sesuai HP"
 espDesc.TextColor3 = Color3.fromRGB(180, 180, 220)
 espDesc.TextXAlignment = Enum.TextXAlignment.Left
 espDesc.TextSize = 10
-espDesc.Font = Enum.Font.Gotham
 espDesc.BackgroundTransparency = 1
 espDesc.Parent = espCard
 
 espBtn = Instance.new("TextButton")
-espBtn.Size = UDim2.new(0, 160, 0, 38)
-espBtn.Position = UDim2.new(0, 70, 0, 65)
+espBtn.Size = UDim2.new(0, 170, 0, 38)
+espBtn.Position = UDim2.new(0, 80, 0, 75)
 espBtn.Text = "👁️ ESP ON"
 espBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 espBtn.TextSize = 12
@@ -1527,197 +1329,213 @@ espBtn.BorderSizePixel = 0
 espBtn.Parent = espCard
 
 local espBtnCorner = Instance.new("UICorner")
-espBtnCorner.CornerRadius = UDim.new(0, 12)
+espBtnCorner.CornerRadius = UDim.new(0, 14)
 espBtnCorner.Parent = espBtn
 
 espStatus = Instance.new("TextLabel")
 espStatus.Size = UDim2.new(1, -150, 0, 20)
-espStatus.Position = UDim2.new(0, 70, 0, 85)
-espStatus.Text = "ACTIVE - Full Highlight + Health Bar"
+espStatus.Position = UDim2.new(0, 80, 0, 95)
+espStatus.Text = "ACTIVE - Display Name + Health Bar"
 espStatus.TextColor3 = Color3.fromRGB(0, 255, 200)
 espStatus.TextXAlignment = Enum.TextXAlignment.Left
 espStatus.TextSize = 11
-espStatus.Font = Enum.Font.Gotham
 espStatus.BackgroundTransparency = 1
 espStatus.Parent = espCard
 
 -- ============================================
--- SECTION 15: GODMODE CARD
+-- SECTION 16: GODMODE CARD
 -- ============================================
 
-local godModeCard = Instance.new("Frame")
-godModeCard.Size = UDim2.new(1, 0, 0, 110)
-godModeCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-godModeCard.BackgroundTransparency = 0.15
-godModeCard.BorderSizePixel = 0
-godModeCard.Parent = scrollPanel
+local godCard = Instance.new("Frame")
+godCard.Size = UDim2.new(1, 0, 0, 120)
+godCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
+godCard.BackgroundTransparency = 0.12
+godCard.BorderSizePixel = 0
+godCard.Parent = scrollPanel
 
-local godModeCorner = Instance.new("UICorner")
-godModeCorner.CornerRadius = UDim.new(0, 18)
-godModeCorner.Parent = godModeCard
+local godCardCorner = Instance.new("UICorner")
+godCardCorner.CornerRadius = UDim.new(0, 20)
+godCardCorner.Parent = godCard
 
-local godModeIcon = Instance.new("TextLabel")
-godModeIcon.Size = UDim2.new(0, 45, 0, 45)
-godModeIcon.Position = UDim2.new(0, 15, 0, 12)
-godModeIcon.Text = "🛡️"
-godModeIcon.TextSize = 32
-godModeIcon.BackgroundTransparency = 1
-godModeIcon.Parent = godModeCard
+local godCardGlow = Instance.new("Frame")
+godCardGlow.Size = UDim2.new(1, 6, 1, 6)
+godCardGlow.Position = UDim2.new(0, -3, 0, -3)
+godCardGlow.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
+godCardGlow.BackgroundTransparency = 0.8
+godCardGlow.BorderSizePixel = 1
+godCardGlow.BorderColor3 = Color3.fromRGB(100, 100, 255)
+godCardGlow.Parent = godCard
 
-local godModeTitle = Instance.new("TextLabel")
-godModeTitle.Size = UDim2.new(1, -70, 0, 28)
-godModeTitle.Position = UDim2.new(0, 70, 0, 12)
-godModeTitle.Text = "GODMODE (Tekan V)"
-godModeTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
-godModeTitle.TextXAlignment = Enum.TextXAlignment.Left
-godModeTitle.Font = Enum.Font.GothamBold
-godModeTitle.TextSize = 16
-godModeTitle.BackgroundTransparency = 1
-godModeTitle.Parent = godModeCard
+local godCardGlowCorner = Instance.new("UICorner")
+godCardGlowCorner.CornerRadius = UDim.new(0, 22)
+godCardGlowCorner.Parent = godCardGlow
 
-local godModeDesc = Instance.new("TextLabel")
-godModeDesc.Size = UDim2.new(1, -70, 0, 20)
-godModeDesc.Position = UDim2.new(0, 70, 0, 42)
-godModeDesc.Text = "Perisai biru | Tidak bisa kena damage | Anti ragdoll"
-godModeDesc.TextColor3 = Color3.fromRGB(180, 180, 220)
-godModeDesc.TextXAlignment = Enum.TextXAlignment.Left
-godModeDesc.TextSize = 10
-godModeDesc.Font = Enum.Font.Gotham
-godModeDesc.BackgroundTransparency = 1
-godModeDesc.Parent = godModeCard
+local godIcon = Instance.new("TextLabel")
+godIcon.Size = UDim2.new(0, 50, 0, 50)
+godIcon.Position = UDim2.new(0, 18, 0, 15)
+godIcon.Text = "🛡️"
+godIcon.TextSize = 34
+godIcon.BackgroundTransparency = 1
+godIcon.Parent = godCard
+
+local godTitle = Instance.new("TextLabel")
+godTitle.Size = UDim2.new(1, -130, 0, 32)
+godTitle.Position = UDim2.new(0, 80, 0, 18)
+godTitle.Text = "GODMODE (Tekan V)"
+godTitle.TextColor3 = Color3.fromRGB(100, 200, 255)
+godTitle.TextXAlignment = Enum.TextXAlignment.Left
+godTitle.Font = Enum.Font.GothamBold
+godTitle.TextSize = 17
+godTitle.BackgroundTransparency = 1
+godTitle.Parent = godCard
+
+local godDesc = Instance.new("TextLabel")
+godDesc.Size = UDim2.new(1, -130, 0, 22)
+godDesc.Position = UDim2.new(0, 80, 0, 52)
+godDesc.Text = "Perisai biru | Particle Effect | Anti ragdoll | Invincible"
+godDesc.TextColor3 = Color3.fromRGB(180, 180, 220)
+godDesc.TextXAlignment = Enum.TextXAlignment.Left
+godDesc.TextSize = 10
+godDesc.BackgroundTransparency = 1
+godDesc.Parent = godCard
 
 godModeBtn = Instance.new("TextButton")
-godModeBtn.Size = UDim2.new(0, 160, 0, 38)
-godModeBtn.Position = UDim2.new(0, 70, 0, 65)
+godModeBtn.Size = UDim2.new(0, 170, 0, 38)
+godModeBtn.Position = UDim2.new(0, 80, 0, 75)
 godModeBtn.Text = "🛡️ GODMODE OFF"
 godModeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 godModeBtn.TextSize = 12
 godModeBtn.Font = Enum.Font.GothamBold
 godModeBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 150)
 godModeBtn.BorderSizePixel = 0
-godModeBtn.Parent = godModeCard
+godModeBtn.Parent = godCard
 
-local godModeBtnCorner = Instance.new("UICorner")
-godModeBtnCorner.CornerRadius = UDim.new(0, 12)
-godModeBtnCorner.Parent = godModeBtn
+local godBtnCorner = Instance.new("UICorner")
+godBtnCorner.CornerRadius = UDim.new(0, 14)
+godBtnCorner.Parent = godModeBtn
 
 godModeStatus = Instance.new("TextLabel")
 godModeStatus.Size = UDim2.new(1, -150, 0, 20)
-godModeStatus.Position = UDim2.new(0, 70, 0, 85)
+godModeStatus.Position = UDim2.new(0, 80, 0, 95)
 godModeStatus.Text = "○ INACTIVE ○"
 godModeStatus.TextColor3 = Color3.fromRGB(200, 150, 200)
 godModeStatus.TextXAlignment = Enum.TextXAlignment.Left
 godModeStatus.TextSize = 11
-godModeStatus.Font = Enum.Font.Gotham
 godModeStatus.BackgroundTransparency = 1
-godModeStatus.Parent = godModeCard
+godModeStatus.Parent = godCard
 
 -- ============================================
--- SECTION 16: MODE SELECTION CARD
+-- SECTION 17: MODE SELECTION CARD
 -- ============================================
 
 local modeCard = Instance.new("Frame")
-modeCard.Size = UDim2.new(1, 0, 0, 85)
+modeCard.Size = UDim2.new(1, 0, 0, 100)
 modeCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-modeCard.BackgroundTransparency = 0.15
+modeCard.BackgroundTransparency = 0.12
 modeCard.BorderSizePixel = 0
 modeCard.Parent = scrollPanel
 
-local modeCorner = Instance.new("UICorner")
-modeCorner.CornerRadius = UDim.new(0, 18)
-modeCorner.Parent = modeCard
+local modeCardCorner = Instance.new("UICorner")
+modeCardCorner.CornerRadius = UDim.new(0, 20)
+modeCardCorner.Parent = modeCard
 
 local modeIcon = Instance.new("TextLabel")
-modeIcon.Size = UDim2.new(0, 45, 0, 45)
-modeIcon.Position = UDim2.new(0, 15, 0, 12)
+modeIcon.Size = UDim2.new(0, 50, 0, 50)
+modeIcon.Position = UDim2.new(0, 18, 0, 15)
 modeIcon.Text = "⚡"
-modeIcon.TextSize = 32
+modeIcon.TextSize = 34
 modeIcon.BackgroundTransparency = 1
 modeIcon.Parent = modeCard
 
 local modeTitle = Instance.new("TextLabel")
-modeTitle.Size = UDim2.new(1, -70, 0, 28)
-modeTitle.Position = UDim2.new(0, 70, 0, 12)
+modeTitle.Size = UDim2.new(1, -130, 0, 32)
+modeTitle.Position = UDim2.new(0, 80, 0, 18)
 modeTitle.Text = "SELECT MODE"
 modeTitle.TextColor3 = Color3.fromRGB(255, 150, 100)
 modeTitle.TextXAlignment = Enum.TextXAlignment.Left
 modeTitle.Font = Enum.Font.GothamBold
-modeTitle.TextSize = 16
+modeTitle.TextSize = 17
 modeTitle.BackgroundTransparency = 1
 modeTitle.Parent = modeCard
 
+local modeButtonFrame = Instance.new("Frame")
+modeButtonFrame.Size = UDim2.new(1, -30, 0, 45)
+modeButtonFrame.Position = UDim2.new(0, 15, 0, 55)
+modeButtonFrame.BackgroundTransparency = 1
+modeButtonFrame.Parent = modeCard
+
 soloModeBtn = Instance.new("TextButton")
-soloModeBtn.Size = UDim2.new(0, 135, 0, 40)
-soloModeBtn.Position = UDim2.new(0, 15, 0, 45)
+soloModeBtn.Size = UDim2.new(0, 145, 0, 42)
+soloModeBtn.Position = UDim2.new(0, 0, 0, 0)
 soloModeBtn.Text = "🔴 SOLO HACK"
 soloModeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 soloModeBtn.TextSize = 12
 soloModeBtn.Font = Enum.Font.GothamBold
 soloModeBtn.BackgroundColor3 = Color3.fromRGB(200, 30, 100)
 soloModeBtn.BorderSizePixel = 0
-soloModeBtn.Parent = modeCard
+soloModeBtn.Parent = modeButtonFrame
 
-local soloModeCorner = Instance.new("UICorner")
-soloModeCorner.CornerRadius = UDim.new(0, 12)
-soloModeCorner.Parent = soloModeBtn
+local soloBtnCorner = Instance.new("UICorner")
+soloBtnCorner.CornerRadius = UDim.new(0, 14)
+soloBtnCorner.Parent = soloModeBtn
 
 orbitModeBtn = Instance.new("TextButton")
-orbitModeBtn.Size = UDim2.new(0, 135, 0, 40)
-orbitModeBtn.Position = UDim2.new(0, 165, 0, 45)
+orbitModeBtn.Size = UDim2.new(0, 145, 0, 42)
+orbitModeBtn.Position = UDim2.new(0, 160, 0, 0)
 orbitModeBtn.Text = "🔄 ORBIT"
 orbitModeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 orbitModeBtn.TextSize = 12
 orbitModeBtn.Font = Enum.Font.GothamBold
 orbitModeBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
 orbitModeBtn.BorderSizePixel = 0
-orbitModeBtn.Parent = modeCard
+orbitModeBtn.Parent = modeButtonFrame
 
-local orbitModeCorner = Instance.new("UICorner")
-orbitModeCorner.CornerRadius = UDim.new(0, 12)
-orbitModeCorner.Parent = orbitModeBtn
+local orbitBtnCorner = Instance.new("UICorner")
+orbitBtnCorner.CornerRadius = UDim.new(0, 14)
+orbitBtnCorner.Parent = orbitModeBtn
 
 feetModeBtn = Instance.new("TextButton")
-feetModeBtn.Size = UDim2.new(0, 135, 0, 40)
-feetModeBtn.Position = UDim2.new(1, -150, 0, 45)
+feetModeBtn.Size = UDim2.new(0, 145, 0, 42)
+feetModeBtn.Position = UDim2.new(1, -145, 0, 0)
 feetModeBtn.Text = "🦶 FEET"
 feetModeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 feetModeBtn.TextSize = 12
 feetModeBtn.Font = Enum.Font.GothamBold
 feetModeBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 100)
 feetModeBtn.BorderSizePixel = 0
-feetModeBtn.Parent = modeCard
+feetModeBtn.Parent = modeButtonFrame
 
-local feetModeCorner = Instance.new("UICorner")
-feetModeCorner.CornerRadius = UDim.new(0, 12)
-feetModeCorner.Parent = feetModeBtn
+local feetBtnCorner = Instance.new("UICorner")
+feetBtnCorner.CornerRadius = UDim.new(0, 14)
+feetBtnCorner.Parent = feetModeBtn
 
 -- ============================================
--- SECTION 17: SOLO SLIDER CARD
+-- SECTION 18: SOLO SLIDER CARD
 -- ============================================
 
 soloSliderCard = Instance.new("Frame")
-soloSliderCard.Size = UDim2.new(1, 0, 0, 85)
+soloSliderCard.Size = UDim2.new(1, 0, 0, 100)
 soloSliderCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-soloSliderCard.BackgroundTransparency = 0.15
+soloSliderCard.BackgroundTransparency = 0.12
 soloSliderCard.BorderSizePixel = 0
 soloSliderCard.Parent = scrollPanel
 soloSliderCard.Visible = true
 
 local soloSliderCorner = Instance.new("UICorner")
-soloSliderCorner.CornerRadius = UDim.new(0, 18)
+soloSliderCorner.CornerRadius = UDim.new(0, 20)
 soloSliderCorner.Parent = soloSliderCard
 
 local soloSliderIcon = Instance.new("TextLabel")
-soloSliderIcon.Size = UDim2.new(0, 45, 0, 45)
-soloSliderIcon.Position = UDim2.new(0, 15, 0, 12)
+soloSliderIcon.Size = UDim2.new(0, 50, 0, 50)
+soloSliderIcon.Position = UDim2.new(0, 18, 0, 15)
 soloSliderIcon.Text = "📍"
-soloSliderIcon.TextSize = 28
+soloSliderIcon.TextSize = 32
 soloSliderIcon.BackgroundTransparency = 1
 soloSliderIcon.Parent = soloSliderCard
 
 local soloSliderTitle = Instance.new("TextLabel")
-soloSliderTitle.Size = UDim2.new(1, -70, 0, 28)
-soloSliderTitle.Position = UDim2.new(0, 70, 0, 12)
+soloSliderTitle.Size = UDim2.new(1, -130, 0, 32)
+soloSliderTitle.Position = UDim2.new(0, 80, 0, 18)
 soloSliderTitle.Text = "TELEPORT RADIUS (M)"
 soloSliderTitle.TextColor3 = Color3.fromRGB(255, 100, 200)
 soloSliderTitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -1727,8 +1545,8 @@ soloSliderTitle.BackgroundTransparency = 1
 soloSliderTitle.Parent = soloSliderCard
 
 local soloSliderBg = Instance.new("Frame")
-soloSliderBg.Size = UDim2.new(1, -100, 0, 5)
-soloSliderBg.Position = UDim2.new(0, 15, 0, 52)
+soloSliderBg.Size = UDim2.new(1, -110, 0, 6)
+soloSliderBg.Position = UDim2.new(0, 15, 0, 62)
 soloSliderBg.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
 soloSliderBg.BorderSizePixel = 0
 soloSliderBg.Parent = soloSliderCard
@@ -1740,42 +1558,42 @@ soloSliderFill.BorderSizePixel = 0
 soloSliderFill.Parent = soloSliderBg
 
 local soloSliderValue = Instance.new("TextLabel")
-soloSliderValue.Size = UDim2.new(0, 50, 0, 25)
-soloSliderValue.Position = UDim2.new(1, -65, 0, 47)
+soloSliderValue.Size = UDim2.new(0, 60, 0, 28)
+soloSliderValue.Position = UDim2.new(1, -75, 0, 58)
 soloSliderValue.Text = "5.0"
 soloSliderValue.TextColor3 = Color3.fromRGB(255, 100, 200)
-soloSliderValue.TextSize = 13
+soloSliderValue.TextSize = 14
 soloSliderValue.Font = Enum.Font.GothamBold
 soloSliderValue.BackgroundTransparency = 1
 soloSliderValue.Parent = soloSliderCard
 
 -- ============================================
--- SECTION 18: ORBIT SLIDERS CARD
+-- SECTION 19: ORBIT SLIDERS CARD
 -- ============================================
 
 orbitSliderCard = Instance.new("Frame")
-orbitSliderCard.Size = UDim2.new(1, 0, 0, 130)
+orbitSliderCard.Size = UDim2.new(1, 0, 0, 150)
 orbitSliderCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-orbitSliderCard.BackgroundTransparency = 0.15
+orbitSliderCard.BackgroundTransparency = 0.12
 orbitSliderCard.BorderSizePixel = 0
 orbitSliderCard.Parent = scrollPanel
 orbitSliderCard.Visible = false
 
 local orbitSliderCorner = Instance.new("UICorner")
-orbitSliderCorner.CornerRadius = UDim.new(0, 18)
+orbitSliderCorner.CornerRadius = UDim.new(0, 20)
 orbitSliderCorner.Parent = orbitSliderCard
 
 local orbitSliderIcon = Instance.new("TextLabel")
-orbitSliderIcon.Size = UDim2.new(0, 45, 0, 45)
-orbitSliderIcon.Position = UDim2.new(0, 15, 0, 12)
+orbitSliderIcon.Size = UDim2.new(0, 50, 0, 50)
+orbitSliderIcon.Position = UDim2.new(0, 18, 0, 15)
 orbitSliderIcon.Text = "🔄"
-orbitSliderIcon.TextSize = 28
+orbitSliderIcon.TextSize = 32
 orbitSliderIcon.BackgroundTransparency = 1
 orbitSliderIcon.Parent = orbitSliderCard
 
 local orbitSliderTitle = Instance.new("TextLabel")
-orbitSliderTitle.Size = UDim2.new(1, -70, 0, 28)
-orbitSliderTitle.Position = UDim2.new(0, 70, 0, 12)
+orbitSliderTitle.Size = UDim2.new(1, -130, 0, 32)
+orbitSliderTitle.Position = UDim2.new(0, 80, 0, 18)
 orbitSliderTitle.Text = "ORBIT SETTINGS"
 orbitSliderTitle.TextColor3 = Color3.fromRGB(150, 100, 255)
 orbitSliderTitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -1786,17 +1604,17 @@ orbitSliderTitle.Parent = orbitSliderCard
 
 -- Radius Slider
 local orbitRadiusLabel = Instance.new("TextLabel")
-orbitRadiusLabel.Size = UDim2.new(0, 80, 0, 20)
-orbitRadiusLabel.Position = UDim2.new(0, 15, 0, 50)
+orbitRadiusLabel.Size = UDim2.new(0, 100, 0, 24)
+orbitRadiusLabel.Position = UDim2.new(0, 15, 0, 60)
 orbitRadiusLabel.Text = "Jarak: 5.0"
 orbitRadiusLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
-orbitRadiusLabel.TextSize = 11
+orbitRadiusLabel.TextSize = 12
 orbitRadiusLabel.BackgroundTransparency = 1
 orbitRadiusLabel.Parent = orbitSliderCard
 
 local orbitRadiusBg = Instance.new("Frame")
-orbitRadiusBg.Size = UDim2.new(1, -180, 0, 5)
-orbitRadiusBg.Position = UDim2.new(0, 100, 0, 53)
+orbitRadiusBg.Size = UDim2.new(1, -180, 0, 6)
+orbitRadiusBg.Position = UDim2.new(0, 105, 0, 63)
 orbitRadiusBg.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
 orbitRadiusBg.BorderSizePixel = 0
 orbitRadiusBg.Parent = orbitSliderCard
@@ -1808,28 +1626,28 @@ orbitRadiusFill.BorderSizePixel = 0
 orbitRadiusFill.Parent = orbitRadiusBg
 
 local orbitRadiusValue = Instance.new("TextLabel")
-orbitRadiusValue.Size = UDim2.new(0, 50, 0, 20)
-orbitRadiusValue.Position = UDim2.new(1, -55, 0, 48)
+orbitRadiusValue.Size = UDim2.new(0, 60, 0, 24)
+orbitRadiusValue.Position = UDim2.new(1, -70, 0, 59)
 orbitRadiusValue.Text = "5.0"
 orbitRadiusValue.TextColor3 = Color3.fromRGB(150, 100, 255)
-orbitRadiusValue.TextSize = 11
+orbitRadiusValue.TextSize = 12
 orbitRadiusValue.Font = Enum.Font.GothamBold
 orbitRadiusValue.BackgroundTransparency = 1
 orbitRadiusValue.Parent = orbitSliderCard
 
 -- Speed Slider
 local orbitSpeedLabel = Instance.new("TextLabel")
-orbitSpeedLabel.Size = UDim2.new(0, 80, 0, 20)
-orbitSpeedLabel.Position = UDim2.new(0, 15, 0, 85)
+orbitSpeedLabel.Size = UDim2.new(0, 100, 0, 24)
+orbitSpeedLabel.Position = UDim2.new(0, 15, 0, 100)
 orbitSpeedLabel.Text = "Kecepatan: 1.0"
 orbitSpeedLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
-orbitSpeedLabel.TextSize = 11
+orbitSpeedLabel.TextSize = 12
 orbitSpeedLabel.BackgroundTransparency = 1
 orbitSpeedLabel.Parent = orbitSliderCard
 
 local orbitSpeedBg = Instance.new("Frame")
-orbitSpeedBg.Size = UDim2.new(1, -180, 0, 5)
-orbitSpeedBg.Position = UDim2.new(0, 100, 0, 88)
+orbitSpeedBg.Size = UDim2.new(1, -180, 0, 6)
+orbitSpeedBg.Position = UDim2.new(0, 105, 0, 103)
 orbitSpeedBg.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
 orbitSpeedBg.BorderSizePixel = 0
 orbitSpeedBg.Parent = orbitSliderCard
@@ -1841,42 +1659,42 @@ orbitSpeedFill.BorderSizePixel = 0
 orbitSpeedFill.Parent = orbitSpeedBg
 
 local orbitSpeedValue = Instance.new("TextLabel")
-orbitSpeedValue.Size = UDim2.new(0, 50, 0, 20)
-orbitSpeedValue.Position = UDim2.new(1, -55, 0, 83)
+orbitSpeedValue.Size = UDim2.new(0, 60, 0, 24)
+orbitSpeedValue.Position = UDim2.new(1, -70, 0, 99)
 orbitSpeedValue.Text = "1.0"
 orbitSpeedValue.TextColor3 = Color3.fromRGB(150, 100, 255)
-orbitSpeedValue.TextSize = 11
+orbitSpeedValue.TextSize = 12
 orbitSpeedValue.Font = Enum.Font.GothamBold
 orbitSpeedValue.BackgroundTransparency = 1
 orbitSpeedValue.Parent = orbitSliderCard
 
 -- ============================================
--- SECTION 19: FEET SLIDER CARD
+-- SECTION 20: FEET SLIDER CARD
 -- ============================================
 
 feetSliderCard = Instance.new("Frame")
-feetSliderCard.Size = UDim2.new(1, 0, 0, 85)
+feetSliderCard.Size = UDim2.new(1, 0, 0, 100)
 feetSliderCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-feetSliderCard.BackgroundTransparency = 0.15
+feetSliderCard.BackgroundTransparency = 0.12
 feetSliderCard.BorderSizePixel = 0
 feetSliderCard.Parent = scrollPanel
 feetSliderCard.Visible = false
 
 local feetSliderCorner = Instance.new("UICorner")
-feetSliderCorner.CornerRadius = UDim.new(0, 18)
+feetSliderCorner.CornerRadius = UDim.new(0, 20)
 feetSliderCorner.Parent = feetSliderCard
 
 local feetSliderIcon = Instance.new("TextLabel")
-feetSliderIcon.Size = UDim2.new(0, 45, 0, 45)
-feetSliderIcon.Position = UDim2.new(0, 15, 0, 12)
+feetSliderIcon.Size = UDim2.new(0, 50, 0, 50)
+feetSliderIcon.Position = UDim2.new(0, 18, 0, 15)
 feetSliderIcon.Text = "🦶"
-feetSliderIcon.TextSize = 28
+feetSliderIcon.TextSize = 32
 feetSliderIcon.BackgroundTransparency = 1
 feetSliderIcon.Parent = feetSliderCard
 
 local feetSliderTitle = Instance.new("TextLabel")
-feetSliderTitle.Size = UDim2.new(1, -70, 0, 28)
-feetSliderTitle.Position = UDim2.new(0, 70, 0, 12)
+feetSliderTitle.Size = UDim2.new(1, -130, 0, 32)
+feetSliderTitle.Position = UDim2.new(0, 80, 0, 18)
 feetSliderTitle.Text = "JARAK DI BAWAH TARGET (Studs)"
 feetSliderTitle.TextColor3 = Color3.fromRGB(100, 200, 150)
 feetSliderTitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -1886,8 +1704,8 @@ feetSliderTitle.BackgroundTransparency = 1
 feetSliderTitle.Parent = feetSliderCard
 
 local feetSliderBg = Instance.new("Frame")
-feetSliderBg.Size = UDim2.new(1, -100, 0, 5)
-feetSliderBg.Position = UDim2.new(0, 15, 0, 52)
+feetSliderBg.Size = UDim2.new(1, -110, 0, 6)
+feetSliderBg.Position = UDim2.new(0, 15, 0, 62)
 feetSliderBg.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
 feetSliderBg.BorderSizePixel = 0
 feetSliderBg.Parent = feetSliderCard
@@ -1899,63 +1717,75 @@ feetSliderFill.BorderSizePixel = 0
 feetSliderFill.Parent = feetSliderBg
 
 local feetSliderValue = Instance.new("TextLabel")
-feetSliderValue.Size = UDim2.new(0, 50, 0, 25)
-feetSliderValue.Position = UDim2.new(1, -65, 0, 47)
+feetSliderValue.Size = UDim2.new(0, 60, 0, 28)
+feetSliderValue.Position = UDim2.new(1, -75, 0, 58)
 feetSliderValue.Text = "3.0"
 feetSliderValue.TextColor3 = Color3.fromRGB(100, 200, 150)
-feetSliderValue.TextSize = 13
+feetSliderValue.TextSize = 14
 feetSliderValue.Font = Enum.Font.GothamBold
 feetSliderValue.BackgroundTransparency = 1
 feetSliderValue.Parent = feetSliderCard
 
 -- ============================================
--- SECTION 20: EMERGENCY CARD
+-- SECTION 21: EMERGENCY CARD
 -- ============================================
 
 local emergencyCard = Instance.new("Frame")
-emergencyCard.Size = UDim2.new(1, 0, 0, 90)
+emergencyCard.Size = UDim2.new(1, 0, 0, 110)
 emergencyCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-emergencyCard.BackgroundTransparency = 0.15
+emergencyCard.BackgroundTransparency = 0.12
 emergencyCard.BorderSizePixel = 0
 emergencyCard.Parent = scrollPanel
 
 local emergencyCorner = Instance.new("UICorner")
-emergencyCorner.CornerRadius = UDim.new(0, 18)
+emergencyCorner.CornerRadius = UDim.new(0, 20)
 emergencyCorner.Parent = emergencyCard
 
+local emergencyCardGlow = Instance.new("Frame")
+emergencyCardGlow.Size = UDim2.new(1, 6, 1, 6)
+emergencyCardGlow.Position = UDim2.new(0, -3, 0, -3)
+emergencyCardGlow.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+emergencyCardGlow.BackgroundTransparency = 0.8
+emergencyCardGlow.BorderSizePixel = 1
+emergencyCardGlow.BorderColor3 = Color3.fromRGB(255, 50, 50)
+emergencyCardGlow.Parent = emergencyCard
+
+local emergencyCardGlowCorner = Instance.new("UICorner")
+emergencyCardGlowCorner.CornerRadius = UDim.new(0, 22)
+emergencyCardGlowCorner.Parent = emergencyCardGlow
+
 local emergencyIcon = Instance.new("TextLabel")
-emergencyIcon.Size = UDim2.new(0, 45, 0, 45)
-emergencyIcon.Position = UDim2.new(0, 15, 0, 12)
+emergencyIcon.Size = UDim2.new(0, 50, 0, 50)
+emergencyIcon.Position = UDim2.new(0, 18, 0, 15)
 emergencyIcon.Text = "🚨"
-emergencyIcon.TextSize = 32
+emergencyIcon.TextSize = 34
 emergencyIcon.BackgroundTransparency = 1
 emergencyIcon.Parent = emergencyCard
 
 local emergencyTitle = Instance.new("TextLabel")
-emergencyTitle.Size = UDim2.new(1, -70, 0, 28)
-emergencyTitle.Position = UDim2.new(0, 70, 0, 12)
+emergencyTitle.Size = UDim2.new(1, -130, 0, 32)
+emergencyTitle.Position = UDim2.new(0, 80, 0, 18)
 emergencyTitle.Text = "EMERGENCY ESCAPE"
 emergencyTitle.TextColor3 = Color3.fromRGB(255, 100, 100)
 emergencyTitle.TextXAlignment = Enum.TextXAlignment.Left
 emergencyTitle.Font = Enum.Font.GothamBold
-emergencyTitle.TextSize = 15
+emergencyTitle.TextSize = 17
 emergencyTitle.BackgroundTransparency = 1
 emergencyTitle.Parent = emergencyCard
 
 local emergencyDesc = Instance.new("TextLabel")
-emergencyDesc.Size = UDim2.new(1, -70, 0, 20)
-emergencyDesc.Position = UDim2.new(0, 70, 0, 42)
+emergencyDesc.Size = UDim2.new(1, -130, 0, 22)
+emergencyDesc.Position = UDim2.new(0, 80, 0, 52)
 emergencyDesc.Text = "Auto teleport ke tempat aman saat HP < 25%"
 emergencyDesc.TextColor3 = Color3.fromRGB(200, 200, 255)
 emergencyDesc.TextXAlignment = Enum.TextXAlignment.Left
 emergencyDesc.TextSize = 10
-emergencyDesc.Font = Enum.Font.Gotham
 emergencyDesc.BackgroundTransparency = 1
 emergencyDesc.Parent = emergencyCard
 
 emergencyToggle = Instance.new("TextButton")
-emergencyToggle.Size = UDim2.new(0, 140, 0, 35)
-emergencyToggle.Position = UDim2.new(1, -155, 0, 45)
+emergencyToggle.Size = UDim2.new(0, 160, 0, 38)
+emergencyToggle.Position = UDim2.new(1, -175, 0, 65)
 emergencyToggle.Text = "🚨 EMERG: ON"
 emergencyToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 emergencyToggle.TextSize = 12
@@ -1964,39 +1794,38 @@ emergencyToggle.BackgroundColor3 = Color3.fromRGB(150, 0, 200)
 emergencyToggle.BorderSizePixel = 0
 emergencyToggle.Parent = emergencyCard
 
-local emergencyCorner2 = Instance.new("UICorner")
-emergencyCorner2.CornerRadius = UDim.new(0, 12)
-emergencyCorner2.Parent = emergencyToggle
+local emergencyToggleCorner = Instance.new("UICorner")
+emergencyToggleCorner.CornerRadius = UDim.new(0, 14)
+emergencyToggleCorner.Parent = emergencyToggle
 
 local emergencyStatus = Instance.new("TextLabel")
-emergencyStatus.Size = UDim2.new(0, 150, 0, 20)
-emergencyStatus.Position = UDim2.new(0, 70, 0, 70)
+emergencyStatus.Size = UDim2.new(0, 160, 0, 22)
+emergencyStatus.Position = UDim2.new(0, 80, 0, 75)
 emergencyStatus.Text = "Threshold: 25% HP"
 emergencyStatus.TextColor3 = Color3.fromRGB(255, 150, 150)
 emergencyStatus.TextXAlignment = Enum.TextXAlignment.Left
 emergencyStatus.TextSize = 11
-emergencyStatus.Font = Enum.Font.Gotham
 emergencyStatus.BackgroundTransparency = 1
 emergencyStatus.Parent = emergencyCard
 
 -- ============================================
--- SECTION 21: CONTROL BUTTONS CARD
+-- SECTION 22: CONTROL BUTTONS CARD
 -- ============================================
 
 local controlCard = Instance.new("Frame")
-controlCard.Size = UDim2.new(1, 0, 0, 75)
+controlCard.Size = UDim2.new(1, 0, 0, 85)
 controlCard.BackgroundColor3 = Color3.fromRGB(30, 15, 65)
-controlCard.BackgroundTransparency = 0.15
+controlCard.BackgroundTransparency = 0.12
 controlCard.BorderSizePixel = 0
 controlCard.Parent = scrollPanel
 
-local controlCorner = Instance.new("UICorner")
-controlCorner.CornerRadius = UDim.new(0, 18)
-controlCorner.Parent = controlCard
+local controlCardCorner = Instance.new("UICorner")
+controlCardCorner.CornerRadius = UDim.new(0, 20)
+controlCardCorner.Parent = controlCard
 
 activateBtn = Instance.new("TextButton")
-activateBtn.Size = UDim2.new(0, 190, 0, 44)
-activateBtn.Position = UDim2.new(0, 20, 0, 16)
+activateBtn.Size = UDim2.new(0, 200, 0, 46)
+activateBtn.Position = UDim2.new(0, 20, 0, 20)
 activateBtn.Text = "⚡ ACTIVATE"
 activateBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 activateBtn.TextSize = 14
@@ -2006,12 +1835,12 @@ activateBtn.BorderSizePixel = 0
 activateBtn.Parent = controlCard
 
 local activateCorner = Instance.new("UICorner")
-activateCorner.CornerRadius = UDim.new(0, 22)
+activateCorner.CornerRadius = UDim.new(0, 24)
 activateCorner.Parent = activateBtn
 
 deactivateBtn = Instance.new("TextButton")
-deactivateBtn.Size = UDim2.new(0, 190, 0, 44)
-deactivateBtn.Position = UDim2.new(1, -210, 0, 16)
+deactivateBtn.Size = UDim2.new(0, 200, 0, 46)
+deactivateBtn.Position = UDim2.new(1, -220, 0, 20)
 deactivateBtn.Text = "⚫ DEACTIVATE"
 deactivateBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 deactivateBtn.TextSize = 14
@@ -2021,16 +1850,16 @@ deactivateBtn.BorderSizePixel = 0
 deactivateBtn.Parent = controlCard
 
 local deactivateCorner = Instance.new("UICorner")
-deactivateCorner.CornerRadius = UDim.new(0, 22)
+deactivateCorner.CornerRadius = UDim.new(0, 24)
 deactivateCorner.Parent = deactivateBtn
 
 -- ============================================
--- SECTION 22: STATUS BAR
+-- SECTION 23: STATUS BAR
 -- ============================================
 
 led = Instance.new("Frame")
-led.Size = UDim2.new(0, 14, 0, 14)
-led.Position = UDim2.new(0, 20, 1, -25)
+led.Size = UDim2.new(0, 16, 0, 16)
+led.Position = UDim2.new(0, 22, 1, -28)
 led.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 led.BorderSizePixel = 0
 led.Parent = mainFrame
@@ -2039,7 +1868,7 @@ local ledCorner = Instance.new("UICorner")
 ledCorner.CornerRadius = UDim.new(1, 0)
 ledCorner.Parent = led
 
--- LED breathing animation when inactive
+-- LED animasi
 task.spawn(function()
     while screenGui and screenGui.Parent do
         if not isActive and not godModeEnabled and led then
@@ -2051,8 +1880,8 @@ task.spawn(function()
 end)
 
 statusText = Instance.new("TextLabel")
-statusText.Size = UDim2.new(1, -100, 0, 20)
-statusText.Position = UDim2.new(0, 50, 1, -25)
+statusText.Size = UDim2.new(1, -110, 0, 22)
+statusText.Position = UDim2.new(0, 55, 1, -27)
 statusText.Text = "MODE: INACTIVE | TARGET: NONE"
 statusText.TextColor3 = Color3.fromRGB(200, 100, 255)
 statusText.TextXAlignment = Enum.TextXAlignment.Left
@@ -2062,8 +1891,8 @@ statusText.BackgroundTransparency = 1
 statusText.Parent = mainFrame
 
 local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 32, 0, 32)
-closeBtn.Position = UDim2.new(1, -42, 0, 20)
+closeBtn.Size = UDim2.new(0, 34, 0, 34)
+closeBtn.Position = UDim2.new(1, -48, 0, 22)
 closeBtn.Text = "✕"
 closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeBtn.TextSize = 18
@@ -2078,47 +1907,9 @@ closeCorner.CornerRadius = UDim.new(1, 0)
 closeCorner.Parent = closeBtn
 
 -- ============================================
--- SECTION 23: SLIDER SETUP FUNCTIONS
+-- SECTION 24: SLIDER SETUP
 -- ============================================
 
-local function setupSlider(sliderBg, sliderFill, valueLabel, minValue, maxValue, callback, initialValue)
-    local dragging = false
-
-    local function updateSlider(input)
-        local pos = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
-        sliderFill.Size = UDim2.new(pos, 0, 1, 0)
-        local value = minValue + (maxValue - minValue) * pos
-        valueLabel.Text = string.format("%.1f", value)
-        callback(value)
-    end
-
-    sliderBg.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            updateSlider(input)
-        end
-    end)
-
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            updateSlider(input)
-        end
-    end)
-
-    -- Set initial position
-    local initialPos = (initialValue - minValue) / (maxValue - minValue)
-    sliderFill.Size = UDim2.new(initialPos, 0, 1, 0)
-    valueLabel.Text = string.format("%.1f", initialValue)
-    callback(initialValue)
-end
-
--- Setup all sliders
 setupSlider(soloSliderBg, soloSliderFill, soloSliderValue, soloRadiusMin, soloRadiusMax, function(value)
     soloRadius = value
 end, 5)
@@ -2135,14 +1926,13 @@ end, 1)
 
 setupSlider(feetSliderBg, feetSliderFill, feetSliderValue, feetDistanceMin, feetDistanceMax, function(value)
     feetDistance = value
-    feetSliderTitle.Text = "JARAK DI BAWAH TARGET (Studs): " .. string.format("%.1f", value)
+    feetSliderTitle.Text = "JARAK DI BAWAH TARGET: " .. string.format("%.1f", value) .. " Studs"
 end, 3)
 
 -- ============================================
--- SECTION 24: BUTTON EVENT HANDLERS
+-- SECTION 25: BUTTON EVENT HANDLERS
 -- ============================================
 
--- Mode buttons
 soloModeBtn.MouseButton1Click:Connect(function()
     currentMode = "SOLO"
     soloSliderCard.Visible = true
@@ -2151,11 +1941,7 @@ soloModeBtn.MouseButton1Click:Connect(function()
     soloModeBtn.BackgroundColor3 = Color3.fromRGB(200, 30, 100)
     orbitModeBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
     feetModeBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 100)
-    if isActive then
-        activateMode()
-    else
-        statusText.Text = "MODE: SOLO | TARGET: " .. (selectedTarget and selectedTarget.Name or "NONE")
-    end
+    if isActive then activateMode() else statusText.Text = "MODE: SOLO | TARGET: " .. (selectedTarget and selectedTarget.DisplayName or "NONE") end
 end)
 
 orbitModeBtn.MouseButton1Click:Connect(function()
@@ -2166,11 +1952,7 @@ orbitModeBtn.MouseButton1Click:Connect(function()
     soloModeBtn.BackgroundColor3 = Color3.fromRGB(150, 20, 80)
     orbitModeBtn.BackgroundColor3 = Color3.fromRGB(150, 100, 255)
     feetModeBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 100)
-    if isActive then
-        activateMode()
-    else
-        statusText.Text = "MODE: ORBIT | TARGET: " .. (selectedTarget and selectedTarget.Name or "NONE")
-    end
+    if isActive then activateMode() else statusText.Text = "MODE: ORBIT | TARGET: " .. (selectedTarget and selectedTarget.DisplayName or "NONE") end
 end)
 
 feetModeBtn.MouseButton1Click:Connect(function()
@@ -2181,21 +1963,15 @@ feetModeBtn.MouseButton1Click:Connect(function()
     soloModeBtn.BackgroundColor3 = Color3.fromRGB(150, 20, 80)
     orbitModeBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
     feetModeBtn.BackgroundColor3 = Color3.fromRGB(80, 200, 130)
-    if isActive then
-        activateMode()
-    else
-        statusText.Text = "MODE: FEET | TARGET: " .. (selectedTarget and selectedTarget.Name or "NONE")
-    end
+    if isActive then activateMode() else statusText.Text = "MODE: FEET | TARGET: " .. (selectedTarget and selectedTarget.DisplayName or "NONE") end
 end)
 
--- Control buttons
 activateBtn.MouseButton1Click:Connect(activateMode)
 deactivateBtn.MouseButton1Click:Connect(cleanup)
 refreshBtn.MouseButton1Click:Connect(updateTargetList)
 godModeBtn.MouseButton1Click:Connect(toggleGodMode)
 espBtn.MouseButton1Click:Connect(toggleESP)
 
--- Emergency toggle
 emergencyToggle.MouseButton1Click:Connect(function()
     emergencyEnabled = not emergencyEnabled
     emergencyToggle.Text = emergencyEnabled and "🚨 EMERG: ON" or "🚨 EMERG: OFF"
@@ -2203,46 +1979,39 @@ emergencyToggle.MouseButton1Click:Connect(function()
     emergencyStatus.Text = emergencyEnabled and "Threshold: 25% HP" or "Emergency: DISABLED"
 end)
 
--- Close button
 closeBtn.MouseButton1Click:Connect(function()
     cleanup()
-    if godModeEnabled then
-        removeGodMode()
-    end
+    if godModeEnabled then removeGodMode() end
     removeHighlight()
     removeAllESP()
     starContainer:Destroy()
     thunderContainer:Destroy()
     screenGui:Destroy()
-    
-    -- Restore original lighting
     Lighting.Brightness = originalBrightness
     Lighting.Ambient = originalAmbient
     Lighting.ClockTime = originalClockTime
     Lighting.FogEnd = originalFogEnd
     Lighting.GlobalShadows = originalGlobalShadows
+    Lighting.ColorShift_Top = originalColorShiftTop
+    Lighting.ColorShift_Bottom = originalColorShiftBottom
 end)
 
 -- ============================================
--- SECTION 25: INITIALIZATION & EVENT HANDLERS
+-- SECTION 26: INITIALIZATION & EVENTS
 -- ============================================
 
--- Initialize target list
 updateTargetList()
 
--- Initialize ESP (ON by default)
+-- Auto start ESP
 task.spawn(function()
     task.wait(0.5)
-    toggleESP()  -- Aktifkan ESP otomatis
+    toggleESP()
 end)
 
--- Handle player join/leave
 Players.PlayerAdded:Connect(function(player)
     updateTargetList()
-    if espEnabled then
-        task.wait(0.5)
-        createESPForPlayer(player)
-    end
+    task.wait(0.3)
+    if espEnabled then createESP(player) end
 end)
 
 Players.PlayerRemoving:Connect(function(player)
@@ -2252,18 +2021,14 @@ Players.PlayerRemoving:Connect(function(player)
         statusText.Text = "MODE: " .. currentMode .. " | TARGET: NONE"
     end
     if espHighlights[player] then
-        if espHighlights[player].highlight then
-            espHighlights[player].highlight:Destroy()
-        end
-        if espHighlights[player].billboard then
-            espHighlights[player].billboard:Destroy()
-        end
+        if espHighlights[player].highlight then pcall(function() espHighlights[player].highlight:Destroy() end) end
+        if espHighlights[player].billboard then pcall(function() espHighlights[player].billboard:Destroy() end) end
         espHighlights[player] = nil
     end
     updateTargetList()
 end)
 
--- Keyboard shortcuts
+-- KEYBOARD SHORTCUTS
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     
@@ -2292,19 +2057,14 @@ end)
 -- Character respawn handler
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
     task.wait(0.3)
-    
     if isActive and newCharacter and newCharacter:FindFirstChild("Humanoid") then
-        local humanoid = newCharacter.Humanoid
-        humanoid.WalkSpeed = 180
-        humanoid.JumpPower = 120
+        newCharacter.Humanoid.WalkSpeed = 180
+        newCharacter.Humanoid.JumpPower = 120
     end
-    
     if godModeEnabled then
         task.wait(0.1)
         applyGodMode()
     end
-    
-    -- Re-apply highlight to target if exists
     if selectedTarget and selectedTarget.Character then
         task.wait(0.2)
         applyHighlightToTarget(selectedTarget)
@@ -2316,7 +2076,6 @@ for _, player in ipairs(Players:GetPlayers()) do
     if player ~= LocalPlayer then
         player.CharacterAdded:Connect(function()
             task.wait(0.3)
-            
             if isActive and selectedTarget == player and player.Character then
                 local targetHumanoid = player.Character:FindFirstChild("Humanoid")
                 if targetHumanoid then
@@ -2324,15 +2083,13 @@ for _, player in ipairs(Players:GetPlayers()) do
                     targetHumanoid.JumpPower = 0
                 end
             end
-            
             if selectedTarget == player then
                 task.wait(0.2)
                 applyHighlightToTarget(player)
             end
-            
             if espEnabled then
                 task.wait(0.3)
-                createESPForPlayer(player)
+                createESP(player)
             end
         end)
     end
@@ -2351,54 +2108,54 @@ task.spawn(function()
 end)
 
 -- ============================================
--- SECTION 26: CONSOLE OUTPUT (SUCCESS MESSAGE)
+-- SECTION 27: CONSOLE OUTPUT
 -- ============================================
 
 print("")
-print("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗")
-print("║                                                                                                                       ║")
-print("║   ⚡⚡⚡ REDZBROCOLI // THE STRONGEST BATTLEGROUNDS ULTIMATE v5.0 - ESP FULL - LOADED SUCCESSFULLY ⚡⚡⚡               ║")
-print("║                                                                                                                       ║")
-print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
-print("║                                                                                                                       ║")
-print("║   ✨ ULTRA MODERN GUI WITH EFFECTS:                                                                                  ║")
-print("║      ⭐ 150+ Twinkling stars in background                                                                            ║")
-print("║      ⚡ Random lightning strikes every 8-20 seconds                                                                   ║")
-print("║      🌈 Animated rainbow gradient border                                                                             ║")
-print("║      🔮 Glass morphism design                                                                                        ║")
-print("║      👁️ ESP FULL - Highlight semua pemain + Health bar + Persentase darah (Warna sesuai HP)                         ║")
-print("║                                                                                                                       ║")
-print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
-print("║                                                                                                                       ║")
-print("║   🎮 AVAILABLE FEATURES:                                                                                             ║")
-print("║      ✅ SOLO HACK - Random teleport around target (Radius slider 2-12)                                               ║")
-print("║      ✅ ORBIT - Circle around target (Distance 3-12, Speed 0.3-3)                                                    ║")
-print("║      ✅ FEET - Stay below target (Vertical distance 1-10)                                                            ║")
-print("║      ✅ GODMODE - Blue ForceField shield + Anti ragdoll + Invincible (Press V)                                       ║")
-print("║      ✅ ESP FULL - Highlight semua pemain + Health bar + Persentase darah (Press E)                                  ║")
-print("║      ✅ EMERGENCY ESCAPE - Auto teleport to safe location when HP < 25% (Toggleable)                                ║")
-print("║      ✅ Target Highlight - Purple outline on selected target                                                         ║")
-print("║      ✅ Auto Attack - Automatically attacks target while in mode                                                     ║")
-print("║      ✅ Auto Refresh - Target list updates automatically                                                             ║")
-print("║                                                                                                                       ║")
-print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
-print("║                                                                                                                       ║")
-print("║   📌 KEYBOARD SHORTCUTS:                                                                                             ║")
-print("║      INSERT = Activate selected mode                                                                                 ║")
-print("║      DELETE = Deactivate all modes                                                                                   ║")
-print("║      V = Toggle Godmode (Blue Shield)                                                                                ║")
-print("║      E = Toggle ESP FULL (Highlight + Health Bar)                                                                    ║")
-print("║                                                                                                                       ║")
-print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
-print("║                                                                                                                       ║")
-print("║   🎯 HOW TO USE:                                                                                                     ║")
-print("║      1. Click on a player name in the target list                                                                    ║")
-print("║      2. Select one of the three modes (SOLO/ORBIT/FEET)                                                              ║")
-print("║      3. Adjust the slider for your mode (radius/distance/speed)                                                     ║")
-print("║      4. Press INSERT or click ACTIVATE to start                                                                      ║")
-print("║      5. Press V to enable Godmode (Blue shield appears)                                                              ║")
-print("║      6. Press E to toggle ESP (Highlight + Health bar semua pemain)                                                  ║")
-print("║      7. Press DELETE or click DEACTIVATE to stop                                                                     ║")
-print("║                                                                                                                       ║")
-print("╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝")
+print("╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗")
+print("║                                                                                                                                                                   ║")
+print("║   ⚡⚡⚡ REDZBROCOLI // THE STRONGEST BATTLEGROUNDS ULTIMATE v7.0 - ULTRA MODERN - LOADED SUCCESSFULLY ⚡⚡⚡                                                       ║")
+print("║                                                                                                                                                                   ║")
+print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
+print("║                                                                                                                                                                   ║")
+print("║   ✨ ULTRA MODERN GUI WITH EFFECTS:                                                                                                                               ║")
+print("║      ⭐ 200+ Twinkling stars in background                                                                                                                        ║")
+print("║      ⚡ Random lightning strikes every 8-20 seconds                                                                                                               ║")
+print("║      🌈 Animated rainbow gradient border                                                                                                                          ║")
+print("║      🔮 Glass morphism design + Neon glow effects                                                                                                                 ║")
+print("║      👁️ ESP FULL - Display Name + Health Bar + Persentase Darah + Warna sesuai HP                                                                                ║")
+print("║                                                                                                                                                                   ║")
+print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
+print("║                                                                                                                                                                   ║")
+print("║   🎮 AVAILABLE FEATURES:                                                                                                                                          ║")
+print("║      ✅ SOLO HACK - Random teleport around target (Radius slider 2-12)                                                                                            ║")
+print("║      ✅ ORBIT - Circle around target (Distance 3-12, Speed 0.3-3)                                                                                                 ║")
+print("║      ✅ FEET - Stay below target (Vertical distance 1-10)                                                                                                         ║")
+print("║      ✅ GODMODE - Blue ForceField shield + Particle Effect + Anti ragdoll + Invincible (Press V)                                                                  ║")
+print("║      ✅ ESP FULL - Display Name + Health Bar + Persentase Darah (Press E)                                                                                         ║")
+print("║      ✅ EMERGENCY ESCAPE - Auto teleport to safe location when HP < 25% (Toggleable)                                                                             ║")
+print("║      ✅ Target Highlight - Neon purple outline on selected target                                                                                                 ║")
+print("║      ✅ Auto Attack - Automatically attacks target while in mode                                                                                                  ║")
+print("║      ✅ Auto Refresh - Target list updates automatically                                                                                                          ║")
+print("║                                                                                                                                                                   ║")
+print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
+print("║                                                                                                                                                                   ║")
+print("║   📌 KEYBOARD SHORTCUTS:                                                                                                                                          ║")
+print("║      INSERT = Activate selected mode                                                                                                                              ║")
+print("║      DELETE = Deactivate all modes                                                                                                                                ║")
+print("║      V = Toggle Godmode (Blue Shield + Particle Effect)                                                                                                           ║")
+print("║      E = Toggle ESP FULL (Display Name + Health Bar + Persentase)                                                                                                 ║")
+print("║                                                                                                                                                                   ║")
+print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
+print("║                                                                                                                                                                   ║")
+print("║   🎯 HOW TO USE:                                                                                                                                                  ║")
+print("║      1. Click on a player's DISPLAY NAME in the target list                                                                                                       ║")
+print("║      2. Select one of the three modes (SOLO/ORBIT/FEET)                                                                                                           ║")
+print("║      3. Adjust the slider for your mode (radius/distance/speed)                                                                                                  ║")
+print("║      4. Press INSERT or click ACTIVATE to start                                                                                                                   ║")
+print("║      5. Press V to enable Godmode (Blue shield + Particle effect appears)                                                                                         ║")
+print("║      6. Press E to toggle ESP (See all players' Display Name, Health Bar, Percentage)                                                                             ║")
+print("║      7. Press DELETE or click DEACTIVATE to stop                                                                                                                  ║")
+print("║                                                                                                                                                                   ║")
+print("╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝")
 print("")
