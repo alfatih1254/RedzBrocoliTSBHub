@@ -1,3 +1,10 @@
+-- ========== [ REDZBROCCOLI - COMPLETE EDITION ] ==========
+-- Author: raditt x indonet
+-- Features: Combat (Solo/Orbit/Feet) | ESP | Chams | Speed | Noclip | Infinite Jump
+--           Teleport to Target | Godmode | Emergency High Ground TP (auto at 25% health)
+--           Anti-Ragdoll | Modern GUI 3000x (Glassmorphism + Particles + Toast)
+-- ===========================================================
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -9,6 +16,7 @@ local Stats = game:GetService("Stats")
 local LocalPlayer = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 
+-- ========== LIGHTING ENHANCEMENT ==========
 Lighting.Brightness = 2
 Lighting.Ambient = Color3.fromRGB(128, 128, 128)
 Lighting.ClockTime = 14
@@ -16,6 +24,7 @@ for _, e in ipairs(Lighting:GetChildren()) do
     if e:IsA("BloomEffect") or e:IsA("BlurEffect") then e:Destroy() end
 end
 
+-- ========== STARFIELD BACKGROUND ==========
 local starContainer = Instance.new("Folder", CoreGui)
 for i = 1, 100 do
     local s = Instance.new("Frame", starContainer)
@@ -32,6 +41,7 @@ for i = 1, 100 do
     end)
 end
 
+-- ========== HIGH GROUND DETECTION & EMERGENCY TP ==========
 local function findHighestGroundPosition()
     local character = LocalPlayer.Character
     if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
@@ -108,6 +118,7 @@ local function emergencyTeleportToHighGround()
     return false
 end
 
+-- ========== PING SYSTEM ==========
 local currentPingValue = 0
 local pingHistory = {}
 local lastPingTime = 0
@@ -141,6 +152,7 @@ local function getRealPing()
     return currentPingValue > 0 and currentPingValue or 45
 end
 
+-- ========== GLOBAL VARIABLES ==========
 local selectedTarget = nil
 local isActive = false
 local currentMode = "SOLO"
@@ -194,11 +206,38 @@ local tabContentContainers = {}
 local visualFeatureButtonList = {}
 local movementFeatureButtonList = {}
 
-local function createEmergencyPopup()
-    if emergencyPopup and emergencyPopup.Parent then
-        emergencyPopup:Destroy()
-    end
+-- ========== MODERN TOAST NOTIFICATION ==========
+local function showModernToast(message, color, duration)
+    local toast = Instance.new("Frame", screenGui or CoreGui)
+    toast.Size = UDim2.new(0, 350, 0, 50)
+    toast.Position = UDim2.new(0.5, -175, 0, -60)
+    toast.BackgroundColor3 = color or Color3.fromRGB(30, 20, 60)
+    toast.BackgroundTransparency = 0.05
+    toast.BorderSizePixel = 2
+    toast.BorderColor3 = color or Color3.fromRGB(150, 100, 255)
+    Instance.new("UICorner", toast).CornerRadius = UDim.new(0, 16)
     
+    local text = Instance.new("TextLabel", toast)
+    text.Size = UDim2.new(1, -20, 1, 0)
+    text.Position = UDim2.new(0, 10, 0, 0)
+    text.Text = message
+    text.TextColor3 = Color3.fromRGB(255, 255, 255)
+    text.TextSize = 13
+    text.Font = Enum.Font.GothamBold
+    text.BackgroundTransparency = 1
+    
+    TweenService:Create(toast, TweenInfo.new(0.3, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -175, 0, 20)}):Play()
+    task.wait(duration or 2.5)
+    TweenService:Create(toast, TweenInfo.new(0.2), {Position = UDim2.new(0.5, -175, 0, -60)}):Play()
+    task.wait(0.2)
+    toast:Destroy()
+end
+
+local showNotification = showModernToast
+
+-- ========== EMERGENCY PROTOCOL ==========
+local function createEmergencyPopup()
+    if emergencyPopup and emergencyPopup.Parent then emergencyPopup:Destroy() end
     emergencyPopup = Instance.new("Frame", CoreGui)
     emergencyPopup.Size = UDim2.new(0, 550, 0, 300)
     emergencyPopup.Position = UDim2.new(0.5, -275, 0.5, -150)
@@ -256,7 +295,6 @@ local function createEmergencyPopup()
             task.wait(0.05)
         end
     end)
-    
     return emergencyPopup, countdownLabel
 end
 
@@ -321,9 +359,7 @@ local function emergencyProtocol()
     end
     
     emergencyTeleportToHighGround()
-    
     task.wait(0.5)
-    
     if popup then popup:Destroy() end
     if blur then blur:Destroy() end
     
@@ -350,55 +386,75 @@ local function emergencyProtocol()
     completeSound.SoundId = "rbxassetid://9120386437"
     completeSound.Volume = 0.5
     completeSound:Play()
-    
     task.wait(2)
     successPopup:Destroy()
     completeSound:Destroy()
-    
     isEmergencyActive = false
 end
 
-local function showNotification(message, duration)
-    table.insert(notificationQueue, {msg = message, dur = duration or 3})
-    
-    if isNotifying then return end
-    
-    local function processQueue()
-        if #notificationQueue == 0 then
-            isNotifying = false
-            return
-        end
-        
-        isNotifying = true
-        local notif = table.remove(notificationQueue, 1)
-        
-        local notifFrame = Instance.new("Frame", screenGui)
-        notifFrame.Size = UDim2.new(0, 350, 0, 50)
-        notifFrame.Position = UDim2.new(0.5, -175, 0, 100)
-        notifFrame.BackgroundColor3 = Color3.fromRGB(20, 15, 45)
-        notifFrame.BackgroundTransparency = 0.15
-        notifFrame.BorderSizePixel = 1
-        notifFrame.BorderColor3 = Color3.fromRGB(150, 100, 255)
-        Instance.new("UICorner", notifFrame).CornerRadius = UDim.new(0, 12)
-        
-        local notifText = Instance.new("TextLabel", notifFrame)
-        notifText.Size = UDim2.new(1, -20, 1, 0)
-        notifText.Position = UDim2.new(0, 10, 0, 0)
-        notifText.Text = notif.msg
-        notifText.TextColor3 = Color3.fromRGB(255, 255, 255)
-        notifText.TextSize = 13
-        notifText.Font = Enum.Font.Gotham
-        notifText.TextWrapped = true
-        notifText.BackgroundTransparency = 1
-        
-        task.wait(notif.dur)
-        notifFrame:Destroy()
-        processQueue()
+-- ========== ANTI-RAGDOLL SYSTEM ==========
+local antiRagdollEnabled = true
+local ragdollCheckConnection = nil
+
+local function isCharacterRagdolled(character)
+    if not character then return false end
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not humanoid then return false end
+    if humanoid:GetState() == Enum.HumanoidStateType.Ragdoll then return true end
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        local orientation = hrp.Orientation
+        if math.abs(orientation.X) > 70 or math.abs(orientation.Z) > 70 then return true end
     end
-    
-    task.spawn(processQueue)
+    return false
 end
 
+local function fixRagdoll(character)
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not humanoid then return end
+    if humanoid:GetState() == Enum.HumanoidStateType.Ragdoll or humanoid:GetState() == Enum.HumanoidStateType.Dead then
+        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+        task.wait(0.05)
+        humanoid:ChangeState(Enum.HumanoidStateType.Running)
+        humanoid.PlatformStand = false
+    end
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    if hrp and antiRagdollEnabled then
+        local currentCF = hrp.CFrame
+        if math.abs(currentCF.UpVector.Y) < 0.5 then
+            local newCF = CFrame.new(currentCF.Position, currentCF.Position + Vector3.new(0, 1, 0))
+            hrp.CFrame = newCF
+        end
+    end
+end
+
+local function startAntiRagdollLoop()
+    if ragdollCheckConnection then return end
+    ragdollCheckConnection = RunService.Heartbeat:Connect(function()
+        if not antiRagdollEnabled then return end
+        local char = LocalPlayer.Character
+        if not char then return end
+        if isCharacterRagdolled(char) then
+            fixRagdoll(char)
+        end
+    end)
+end
+
+local function toggleAntiRagdoll()
+    antiRagdollEnabled = not antiRagdollEnabled
+    showModernToast("Anti-Ragdoll " .. (antiRagdollEnabled and "ACTIVATED" or "DEACTIVATED"), 
+                    antiRagdollEnabled and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1.5)
+    if not antiRagdollEnabled and ragdollCheckConnection then
+        ragdollCheckConnection:Disconnect()
+        ragdollCheckConnection = nil
+    elseif antiRagdollEnabled then
+        startAntiRagdollLoop()
+    end
+end
+
+startAntiRagdollLoop()
+
+-- ========== SPEED BOOST ==========
 local function startSpeedBoost()
     if speedLoopRunning then return end
     speedLoopRunning = true
@@ -415,6 +471,7 @@ local function startSpeedBoost()
     end)
 end
 
+-- ========== NOCLIP ==========
 local function storeOriginalCollision()
     local char = LocalPlayer.Character
     if not char then return end
@@ -456,12 +513,14 @@ local function runNoclipLoop()
     end)
 end
 
+-- ========== INFINITE JUMP ==========
 UserInputService.JumpRequest:Connect(function()
     if infiniteJump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     end
 end)
 
+-- ========== TELEPORT TO TARGET LOOP ==========
 local function runTeleportToTargetLoop()
     if teleportLoopRunning then return end
     teleportLoopRunning = true
@@ -478,6 +537,7 @@ local function runTeleportToTargetLoop()
     end)
 end
 
+-- ========== CHAMS SYSTEM ==========
 local function stopChams()
     if chamsConnection then
         chamsConnection:Disconnect()
@@ -525,13 +585,14 @@ local function toggleChams()
     chamsOn = not chamsOn
     if chamsOn then
         startChams()
-        showNotification("CHAMS X-RAY ACTIVATED" .. (isGlowEnabled and " + NEON GLOW" or ""), 2)
+        showModernToast("CHAMS X-RAY ACTIVATED" .. (isGlowEnabled and " + NEON GLOW" or ""), Color3.fromRGB(200, 100, 0), 2)
     else
         stopChams()
-        showNotification("CHAMS X-RAY DEACTIVATED", 2)
+        showModernToast("CHAMS X-RAY DEACTIVATED", Color3.fromRGB(180, 50, 50), 2)
     end
 end
 
+-- ========== COMBAT MODES ==========
 local function startSoloMode()
     if soloRunning then return end
     soloRunning = true
@@ -593,6 +654,7 @@ local function startFeetMode()
     end)
 end
 
+-- ========== GODMODE ==========
 local function toggleGodMode()
     godMode = not godMode
     if godMode then
@@ -601,7 +663,7 @@ local function toggleGodMode()
         currentFF.Name = "RedzGodMode"
         local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
         if humanoid then humanoid.BreakJointsOnDeath = false end
-        showNotification("GODMODE ACTIVATED", 2)
+        showModernToast("GODMODE ACTIVATED", Color3.fromRGB(0, 180, 80), 2)
     else
         if currentFF then currentFF:Destroy() end
         local char = LocalPlayer.Character
@@ -610,19 +672,11 @@ local function toggleGodMode()
             local humanoid = char:FindFirstChild("Humanoid")
             if humanoid then humanoid.BreakJointsOnDeath = true end
         end
-        showNotification("GODMODE DEACTIVATED", 2)
+        showModernToast("GODMODE DEACTIVATED", Color3.fromRGB(180, 50, 50), 2)
     end
 end
 
-local function getHealthColor(healthPercent)
-    if healthPercent >= 75 then return Color3.fromRGB(0, 255, 0)
-    elseif healthPercent >= 60 then return Color3.fromRGB(255, 255, 0)
-    elseif healthPercent >= 45 then return Color3.fromRGB(255, 165, 0)
-    elseif healthPercent >= 30 then return Color3.fromRGB(255, 80, 0)
-    elseif healthPercent >= 15 then return Color3.fromRGB(255, 0, 0)
-    else return Color3.fromRGB(100, 0, 0) end
-end
-
+-- ========== HEALTH COLOR GRADIENT ==========
 local function getSmoothHealthColor(healthPercent)
     if healthPercent >= 80 then
         local t = (healthPercent - 80) / 20
@@ -642,6 +696,7 @@ local function getSmoothHealthColor(healthPercent)
     end
 end
 
+-- ========== ESP SYSTEM ==========
 local function refreshESPForPlayer(player)
     if not espDataStore[player] then return end
     if not player.Character or not player.Character:FindFirstChild("Humanoid") then return end
@@ -669,13 +724,13 @@ end
 
 local function buildESPForPlayer(player)
     if player == LocalPlayer or espDataStore[player] then return end
-    if not player.Character then 
+    if not player.Character then
         local conn = player.CharacterAdded:Connect(function()
             task.wait(0.5)
             buildESPForPlayer(player)
             conn:Disconnect()
         end)
-        return 
+        return
     end
     local humanoid = player.Character:FindFirstChild("Humanoid")
     if not humanoid then return end
@@ -783,14 +838,15 @@ local function toggleESP()
             if player ~= LocalPlayer then buildESPForPlayer(player) end
         end
         startESPLoop()
-        showNotification("ESP ACTIVATED", 2)
+        showModernToast("ESP ACTIVATED", Color3.fromRGB(0, 180, 80), 2)
     else
         stopESPLoop()
         destroyAllESP()
-        showNotification("ESP DEACTIVATED", 2)
+        showModernToast("ESP DEACTIVATED", Color3.fromRGB(180, 50, 50), 2)
     end
 end
 
+-- ========== STOP ALL ACTIONS ==========
 local function stopAllActions()
     isActive = false
     soloRunning = false
@@ -805,13 +861,13 @@ local function stopAllActions()
         statusLabel.Text = "● INACTIVE"
         statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
     end
-    showNotification("All actions stopped", 1.5)
+    showModernToast("All actions stopped", Color3.fromRGB(255, 165, 0), 1.5)
 end
 
 local function activate()
     if not selectedTarget then
         if statusLabel then statusLabel.Text = "⚠️ NO TARGET" end
-        showNotification("Select target first!", 2)
+        showModernToast("Select target first!", Color3.fromRGB(255, 50, 50), 2)
         return
     end
     stopAllActions()
@@ -844,6 +900,7 @@ local function activate()
     end)
 end
 
+-- ========== REFRESH TARGET LIST ==========
 local function refreshTargetList()
     if not targetListScrollingFrame then return end
     for _, btn in pairs(targetButtonList) do pcall(function() btn:Destroy() end) end
@@ -873,7 +930,7 @@ local function refreshTargetList()
                 btn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
                 btn.BackgroundTransparency = 0.1
                 if statusLabel then statusLabel.Text = "🎯 TARGET: " .. player.DisplayName end
-                showNotification("Target set: " .. player.DisplayName, 1.5)
+                showModernToast("Target set: " .. player.DisplayName, Color3.fromRGB(0, 255, 100), 1.5)
             end)
             table.insert(targetButtonList, btn)
             y = y + 56
@@ -882,20 +939,93 @@ local function refreshTargetList()
     targetListScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, y + 10)
 end
 
-local function switchTab(tabName)
-    currentTab = tabName
-    for _, btn in pairs(tabButtonList) do
-        if btn and btn.Text == tabName then
-            btn.BackgroundColor3 = Color3.fromRGB(150, 95, 240)
-        else
-            btn.BackgroundColor3 = Color3.fromRGB(55, 42, 105)
+-- ========== MODERN TOGGLE BUTTON (SLIDER) ==========
+local function createModernToggle(parent, x, y, labelText, defaultState, callback, accentColor)
+    local container = Instance.new("Frame", parent)
+    container.Size = UDim2.new(0, 320, 0, 40)
+    container.Position = UDim2.new(0, x, 0, y)
+    container.BackgroundTransparency = 1
+    
+    local label = Instance.new("TextLabel", container)
+    label.Size = UDim2.new(0.6, 0, 1, 0)
+    label.Text = labelText
+    label.TextColor3 = Color3.fromRGB(220, 220, 255)
+    label.TextSize = 13
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.GothamBold
+    
+    local toggleBg = Instance.new("Frame", container)
+    toggleBg.Size = UDim2.new(0, 50, 0, 24)
+    toggleBg.Position = UDim2.new(1, -55, 0.5, -12)
+    toggleBg.BackgroundColor3 = defaultState and (accentColor or Color3.fromRGB(150, 80, 255)) or Color3.fromRGB(80, 70, 120)
+    toggleBg.BackgroundTransparency = 0.2
+    Instance.new("UICorner", toggleBg).CornerRadius = UDim.new(1, 0)
+    
+    local toggleKnob = Instance.new("Frame", toggleBg)
+    toggleKnob.Size = UDim2.new(0, 20, 0, 20)
+    toggleKnob.Position = defaultState and UDim2.new(1, -22, 0.5, -10) or UDim2.new(0, 2, 0.5, -10)
+    toggleKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Instance.new("UICorner", toggleKnob).CornerRadius = UDim.new(1, 0)
+    
+    local state = defaultState
+    toggleBg.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            state = not state
+            local targetPos = state and UDim2.new(1, -22, 0.5, -10) or UDim2.new(0, 2, 0.5, -10)
+            TweenService:Create(toggleKnob, TweenInfo.new(0.1), {Position = targetPos}):Play()
+            TweenService:Create(toggleBg, TweenInfo.new(0.1), {BackgroundColor3 = state and (accentColor or Color3.fromRGB(150, 80, 255)) or Color3.fromRGB(80, 70, 120)}):Play()
+            callback(state)
         end
-    end
-    for name, frame in pairs(tabContentContainers) do
-        if frame then frame.Visible = (name == tabName) end
+    end)
+    return container, toggleBg
+end
+
+-- ========== GLASS EFFECT & PARTICLE BACKGROUND ==========
+local function applyGlassEffect(frame)
+    local blur = Instance.new("Frame", frame)
+    blur.Size = UDim2.new(1, 0, 1, 0)
+    blur.BackgroundTransparency = 0.85
+    blur.BackgroundColor3 = Color3.fromRGB(15, 15, 30)
+    blur.ZIndex = 0
+    local gradient = Instance.new("UIGradient", frame)
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 255)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 0, 150)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 0, 255))
+    }
+    task.spawn(function()
+        local angle = 0
+        while frame and frame.Parent do
+            angle = angle + 0.5
+            gradient.Rotation = angle % 360
+            task.wait(0.05)
+        end
+    end)
+end
+
+local function createParticleBackground()
+    local particleContainer = Instance.new("Folder", screenGui)
+    for i = 1, 60 do
+        local particle = Instance.new("Frame", particleContainer)
+        particle.Size = UDim2.new(0, math.random(1, 3), 0, math.random(1, 3))
+        particle.Position = UDim2.new(math.random(), 0, math.random(), 0)
+        particle.BackgroundColor3 = Color3.fromHSV(math.random(), 1, 1)
+        particle.BackgroundTransparency = math.random(40, 70) / 100
+        Instance.new("UICorner", particle).CornerRadius = UDim.new(1, 0)
+        task.spawn(function()
+            while particle.Parent do
+                local newX = UDim2.new(math.random(), 0, particle.Position.Y.Scale, 0)
+                local newY = UDim2.new(particle.Position.X.Scale, 0, math.random(), 0)
+                TweenService:Create(particle, TweenInfo.new(math.random(3, 8)), {Position = newX}):Play()
+                TweenService:Create(particle, TweenInfo.new(math.random(3, 8)), {Position = newY}):Play()
+                task.wait(math.random(5, 12))
+            end
+        end)
     end
 end
 
+-- ========== CREATE SLIDER ==========
 local function createAdvancedSlider(parent, x, y, width, minVal, maxVal, defaultVal, callback, labelText, color)
     local container = Instance.new("Frame", parent)
     container.Size = UDim2.new(0, width + 40, 0, 60)
@@ -942,7 +1072,6 @@ local function createAdvancedSlider(parent, x, y, width, minVal, maxVal, default
     knob.BorderColor3 = color or Color3.fromRGB(150, 100, 255)
     
     local dragging = false
-    
     local function update(pos)
         local p = math.clamp((pos - bg.AbsolutePosition.X) / bg.AbsoluteSize.X, 0, 1)
         local val = minVal + p * (maxVal - minVal)
@@ -974,6 +1103,7 @@ local function createAdvancedSlider(parent, x, y, width, minVal, maxVal, default
     end)
 end
 
+-- ========== GUI CONSTRUCTION ==========
 screenGui = Instance.new("ScreenGui", CoreGui)
 screenGui.Name = "RedzBrocoli"
 screenGui.ResetOnSpawn = false
@@ -987,6 +1117,7 @@ mainFrame.BackgroundTransparency = 0.05
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 28)
+applyGlassEffect(mainFrame)
 
 dragHandle = Instance.new("Frame", mainFrame)
 dragHandle.Size = UDim2.new(1, 0, 0, 80)
@@ -1059,7 +1190,7 @@ Instance.new("UICorner", headerFrame).CornerRadius = UDim.new(0, 28)
 
 local titleLabel = Instance.new("TextLabel", headerFrame)
 titleLabel.Size = UDim2.new(1, 0, 1, 0)
-titleLabel.Text = "⚡ REDZBROCOLI // EMERGENCY HIGH GROUND TP EDITION ⚡"
+titleLabel.Text = "⚡ REDZBROCOLI // COMPLETE EDITION (ANTI-RAGDOLL + MODERN GUI) ⚡"
 titleLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
 titleLabel.TextScaled = true
 titleLabel.Font = Enum.Font.GothamBlack
@@ -1071,6 +1202,7 @@ infoBar.Position = UDim2.new(0, 20, 0, 85)
 infoBar.BackgroundColor3 = Color3.fromRGB(30, 20, 60)
 infoBar.BackgroundTransparency = 0.4
 Instance.new("UICorner", infoBar).CornerRadius = UDim.new(0, 16)
+applyGlassEffect(infoBar)
 
 local infoText = Instance.new("TextLabel", infoBar)
 infoText.Size = UDim2.new(1, -20, 1, 0)
@@ -1097,7 +1229,7 @@ tpHighestBtn.MouseButton1Click:Connect(function()
         local char = LocalPlayer.Character
         if char and char:FindFirstChild("HumanoidRootPart") then
             char.HumanoidRootPart.CFrame = highest
-            showNotification("Teleported to highest ground!", 2)
+            showModernToast("Teleported to highest ground!", Color3.fromRGB(0, 255, 0), 2)
         end
     end
 end)
@@ -1110,6 +1242,7 @@ leftPanel.BackgroundTransparency = 0.3
 leftPanel.BorderSizePixel = 1
 leftPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
 Instance.new("UICorner", leftPanel).CornerRadius = UDim.new(0, 18)
+applyGlassEffect(leftPanel)
 
 local tabNames = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS"}
 local tabY = 15
@@ -1124,7 +1257,17 @@ for _, tab in ipairs(tabNames) do
     btn.BackgroundColor3 = (tab == "COMBAT") and Color3.fromRGB(130, 80, 220) or Color3.fromRGB(45, 35, 85)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 14)
     btn.MouseButton1Click:Connect(function()
-        switchTab(tab)
+        currentTab = tab
+        for _, b in pairs(tabButtonList) do
+            if b and b.Text == tab then
+                TweenService:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(130, 80, 220), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+            else
+                TweenService:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 35, 85), TextColor3 = Color3.fromRGB(180, 180, 220)}):Play()
+            end
+        end
+        for name, frame in pairs(tabContentContainers) do
+            if frame then frame.Visible = (name == tab) end
+        end
     end)
     table.insert(tabButtonList, btn)
     tabY = tabY + 60
@@ -1139,7 +1282,9 @@ rightPanel.BorderSizePixel = 1
 rightPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
 rightPanel.ClipsDescendants = true
 Instance.new("UICorner", rightPanel).CornerRadius = UDim.new(0, 18)
+applyGlassEffect(rightPanel)
 
+-- COMBAT TAB
 local combatContent = Instance.new("Frame", rightPanel)
 combatContent.Size = UDim2.new(1, -40, 1, -30)
 combatContent.Position = UDim2.new(0, 20, 0, 15)
@@ -1172,6 +1317,7 @@ targetListScrollingFrame.BackgroundTransparency = 0.4
 targetListScrollingFrame.BorderSizePixel = 0
 targetListScrollingFrame.ScrollBarThickness = 6
 Instance.new("UICorner", targetListScrollingFrame).CornerRadius = UDim.new(0, 14)
+applyGlassEffect(targetListScrollingFrame)
 
 local modeLabel = Instance.new("TextLabel", combatContent)
 modeLabel.Size = UDim2.new(0, 250, 0, 30)
@@ -1206,7 +1352,7 @@ for i, m in ipairs(modeList) do
         end
         btn.BackgroundColor3 = Color3.fromRGB(220, 60, 120)
         statusLabel.Text = "📌 MODE: " .. m
-        showNotification("Mode set to: " .. m, 1.5)
+        showModernToast("Mode set to: " .. m, Color3.fromRGB(255, 150, 100), 1.5)
     end)
     table.insert(modeButtonList, btn)
     modeY = modeY + 58
@@ -1242,6 +1388,7 @@ createAdvancedSlider(combatContent, 0, 490, 280, 3, 12, orbitRadius, function(v)
 createAdvancedSlider(combatContent, 0, 560, 280, 0.3, 3, orbitSpeed, function(v) orbitSpeed = v end, "⚡ ORBIT SPEED", Color3.fromRGB(100, 255, 100))
 createAdvancedSlider(combatContent, 0, 630, 280, 1, 10, feetDist, function(v) feetDist = v end, "🦶 FEET DISTANCE", Color3.fromRGB(100, 200, 150))
 
+-- VISUALS TAB
 local visualsContent = Instance.new("Frame", rightPanel)
 visualsContent.Size = UDim2.new(1, -40, 1, -30)
 visualsContent.Position = UDim2.new(0, 20, 0, 15)
@@ -1257,71 +1404,59 @@ visTitle.TextSize = 18
 visTitle.Font = Enum.Font.GothamBold
 visTitle.BackgroundTransparency = 1
 
-local visFeatures = {
-    {name = "PLAYER ESP", var = "esp", default = true, y = 55, color = Color3.fromRGB(0, 180, 80)},
-    {name = "CHAMS X-RAY", var = "chams", default = false, y = 125, color = Color3.fromRGB(200, 100, 0)},
-    {name = "NEON GLOW", var = "glow", default = true, y = 195, color = Color3.fromRGB(0, 150, 200)},
-    {name = "RAINBOW MODE", var = "rainbow", default = false, y = 265, color = Color3.fromRGB(255, 0, 200)},
-}
-
 local currentEsp = espOn
 local currentChams = chamsOn
 local currentGlow = isGlowEnabled
 local currentRainbow = isRainbowMode
 
-for _, f in ipairs(visFeatures) do
-    local btn = Instance.new("TextButton", visualsContent)
-    btn.Size = UDim2.new(0, 340, 0, 52)
-    btn.Position = UDim2.new(0, 0, 0, f.y)
-    local state = false
-    if f.var == "esp" then state = currentEsp
-    elseif f.var == "chams" then state = currentChams
-    elseif f.var == "glow" then state = currentGlow
-    elseif f.var == "rainbow" then state = currentRainbow end
-    btn.Text = (state and "✅ " or "⬜ ") .. f.name
-    btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-    btn.TextSize = 14
-    btn.Font = Enum.Font.Gotham
-    btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 14)
-    btn.MouseButton1Click:Connect(function()
-        if f.var == "esp" then
-            currentEsp = not currentEsp
-            toggleESP()
-            btn.Text = (currentEsp and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentEsp and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentEsp and f.color or Color3.fromRGB(45, 35, 85)
-        elseif f.var == "chams" then
-            currentChams = not currentChams
-            toggleChams()
-            btn.Text = (currentChams and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentChams and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentChams and f.color or Color3.fromRGB(45, 35, 85)
-        elseif f.var == "glow" then
-            currentGlow = not currentGlow
-            isGlowEnabled = currentGlow
-            if not currentChams then
-                currentChams = true
-                toggleChams()
-            end
-            btn.Text = (currentGlow and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentGlow and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentGlow and f.color or Color3.fromRGB(45, 35, 85)
-        elseif f.var == "rainbow" then
-            currentRainbow = not currentRainbow
-            isRainbowMode = currentRainbow
-            if not currentChams then
-                currentChams = true
-                toggleChams()
-            end
-            btn.Text = (currentRainbow and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentRainbow and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentRainbow and f.color or Color3.fromRGB(45, 35, 85)
-        end
-    end)
-    table.insert(visualFeatureButtonList, btn)
-end
+local espToggleContainer, espToggleBtn = createModernToggle(visualsContent, 0, 60, "PLAYER ESP", currentEsp, function(state)
+    currentEsp = state
+    espOn = state
+    if state then
+        toggleESP()
+    else
+        espOn = false
+        stopESPLoop()
+        destroyAllESP()
+    end
+    showModernToast("ESP " .. (state and "ON" or "OFF"), state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1)
+end, Color3.fromRGB(0, 180, 80))
 
+local chamsToggleContainer, chamsToggleBtn = createModernToggle(visualsContent, 0, 120, "CHAMS X-RAY", currentChams, function(state)
+    currentChams = state
+    chamsOn = state
+    if state then
+        startChams()
+        showModernToast("CHAMS ACTIVATED" .. (isGlowEnabled and " + GLOW" or ""), Color3.fromRGB(200, 100, 0), 1.5)
+    else
+        stopChams()
+        showModernToast("CHAMS DEACTIVATED", Color3.fromRGB(180, 50, 50), 1.5)
+    end
+end, Color3.fromRGB(200, 100, 0))
+
+local glowToggleContainer, glowToggleBtn = createModernToggle(visualsContent, 0, 180, "NEON GLOW", currentGlow, function(state)
+    currentGlow = state
+    isGlowEnabled = state
+    if not currentChams then
+        currentChams = true
+        chamsOn = true
+        startChams()
+    end
+    showModernToast("NEON GLOW " .. (state and "ON" or "OFF"), state and Color3.fromRGB(0, 150, 200) or Color3.fromRGB(180, 50, 50), 1)
+end, Color3.fromRGB(0, 150, 200))
+
+local rainbowToggleContainer, rainbowToggleBtn = createModernToggle(visualsContent, 0, 240, "RAINBOW MODE", currentRainbow, function(state)
+    currentRainbow = state
+    isRainbowMode = state
+    if not currentChams then
+        currentChams = true
+        chamsOn = true
+        startChams()
+    end
+    showModernToast("RAINBOW MODE " .. (state and "ON" or "OFF"), state and Color3.fromRGB(255, 0, 200) or Color3.fromRGB(180, 50, 50), 1)
+end, Color3.fromRGB(255, 0, 200))
+
+-- MOVEMENT TAB
 local movementContent = Instance.new("Frame", rightPanel)
 movementContent.Size = UDim2.new(1, -40, 1, -30)
 movementContent.Position = UDim2.new(0, 20, 0, 15)
@@ -1337,7 +1472,7 @@ moveTitle.TextSize = 18
 moveTitle.Font = Enum.Font.GothamBold
 moveTitle.BackgroundTransparency = 1
 
-createAdvancedSlider(movementContent, 0, 60, 350, 1, 5, speedMultiplier, function(v) 
+createAdvancedSlider(movementContent, 0, 60, 350, 1, 5, speedMultiplier, function(v)
     speedMultiplier = v
     if speedHack then
         local char = LocalPlayer.Character
@@ -1347,66 +1482,39 @@ createAdvancedSlider(movementContent, 0, 60, 350, 1, 5, speedMultiplier, functio
     end
 end, "⚡ SPEED MULTIPLIER", Color3.fromRGB(100, 255, 100))
 
-local moveFeatures = {
-    {name = "SPEED HACK", var = "speed", default = false, y = 140, color = Color3.fromRGB(0, 180, 80)},
-    {name = "NO CLIP", var = "noclip", default = false, y = 205, color = Color3.fromRGB(0, 150, 200)},
-    {name = "INFINITE JUMP", var = "jump", default = false, y = 270, color = Color3.fromRGB(0, 180, 80)},
-    {name = "TELEPORT TO TARGET", var = "teleport", default = false, y = 335, color = Color3.fromRGB(200, 100, 0)},
-}
-
 local currentSpeed = speedHack
 local currentNoclip = noClip
 local currentJump = infiniteJump
 local currentTeleport = teleportTarget
 
-for _, f in ipairs(moveFeatures) do
-    local btn = Instance.new("TextButton", movementContent)
-    btn.Size = UDim2.new(0, 340, 0, 50)
-    btn.Position = UDim2.new(0, 0, 0, f.y)
-    local state = false
-    if f.var == "speed" then state = currentSpeed
-    elseif f.var == "noclip" then state = currentNoclip
-    elseif f.var == "jump" then state = currentJump
-    elseif f.var == "teleport" then state = currentTeleport end
-    btn.Text = (state and "✅ " or "⬜ ") .. f.name
-    btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-    btn.TextSize = 14
-    btn.Font = Enum.Font.Gotham
-    btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 14)
-    btn.MouseButton1Click:Connect(function()
-        if f.var == "speed" then
-            currentSpeed = not currentSpeed
-            speedHack = currentSpeed
-            if speedHack then startSpeedBoost() end
-            btn.Text = (currentSpeed and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentSpeed and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentSpeed and f.color or Color3.fromRGB(45, 35, 85)
-        elseif f.var == "noclip" then
-            currentNoclip = not currentNoclip
-            noClip = currentNoclip
-            if noClip then runNoclipLoop() else deactivateNoclip() end
-            btn.Text = (currentNoclip and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentNoclip and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentNoclip and f.color or Color3.fromRGB(45, 35, 85)
-        elseif f.var == "jump" then
-            currentJump = not currentJump
-            infiniteJump = currentJump
-            btn.Text = (currentJump and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentJump and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentJump and f.color or Color3.fromRGB(45, 35, 85)
-        elseif f.var == "teleport" then
-            currentTeleport = not currentTeleport
-            teleportTarget = currentTeleport
-            if teleportTarget then runTeleportToTargetLoop() end
-            btn.Text = (currentTeleport and "✅ " or "⬜ ") .. f.name
-            btn.TextColor3 = currentTeleport and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-            btn.BackgroundColor3 = currentTeleport and f.color or Color3.fromRGB(45, 35, 85)
-        end
-    end)
-    table.insert(movementFeatureButtonList, btn)
-end
+local speedToggleContainer, speedToggleBtn = createModernToggle(movementContent, 0, 140, "SPEED HACK", currentSpeed, function(state)
+    currentSpeed = state
+    speedHack = state
+    if state then startSpeedBoost() end
+    showModernToast("Speed Hack " .. (state and "ON" or "OFF"), state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1)
+end, Color3.fromRGB(0, 180, 80))
 
+local noclipToggleContainer, noclipToggleBtn = createModernToggle(movementContent, 0, 200, "NO CLIP", currentNoclip, function(state)
+    currentNoclip = state
+    noClip = state
+    if state then runNoclipLoop() else deactivateNoclip() end
+    showModernToast("No Clip " .. (state and "ON" or "OFF"), state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1)
+end, Color3.fromRGB(0, 150, 200))
+
+local jumpToggleContainer, jumpToggleBtn = createModernToggle(movementContent, 0, 260, "INFINITE JUMP", currentJump, function(state)
+    currentJump = state
+    infiniteJump = state
+    showModernToast("Infinite Jump " .. (state and "ON" or "OFF"), state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1)
+end, Color3.fromRGB(0, 180, 80))
+
+local teleportToggleContainer, teleportToggleBtn = createModernToggle(movementContent, 0, 320, "TELEPORT TO TARGET", currentTeleport, function(state)
+    currentTeleport = state
+    teleportTarget = state
+    if state then runTeleportToTargetLoop() end
+    showModernToast("Teleport to Target " .. (state and "ON" or "OFF"), state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1)
+end, Color3.fromRGB(200, 100, 0))
+
+-- DEFENSE TAB
 local defenseContent = Instance.new("Frame", rightPanel)
 defenseContent.Size = UDim2.new(1, -40, 1, -30)
 defenseContent.Position = UDim2.new(0, 20, 0, 15)
@@ -1452,7 +1560,7 @@ emergencyToggleBtn.MouseButton1Click:Connect(function()
     emergencyToggleBtn.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
     emergencyToggleBtn.TextColor3 = emergencyEnabled and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
     emergencyToggleBtn.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(45, 35, 85)
-    showNotification("Emergency teleport " .. (emergencyEnabled and "ENABLED" or "DISABLED"), 1.5)
+    showModernToast("Emergency teleport " .. (emergencyEnabled and "ENABLED" or "DISABLED"), emergencyEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0), 1.5)
 end)
 
 local testEmergencyBtn = Instance.new("TextButton", defenseContent)
@@ -1468,6 +1576,19 @@ testEmergencyBtn.MouseButton1Click:Connect(function()
     emergencyProtocol()
 end)
 
+-- ANTI-RAGDOLL TOGGLE (Modern)
+local antiRagdollToggleContainer, antiRagdollToggleBg = createModernToggle(defenseContent, 0, 260, "🦴 ANTI-RAGDOLL", antiRagdollEnabled, function(state)
+    antiRagdollEnabled = state
+    if not state and ragdollCheckConnection then
+        ragdollCheckConnection:Disconnect()
+        ragdollCheckConnection = nil
+    elseif state then
+        startAntiRagdollLoop()
+    end
+    showModernToast("Anti-Ragdoll " .. (state and "ACTIVATED" or "DEACTIVATED"), state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1.5)
+end, Color3.fromRGB(150, 80, 255))
+
+-- SETTINGS TAB
 local settingsContent = Instance.new("Frame", rightPanel)
 settingsContent.Size = UDim2.new(1, -40, 1, -30)
 settingsContent.Position = UDim2.new(0, 20, 0, 15)
@@ -1499,7 +1620,7 @@ refreshBtn.MouseButton1Click:Connect(function()
         for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then buildESPForPlayer(p) end end
     end
     refreshTargetList()
-    showNotification("ESP and target list refreshed", 1.5)
+    showModernToast("ESP and target list refreshed", Color3.fromRGB(0, 180, 200), 1.5)
 end)
 
 local panicBtn = Instance.new("TextButton", settingsContent)
@@ -1530,46 +1651,29 @@ panicBtn.MouseButton1Click:Connect(function()
     isGlowEnabled = true
     isRainbowMode = false
     emergencyEnabled = true
+    antiRagdollEnabled = true
     stopChams()
-    for _, btn in pairs(movementFeatureButtonList) do
-        if btn and btn.Text then
-            if btn.Text:find("SPEED HACK") then btn.Text, btn.BackgroundColor3 = "⬜ SPEED HACK", Color3.fromRGB(45, 35, 85)
-            elseif btn.Text:find("NO CLIP") then btn.Text, btn.BackgroundColor3 = "⬜ NO CLIP", Color3.fromRGB(45, 35, 85)
-            elseif btn.Text:find("INFINITE JUMP") then btn.Text, btn.BackgroundColor3 = "⬜ INFINITE JUMP", Color3.fromRGB(45, 35, 85)
-            elseif btn.Text:find("TELEPORT") then btn.Text, btn.BackgroundColor3 = "⬜ TELEPORT TO TARGET", Color3.fromRGB(45, 35, 85)
-            end
-            btn.TextColor3 = Color3.fromRGB(180, 180, 220)
-        end
-    end
-    for _, btn in pairs(visualFeatureButtonList) do
-        if btn and btn.Text then
-            if btn.Text:find("CHAMS") then btn.Text, btn.BackgroundColor3 = "⬜ CHAMS X-RAY", Color3.fromRGB(45, 35, 85)
-            elseif btn.Text:find("GLOW") then btn.Text, btn.BackgroundColor3 = "✅ NEON GLOW", Color3.fromRGB(0, 150, 200)
-            elseif btn.Text:find("RAINBOW") then btn.Text, btn.BackgroundColor3 = "⬜ RAINBOW MODE", Color3.fromRGB(45, 35, 85)
-            elseif btn.Text:find("ESP") then 
-                currentEsp = true
-                btn.Text, btn.BackgroundColor3 = "✅ PLAYER ESP", Color3.fromRGB(0, 180, 80)
-                toggleESP()
-            end
-            btn.TextColor3 = Color3.fromRGB(180, 180, 220)
-        end
-    end
     godBtn.Text = "⬜ GODMODE (V) - INACTIVE"
     godBtn.BackgroundColor3 = Color3.fromRGB(45, 35, 85)
     emergencyToggleBtn.Text = "🚨 EMERGENCY TP - ACTIVE"
     emergencyToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
     statusLabel.Text = "⚡ PANIC RESET - ALL OFF"
-    showNotification("PANIC RESET - All features disabled", 2)
+    showModernToast("PANIC RESET - All features disabled", Color3.fromRGB(255, 0, 0), 2)
 end)
 
+-- BUTTON CONNECTIONS
 activateBtn.MouseButton1Click:Connect(activate)
 deactivateBtn.MouseButton1Click:Connect(stopAllActions)
 
+-- INITIALIZATION
 refreshTargetList()
 for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then buildESPForPlayer(p) end end
 startESPLoop()
 startSpeedBoost()
+startAntiRagdollLoop()
+createParticleBackground()
 
+-- MINIMIZE FUNCTION
 local function toggleMinimize()
     isMinimized = not isMinimized
     if isMinimized then
@@ -1592,14 +1696,16 @@ local function toggleMinimize()
 end
 minimizeBtn.MouseButton1Click:Connect(toggleMinimize)
 
+-- INFO LOOP
 local infoLoop = task.spawn(function()
     while screenGui and screenGui.Parent do
         local ping = getRealPing()
-        infoText.Text = "👤 " .. LocalPlayer.Name .. " | 📶 " .. ping .. "ms | 👥 " .. #Players:GetPlayers() .. " Players | 🚨 EMERGENCY: " .. (emergencyEnabled and "ON" or "OFF")
+        infoText.Text = "👤 " .. LocalPlayer.Name .. " | 📶 " .. ping .. "ms | 👥 " .. #Players:GetPlayers() .. " Players | 🛡️ ANTI-RAGDOLL: " .. (antiRagdollEnabled and "ON" or "OFF")
         task.wait(1.5)
     end
 end)
 
+-- KEYBINDS
 UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.Insert then
@@ -1612,13 +1718,9 @@ UserInputService.InputBegan:Connect(function(input, gp)
         godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
     elseif input.KeyCode == Enum.KeyCode.E then
         currentEsp = not currentEsp
+        espOn = currentEsp
         toggleESP()
-        for _, btn in pairs(visualFeatureButtonList) do
-            if btn and btn.Text and btn.Text:find("ESP") then
-                btn.Text = currentEsp and "✅ PLAYER ESP" or "⬜ PLAYER ESP"
-                btn.BackgroundColor3 = currentEsp and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(45, 35, 85)
-            end
-        end
+        showModernToast("ESP " .. (currentEsp and "ON" or "OFF"), currentEsp and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1)
     elseif input.KeyCode == Enum.KeyCode.M then
         toggleMinimize()
     elseif input.KeyCode == Enum.KeyCode.T then
@@ -1627,12 +1729,15 @@ UserInputService.InputBegan:Connect(function(input, gp)
             local char = LocalPlayer.Character
             if char and char:FindFirstChild("HumanoidRootPart") then
                 char.HumanoidRootPart.CFrame = highest
-                showNotification("Teleported to highest ground!", 2)
+                showModernToast("Teleported to highest ground!", Color3.fromRGB(0, 255, 0), 2)
             end
         end
+    elseif input.KeyCode == Enum.KeyCode.R then
+        toggleAntiRagdoll()
     end
 end)
 
+-- PLAYER EVENTS
 Players.PlayerAdded:Connect(function(p)
     task.wait(0.5)
     if currentEsp then buildESPForPlayer(p) end
@@ -1659,15 +1764,16 @@ LocalPlayer.CharacterAdded:Connect(function()
     end
 end)
 
+-- STARTUP MESSAGE
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🚨 REDZBROCOLI // EMERGENCY HIGH GROUND TELEPORT EDITION 🚨")
+print("🚨 REDZBROCOLI // COMPLETE EDITION (ANTI-RAGDOLL + MODERN GUI 3000x) 🚨")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("✅ EMERGENCY PROTOCOL:")
-print("   • Ketika darah < 25%, sistem akan menghentikan SEMUA aktivitas menyerang")
-print("   • Popup merah dengan tulisan 'DARAH ANDA SEKARAT' muncul dengan countdown")
-print("   • Suara beep emergency 3x")
-print("   • TELEPORT OTOMATIS KE DATARAN TERTINGGI DALAM GAME")
-print("   • Bukan ke void, bukan ke koordinat fake - scan map realtime")
+print("✅ FITUR LENGKAP:")
+print("   • Combat Mode: SOLO | ORBIT | FEET")
+print("   • Visual: ESP | CHAMS X-RAY | NEON GLOW | RAINBOW MODE")
+print("   • Movement: SPEED HACK | NO CLIP | INFINITE JUMP | TELEPORT TO TARGET")
+print("   • Defense: GODMODE | EMERGENCY HIGH GROUND TP (AUTO at 25% HP) | ANTI-RAGDOLL")
+print("   • GUI: GLASSMORPHISM | ANIMATED BORDER | PARTICLE BACKGROUND | MODERN TOGGLE")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS:")
 print("   • INSERT → ACTIVATE SYSTEM")
@@ -1676,6 +1782,5 @@ print("   • V → TOGGLE GODMODE")
 print("   • E → TOGGLE ESP")
 print("   • M → MINIMIZE GUI")
 print("   • T → MANUAL TELEPORT TO HIGHEST GROUND")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🎨 PRECISION HEALTH COLOR GRADIENT: 100%→0% (HIJAU→KUNING→OREN→MERAH→GELAP)")
+print("   • R → TOGGLE ANTI-RAGDOLL")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
