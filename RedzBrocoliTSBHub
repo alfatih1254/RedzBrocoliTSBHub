@@ -6,7 +6,6 @@ local Lighting = game:GetService("Lighting")
 local CoreGui = game:GetService("CoreGui")
 local VirtualUser = game:GetService("VirtualUser")
 local Stats = game:GetService("Stats")
-local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
 Lighting.Brightness = 2
@@ -48,23 +47,18 @@ local lastPingTime = 0
 
 local function getRealPing()
     local networkStats = Stats:FindFirstChild("Network")
-    local dataCenter = Stats:FindFirstChild("DataCenter")
-    
     if networkStats and networkStats:FindFirstChild("Ping") then
         local rawPing = networkStats.Ping.Value
         if rawPing > 0 and rawPing < 1000 then
             table.insert(pingHistory, rawPing)
             if #pingHistory > 5 then table.remove(pingHistory, 1) end
-            
             local sum = 0
             for _, v in ipairs(pingHistory) do sum = sum + v end
             local smoothPing = math.floor(sum / #pingHistory)
-            
             currentPingValue = smoothPing
             return smoothPing
         end
     end
-    
     local timeSinceLast = tick() - lastPingTime
     if timeSinceLast > 2 then
         lastPingTime = tick()
@@ -77,22 +71,21 @@ local function getRealPing()
         currentPingValue = smoothPing
         return smoothPing
     end
-    
     return currentPingValue > 0 and currentPingValue or 45
 end
 
 local serverRegions = {
-    {name = "🇺🇸 US VIRGINIA", code = "US", basePing = 25, flag = "🇺🇸"},
-    {name = "🇺🇸 US OREGON", code = "US-W", basePing = 30, flag = "🇺🇸"},
-    {name = "🇪🇺 EU FRANKFURT", code = "EU", basePing = 35, flag = "🇪🇺"},
-    {name = "🇬🇧 UK LONDON", code = "UK", basePing = 38, flag = "🇬🇧"},
-    {name = "🇸🇬 SINGAPORE", code = "SG", basePing = 45, flag = "🇸🇬"},
-    {name = "🇦🇺 AUSTRALIA", code = "AU", basePing = 55, flag = "🇦🇺"},
-    {name = "🇧🇷 BRAZIL", code = "BR", basePing = 65, flag = "🇧🇷"},
-    {name = "🇯🇵 JAPAN", code = "JP", basePing = 40, flag = "🇯🇵"},
-    {name = "🇰🇷 KOREA", code = "KR", basePing = 42, flag = "🇰🇷"},
-    {name = "🇩🇪 GERMANY", code = "DE", basePing = 35, flag = "🇩🇪"},
-    {name = "🇫🇷 FRANCE", code = "FR", basePing = 36, flag = "🇫🇷"}
+    {name = "US VIRGINIA", code = "US", basePing = 25, flag = "🇺🇸"},
+    {name = "US OREGON", code = "US-W", basePing = 30, flag = "🇺🇸"},
+    {name = "EU FRANKFURT", code = "EU", basePing = 35, flag = "🇪🇺"},
+    {name = "UK LONDON", code = "UK", basePing = 38, flag = "🇬🇧"},
+    {name = "SINGAPORE", code = "SG", basePing = 45, flag = "🇸🇬"},
+    {name = "AUSTRALIA", code = "AU", basePing = 55, flag = "🇦🇺"},
+    {name = "BRAZIL", code = "BR", basePing = 65, flag = "🇧🇷"},
+    {name = "JAPAN", code = "JP", basePing = 40, flag = "🇯🇵"},
+    {name = "KOREA", code = "KR", basePing = 42, flag = "🇰🇷"},
+    {name = "GERMANY", code = "DE", basePing = 35, flag = "🇩🇪"},
+    {name = "FRANCE", code = "FR", basePing = 36, flag = "🇫🇷"}
 }
 
 local currentServerRegion = {name = "DETECTING", code = "??", basePing = 0, flag = "🌐"}
@@ -107,7 +100,6 @@ local function detectServerRegion()
             end
         end
     end
-    
     local dataCenterStat = Stats:FindFirstChild("DataCenter")
     if dataCenterStat and dataCenterStat:FindFirstChild("Location") then
         local location = dataCenterStat.Location.Value
@@ -118,7 +110,6 @@ local function detectServerRegion()
             end
         end
     end
-    
     currentServerRegion = serverRegions[5]
     return currentServerRegion
 end
@@ -141,7 +132,7 @@ local noClip = false
 local infiniteJump = false
 local teleportTarget = false
 local emergency = true
-local chams = false
+local chamsOn = false
 local orbitAngle = 0
 local soloRadius = 5
 local orbitRadius = 5
@@ -156,6 +147,8 @@ local currentTab = "COMBAT"
 local isGlowEnabled = true
 local isRainbowMode = false
 local rainbowHue = 0
+local chamsConnection = nil
+local espConnection = nil
 
 local soloRunning = false
 local orbitRunning = false
@@ -163,7 +156,6 @@ local feetRunning = false
 local speedRunning = false
 local noclipRunning = false
 local teleportRunning = false
-local chamsRunning = false
 
 local screenGui = nil
 local mainFrame = nil
@@ -268,32 +260,56 @@ local function runTeleportTarget()
     end)
 end
 
-local function runChams()
-    if chamsRunning then return end
-    chamsRunning = true
-    task.spawn(function()
-        while chams do
-            local hue = rainbowHue
-            for _, player in ipairs(Players:GetPlayers()) do
-                if player ~= LocalPlayer and player.Character then
-                    local colorToUse = isRainbowMode and Color3.fromHSV(hue, 1, 1) or Color3.fromRGB(255, 0, 0)
-                    for _, part in ipairs(player.Character:GetDescendants()) do
-                        if part:IsA("BasePart") then
-                            if isGlowEnabled then
-                                part.Material = Enum.Material.Neon
-                            end
-                            part.Color = colorToUse
+local function stopChams()
+    if chamsConnection then
+        chamsConnection:Disconnect()
+        chamsConnection = nil
+    end
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            for _, part in ipairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.Material = Enum.Material.Plastic
+                    part.Color = Color3.fromRGB(255, 255, 255)
+                end
+            end
+        end
+    end
+end
+
+local function startChams()
+    if chamsConnection then return end
+    chamsConnection = RunService.RenderStepped:Connect(function()
+        if not chamsOn then return end
+        local hue = rainbowHue
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character then
+                local colorToUse = isRainbowMode and Color3.fromHSV(hue, 1, 1) or Color3.fromRGB(255, 0, 0)
+                for _, part in ipairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        if isGlowEnabled then
+                            part.Material = Enum.Material.Neon
+                        else
+                            part.Material = Enum.Material.ForceField
                         end
+                        part.Color = colorToUse
                     end
                 end
             end
-            if isRainbowMode then
-                rainbowHue = (rainbowHue + 0.01) % 1
-            end
-            task.wait(0.05)
         end
-        chamsRunning = false
+        if isRainbowMode then
+            rainbowHue = (rainbowHue + 0.01) % 1
+        end
     end)
+end
+
+local function toggleChams()
+    chamsOn = not chamsOn
+    if chamsOn then
+        startChams()
+    else
+        stopChams()
+    end
 end
 
 local function startSolo()
@@ -383,10 +399,37 @@ local function getHealthColor(healthPercent)
     else return Color3.fromRGB(255, 0, 0) end
 end
 
+local function updateESPForPlayer(player)
+    if not espList[player] then return end
+    if not player.Character or not player.Character:FindFirstChild("Humanoid") then return end
+    local humanoidObj = player.Character.Humanoid
+    local newHealthPercent = (humanoidObj.Health / humanoidObj.MaxHealth) * 100
+    if espList[player].fill then
+        espList[player].fill.Size = UDim2.new(humanoidObj.Health / humanoidObj.MaxHealth, 0, 1, 0)
+        espList[player].fill.BackgroundColor3 = getHealthColor(newHealthPercent)
+    end
+    if espList[player].txt then
+        espList[player].txt.Text = math.floor(newHealthPercent) .. "%"
+    end
+    if espList[player].hl then
+        espList[player].hl.FillColor = getHealthColor(newHealthPercent)
+        espList[player].hl.OutlineColor = getHealthColor(newHealthPercent)
+    end
+    if espList[player].dist and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("HumanoidRootPart") then
+        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+        espList[player].dist.Text = math.floor(distance) .. "m"
+    end
+end
+
 local function createESP(player)
     if player == LocalPlayer or espList[player] then return end
     if not player.Character then 
-        player.CharacterAdded:Connect(function() task.wait(0.5) createESP(player) end)
+        local conn
+        conn = player.CharacterAdded:Connect(function()
+            task.wait(0.5)
+            createESP(player)
+            if conn then conn:Disconnect() end
+        end)
         return 
     end
     local humanoid = player.Character:FindFirstChild("Humanoid")
@@ -458,43 +501,44 @@ local function createESP(player)
     distanceText.TextSize = 9
     distanceText.BackgroundTransparency = 1
     
-    espList[player] = {hl = highlight, fill = healthBarFill, txt = healthText, dist = distanceText}
-    
-    local connection = RunService.Heartbeat:Connect(function()
-        if not player.Character or not player.Character:FindFirstChild("Humanoid") then return end
-        local humanoidObj = player.Character.Humanoid
-        local newHealthPercent = (humanoidObj.Health / humanoidObj.MaxHealth) * 100
-        if espList[player] then
-            espList[player].fill.Size = UDim2.new(humanoidObj.Health / humanoidObj.MaxHealth, 0, 1, 0)
-            espList[player].fill.BackgroundColor3 = getHealthColor(newHealthPercent)
-            espList[player].txt.Text = math.floor(newHealthPercent) .. "%"
-            espList[player].hl.FillColor = getHealthColor(newHealthPercent)
-            espList[player].hl.OutlineColor = getHealthColor(newHealthPercent)
-            
-            local char = LocalPlayer.Character
-            if char and char:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("HumanoidRootPart") then
-                local distance = (char.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-                espList[player].dist.Text = math.floor(distance) .. "m"
-            end
-        end
-    end)
-    table.insert(activeConns, connection)
+    espList[player] = {hl = highlight, fill = healthBarFill, txt = healthText, dist = distanceText, billboard = billboard, bg = background}
 end
 
 local function removeESP()
-    for _, data in pairs(espList) do
+    for player, data in pairs(espList) do
         if data.hl then pcall(function() data.hl:Destroy() end) end
+        if data.billboard then pcall(function() data.billboard:Destroy() end) end
     end
     espList = {}
+end
+
+local function stopESPUpdateLoop()
+    if espConnection then
+        espConnection:Disconnect()
+        espConnection = nil
+    end
+end
+
+local function startESPUpdateLoop()
+    if espConnection then return end
+    espConnection = RunService.Heartbeat:Connect(function()
+        if not espOn then return end
+        for player, _ in pairs(espList) do
+            updateESPForPlayer(player)
+        end
+    end)
 end
 
 local function toggleESP()
     espOn = not espOn
     if espOn then
+        removeESP()
         for _, player in ipairs(Players:GetPlayers()) do
             if player ~= LocalPlayer then createESP(player) end
         end
+        startESPUpdateLoop()
     else
+        stopESPUpdateLoop()
         removeESP()
     end
 end
@@ -504,8 +548,6 @@ local function deactivate()
     soloRunning = false
     orbitRunning = false
     feetRunning = false
-    for _, conn in pairs(activeConns) do pcall(function() conn:Disconnect() end) end
-    activeConns = {}
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("Humanoid") then
         char.Humanoid.WalkSpeed = 16
@@ -689,7 +731,6 @@ local glassBlur = Instance.new("Frame", mainFrame)
 glassBlur.Size = UDim2.new(1, 0, 1, 0)
 glassBlur.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 glassBlur.BackgroundTransparency = 0.97
-glassBlur.Position = UDim2.new(0, 0, 0, 0)
 
 dragHandle = Instance.new("Frame", mainFrame)
 dragHandle.Size = UDim2.new(1, 0, 0, 80)
@@ -736,12 +777,6 @@ borderGradient.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0.75, Color3.fromRGB(0, 255, 128)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 128))
 }
-
-local cornerGlow = Instance.new("Frame", mainFrame)
-cornerGlow.Size = UDim2.new(1, 0, 1, 0)
-cornerGlow.Position = UDim2.new(0, 0, 0, 0)
-cornerGlow.BackgroundTransparency = 1
-cornerGlow.ZIndex = 0
 
 task.spawn(function()
     local angle = 0
@@ -851,7 +886,6 @@ serverChangeButton.MouseButton1Click:Connect(function()
                 currentServerRegion = region
                 regionDropdown:Destroy()
                 regionDropdownVisible = false
-                infoTextLabel.Text = "👤 " .. LocalPlayer.Name .. " | " .. getServerDisplayInfo()
             end)
             yPos = yPos + 42
         end
@@ -1028,45 +1062,83 @@ visualsTitle.Font = Enum.Font.GothamBold
 visualsTitle.BackgroundTransparency = 1
 
 local visualFeaturesList = {
-    {name = "PLAYER ESP", var = "espOn", defaultValue = true, yPosition = 50, color = Color3.fromRGB(0, 180, 80)},
+    {name = "PLAYER ESP", var = "esp", defaultValue = true, yPosition = 50, color = Color3.fromRGB(0, 180, 80)},
     {name = "CHAMS X-RAY", var = "chams", defaultValue = false, yPosition = 120, color = Color3.fromRGB(200, 100, 0)},
     {name = "NEON GLOW", var = "glow", defaultValue = true, yPosition = 190, color = Color3.fromRGB(0, 150, 200)},
     {name = "RAINBOW MODE", var = "rainbow", defaultValue = false, yPosition = 260, color = Color3.fromRGB(255, 0, 200)},
 }
+
+local currentEspState = espOn
+local currentChamsState = chamsOn
+local currentGlowState = isGlowEnabled
+local currentRainbowState = isRainbowMode
+
 for _, feature in ipairs(visualFeaturesList) do
     local featureButton = Instance.new("TextButton", visualsContentFrame)
     featureButton.Size = UDim2.new(0, 320, 0, 52)
     featureButton.Position = UDim2.new(0, 0, 0, feature.yPosition)
-    featureButton.Text = (feature.defaultValue and "✅ " or "⬜ ") .. feature.name
-    featureButton.TextColor3 = feature.defaultValue and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+    
+    local defaultState = false
+    if feature.var == "esp" then defaultState = currentEspState
+    elseif feature.var == "chams" then defaultState = currentChamsState
+    elseif feature.var == "glow" then defaultState = currentGlowState
+    elseif feature.var == "rainbow" then defaultState = currentRainbowState end
+    
+    featureButton.Text = (defaultState and "✅ " or "⬜ ") .. feature.name
+    featureButton.TextColor3 = defaultState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
     featureButton.TextSize = 14
     featureButton.Font = Enum.Font.Gotham
-    featureButton.BackgroundColor3 = feature.defaultValue and feature.color or Color3.fromRGB(45, 35, 85)
+    featureButton.BackgroundColor3 = defaultState and feature.color or Color3.fromRGB(45, 35, 85)
     Instance.new("UICorner", featureButton).CornerRadius = UDim.new(0, 14)
-    local varName = feature.var
-    local currentState = (varName == "espOn" and espOn) or (varName == "chams" and chams) or (varName == "glow" and isGlowEnabled) or (varName == "rainbow" and isRainbowMode)
+    
     featureButton.MouseButton1Click:Connect(function()
-        currentState = not currentState
-        if varName == "espOn" then toggleESP()
-        elseif varName == "chams" then 
-            chams = currentState
-            if chams then runChams() end
-        elseif varName == "glow" then 
-            isGlowEnabled = currentState
-            if not chams then
-                chams = true
-                runChams()
+        if feature.var == "esp" then
+            currentEspState = not currentEspState
+            toggleESP()
+            featureButton.Text = (currentEspState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentEspState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentEspState and feature.color or Color3.fromRGB(45, 35, 85)
+        elseif feature.var == "chams" then
+            currentChamsState = not currentChamsState
+            toggleChams()
+            featureButton.Text = (currentChamsState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentChamsState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentChamsState and feature.color or Color3.fromRGB(45, 35, 85)
+        elseif feature.var == "glow" then
+            currentGlowState = not currentGlowState
+            isGlowEnabled = currentGlowState
+            if not currentChamsState then
+                currentChamsState = true
+                toggleChams()
+                for _, btn in pairs(visualFeatureBtns) do
+                    if btn and btn.Text and btn.Text:find("CHAMS") then
+                        btn.Text = "✅ CHAMS X-RAY"
+                        btn.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+                        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    end
+                end
             end
-        elseif varName == "rainbow" then 
-            isRainbowMode = currentState
-            if not chams then
-                chams = true
-                runChams()
+            featureButton.Text = (currentGlowState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentGlowState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentGlowState and feature.color or Color3.fromRGB(45, 35, 85)
+        elseif feature.var == "rainbow" then
+            currentRainbowState = not currentRainbowState
+            isRainbowMode = currentRainbowState
+            if not currentChamsState then
+                currentChamsState = true
+                toggleChams()
+                for _, btn in pairs(visualFeatureBtns) do
+                    if btn and btn.Text and btn.Text:find("CHAMS") then
+                        btn.Text = "✅ CHAMS X-RAY"
+                        btn.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+                        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    end
+                end
             end
+            featureButton.Text = (currentRainbowState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentRainbowState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentRainbowState and feature.color or Color3.fromRGB(45, 35, 85)
         end
-        featureButton.Text = (currentState and "✅ " or "⬜ ") .. feature.name
-        featureButton.TextColor3 = currentState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-        featureButton.BackgroundColor3 = currentState and feature.color or Color3.fromRGB(45, 35, 85)
     end)
     table.insert(visualFeatureBtns, featureButton)
 end
@@ -1102,34 +1174,59 @@ local movementFeaturesList = {
     {name = "INFINITE JUMP", var = "infiniteJump", defaultValue = false, yPosition = 270, color = Color3.fromRGB(0, 180, 80)},
     {name = "TELEPORT TO TARGET", var = "teleportTarget", defaultValue = false, yPosition = 330, color = Color3.fromRGB(200, 100, 0)},
 }
+
+local currentSpeedState = speedHack
+local currentNoClipState = noClip
+local currentInfiniteJumpState = infiniteJump
+local currentTeleportState = teleportTarget
+
 for _, feature in ipairs(movementFeaturesList) do
     local featureButton = Instance.new("TextButton", movementContentFrame)
     featureButton.Size = UDim2.new(0, 320, 0, 48)
     featureButton.Position = UDim2.new(0, 0, 0, feature.yPosition)
-    featureButton.Text = (feature.defaultValue and "✅ " or "⬜ ") .. feature.name
-    featureButton.TextColor3 = feature.defaultValue and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+    
+    local defaultState = false
+    if feature.var == "speedHack" then defaultState = currentSpeedState
+    elseif feature.var == "noClip" then defaultState = currentNoClipState
+    elseif feature.var == "infiniteJump" then defaultState = currentInfiniteJumpState
+    elseif feature.var == "teleportTarget" then defaultState = currentTeleportState end
+    
+    featureButton.Text = (defaultState and "✅ " or "⬜ ") .. feature.name
+    featureButton.TextColor3 = defaultState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
     featureButton.TextSize = 14
     featureButton.Font = Enum.Font.Gotham
-    featureButton.BackgroundColor3 = feature.defaultValue and feature.color or Color3.fromRGB(45, 35, 85)
+    featureButton.BackgroundColor3 = defaultState and feature.color or Color3.fromRGB(45, 35, 85)
     Instance.new("UICorner", featureButton).CornerRadius = UDim.new(0, 14)
-    local varName = feature.var
-    local currentState = (varName == "speedHack" and speedHack) or (varName == "noClip" and noClip) or (varName == "infiniteJump" and infiniteJump) or (varName == "teleportTarget" and teleportTarget)
+    
     featureButton.MouseButton1Click:Connect(function()
-        currentState = not currentState
-        if varName == "speedHack" then 
-            speedHack = currentState
+        if feature.var == "speedHack" then
+            currentSpeedState = not currentSpeedState
+            speedHack = currentSpeedState
             if speedHack then runSpeedHack() end
-        elseif varName == "noClip" then 
-            noClip = currentState
+            featureButton.Text = (currentSpeedState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentSpeedState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentSpeedState and feature.color or Color3.fromRGB(45, 35, 85)
+        elseif feature.var == "noClip" then
+            currentNoClipState = not currentNoClipState
+            noClip = currentNoClipState
             if noClip then runNoClip() else removeNoClip() end
-        elseif varName == "infiniteJump" then infiniteJump = currentState
-        elseif varName == "teleportTarget" then 
-            teleportTarget = currentState
+            featureButton.Text = (currentNoClipState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentNoClipState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentNoClipState and feature.color or Color3.fromRGB(45, 35, 85)
+        elseif feature.var == "infiniteJump" then
+            currentInfiniteJumpState = not currentInfiniteJumpState
+            infiniteJump = currentInfiniteJumpState
+            featureButton.Text = (currentInfiniteJumpState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentInfiniteJumpState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentInfiniteJumpState and feature.color or Color3.fromRGB(45, 35, 85)
+        elseif feature.var == "teleportTarget" then
+            currentTeleportState = not currentTeleportState
+            teleportTarget = currentTeleportState
             if teleportTarget then runTeleportTarget() end
+            featureButton.Text = (currentTeleportState and "✅ " or "⬜ ") .. feature.name
+            featureButton.TextColor3 = currentTeleportState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            featureButton.BackgroundColor3 = currentTeleportState and feature.color or Color3.fromRGB(45, 35, 85)
         end
-        featureButton.Text = (currentState and "✅ " or "⬜ ") .. feature.name
-        featureButton.TextColor3 = currentState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-        featureButton.BackgroundColor3 = currentState and feature.color or Color3.fromRGB(45, 35, 85)
     end)
     table.insert(moveFeatureBtns, featureButton)
 end
@@ -1206,7 +1303,7 @@ refreshEspButton.Font = Enum.Font.GothamBold
 refreshEspButton.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
 Instance.new("UICorner", refreshEspButton).CornerRadius = UDim.new(0, 14)
 refreshEspButton.MouseButton1Click:Connect(function()
-    if espOn then
+    if currentEspState then
         removeESP()
         task.wait(0.2)
         for _, player in ipairs(Players:GetPlayers()) do if player ~= LocalPlayer then createESP(player) end end
@@ -1226,28 +1323,47 @@ Instance.new("UICorner", panicButton).CornerRadius = UDim.new(0, 14)
 panicButton.MouseButton1Click:Connect(function()
     deactivate()
     if godMode then toggleGodMode() end
-    removeESP()
+    if currentEspState then
+        removeESP()
+    end
+    currentSpeedState = false
+    currentNoClipState = false
+    currentInfiniteJumpState = false
+    currentTeleportState = false
+    currentChamsState = false
+    currentGlowState = true
+    currentRainbowState = false
     speedHack = false
     noClip = false
     infiniteJump = false
     teleportTarget = false
-    chams = false
-    emergency = true
+    chamsOn = false
     isGlowEnabled = true
     isRainbowMode = false
+    emergency = true
+    stopChams()
     for _, btn in pairs(moveFeatureBtns) do
-        if btn.Text:find("SPEED HACK") then btn.Text, btn.BackgroundColor3 = "⬜ SPEED HACK", Color3.fromRGB(45, 35, 85) end
-        if btn.Text:find("NO CLIP") then btn.Text, btn.BackgroundColor3 = "⬜ NO CLIP", Color3.fromRGB(45, 35, 85) end
-        if btn.Text:find("INFINITE JUMP") then btn.Text, btn.BackgroundColor3 = "⬜ INFINITE JUMP", Color3.fromRGB(45, 35, 85) end
-        if btn.Text:find("TELEPORT") then btn.Text, btn.BackgroundColor3 = "⬜ TELEPORT TO TARGET", Color3.fromRGB(45, 35, 85) end
-        btn.TextColor3 = Color3.fromRGB(180, 180, 220)
+        if btn and btn.Text then
+            if btn.Text:find("SPEED HACK") then btn.Text, btn.BackgroundColor3 = "⬜ SPEED HACK", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("NO CLIP") then btn.Text, btn.BackgroundColor3 = "⬜ NO CLIP", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("INFINITE JUMP") then btn.Text, btn.BackgroundColor3 = "⬜ INFINITE JUMP", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("TELEPORT") then btn.Text, btn.BackgroundColor3 = "⬜ TELEPORT TO TARGET", Color3.fromRGB(45, 35, 85)
+            end
+            btn.TextColor3 = Color3.fromRGB(180, 180, 220)
+        end
     end
     for _, btn in pairs(visualFeatureBtns) do
-        if btn.Text:find("CHAMS") then btn.Text, btn.BackgroundColor3 = "⬜ CHAMS X-RAY", Color3.fromRGB(45, 35, 85) end
-        if btn.Text:find("GLOW") then btn.Text, btn.BackgroundColor3 = "✅ NEON GLOW", Color3.fromRGB(0, 150, 200) end
-        if btn.Text:find("RAINBOW") then btn.Text, btn.BackgroundColor3 = "⬜ RAINBOW MODE", Color3.fromRGB(45, 35, 85) end
-        if btn.Text:find("ESP") then btn.Text, btn.BackgroundColor3 = "✅ PLAYER ESP", Color3.fromRGB(0, 180, 80); espOn = true; toggleESP() end
-        btn.TextColor3 = Color3.fromRGB(180, 180, 220)
+        if btn and btn.Text then
+            if btn.Text:find("CHAMS") then btn.Text, btn.BackgroundColor3 = "⬜ CHAMS X-RAY", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("GLOW") then btn.Text, btn.BackgroundColor3 = "✅ NEON GLOW", Color3.fromRGB(0, 150, 200)
+            elseif btn.Text:find("RAINBOW") then btn.Text, btn.BackgroundColor3 = "⬜ RAINBOW MODE", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("ESP") then 
+                currentEspState = true
+                btn.Text, btn.BackgroundColor3 = "✅ PLAYER ESP", Color3.fromRGB(0, 180, 80)
+                toggleESP()
+            end
+            btn.TextColor3 = Color3.fromRGB(180, 180, 220)
+        end
     end
     godModeButton.Text = "⬜ GODMODE (V) - INACTIVE"
     godModeButton.BackgroundColor3 = Color3.fromRGB(45, 35, 85)
@@ -1270,6 +1386,7 @@ deactivateButton.MouseButton1Click:Connect(deactivate)
 
 updateTargetList()
 for _, player in ipairs(Players:GetPlayers()) do if player ~= LocalPlayer then createESP(player) end end
+startESPUpdateLoop()
 runSpeedHack()
 
 local function toggleMinimizeUI()
@@ -1305,11 +1422,13 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         godModeButton.Text = godMode and "✅ GODMODE (V) - ACTIVE" or "⬜ GODMODE (V) - INACTIVE"
         godModeButton.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
     elseif input.KeyCode == Enum.KeyCode.E then
+        currentEspState = not currentEspState
         toggleESP()
         for _, btn in pairs(visualFeatureBtns) do
-            if btn.Text:find("ESP") then
-                btn.Text = espOn and "✅ PLAYER ESP" or "⬜ PLAYER ESP"
-                btn.BackgroundColor3 = espOn and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(45, 35, 85)
+            if btn and btn.Text and btn.Text:find("ESP") then
+                btn.Text = currentEspState and "✅ PLAYER ESP" or "⬜ PLAYER ESP"
+                btn.BackgroundColor3 = currentEspState and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(45, 35, 85)
+                btn.TextColor3 = currentEspState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
             end
         end
     elseif input.KeyCode == Enum.KeyCode.M then
@@ -1319,7 +1438,7 @@ end)
 
 Players.PlayerAdded:Connect(function(newPlayer)
     task.wait(0.5)
-    if espOn then createESP(newPlayer) end
+    if currentEspState then createESP(newPlayer) end
     updateTargetList()
 end)
 Players.PlayerRemoving:Connect(updateTargetList)
@@ -1327,16 +1446,27 @@ LocalPlayer.CharacterAdded:Connect(function()
     if godMode then task.wait(0.2) toggleGodMode() end
     if speedHack then runSpeedHack() end
     if noClip then runNoClip() end
+    if currentEspState then
+        task.wait(0.5)
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                if espList[player] then
+                    pcall(function() if espList[player].hl then espList[player].hl:Destroy() end end)
+                    pcall(function() if espList[player].billboard then espList[player].billboard:Destroy() end end)
+                    espList[player] = nil
+                end
+                createESP(player)
+            end
+        end
+    end
 end)
 
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("⚡ REDZBROCOLI // TSB ULTIMATE v21.0 - MODERN EDITION ⚡")
-print("✅ UI MODERN DENGAN GLASSMORPHISM EFFECT")
+print("⚡ REDZBROCOLI // TSB ULTIMATE v21.0 - FULLY FIXED EDITION ⚡")
+print("✅ ESP MATI DAN HIDUP SESUAI TOMBOL")
+print("✅ CHAMS, NEON GLOW, RAINBOW MODE FULLY WORKING")
 print("✅ PING REAL-TIME BERFLUKTUASI 20-90ms")
 print("✅ PEMILIHAN REGION SERVER (SINGAPORE, GERMANY, US, EU, DLL)")
-print("✅ RAINBOW CHAMS & NEON GLOW EFFECT")
-print("✅ SLIDER MODERN DENGAN ANIMASI")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS: INSERT=ACTIVATE | DELETE=DEACTIVATE | V=GODMODE | E=ESP | M=MINIMIZE")
-print("📌 FITUR BARU: CHANGE REGION CLICK PADA SERVER INFO")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
