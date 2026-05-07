@@ -6,123 +6,249 @@ local Lighting = game:GetService("Lighting")
 local CoreGui = game:GetService("CoreGui")
 local VirtualUser = game:GetService("VirtualUser")
 local Stats = game:GetService("Stats")
-local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
-local GuiService = game:GetService("GuiService")
-local ContextActionService = game:GetService("ContextActionService")
-local SoundService = game:GetService("SoundService")
-local TeleportService = game:GetService("TeleportService")
-local TweenService = game:GetService("TweenService")
-
-do
-    local connectionCount = 0
-    local maxConnections = 500
-    local function trackConnection(conn)
-        connectionCount = connectionCount + 1
-        if connectionCount > maxConnections then
-            warn("Connection limit reached: " .. connectionCount)
-        end
-        return conn
-    end
-end
 
 Lighting.Brightness = 2
 Lighting.Ambient = Color3.fromRGB(128, 128, 128)
 Lighting.ClockTime = 14
-Lighting.FogEnd = 1000
-Lighting.GlobalShadows = true
-Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
 for _, e in ipairs(Lighting:GetChildren()) do
-    if e:IsA("BloomEffect") or e:IsA("BlurEffect") or e:IsA("ColorCorrectionEffect") then
-        e:Destroy()
-    end
+    if e:IsA("BloomEffect") or e:IsA("BlurEffect") then e:Destroy() end
 end
 
-local bloom = Instance.new("BloomEffect")
-bloom.Intensity = 0.4
-bloom.Size = 16
-bloom.Threshold = 0.5
-bloom.Parent = Lighting
-
 local starContainer = Instance.new("Folder", CoreGui)
-starContainer.Name = "StarEffectContainer"
-
-local starColors = {
-    Color3.fromRGB(255, 255, 200),
-    Color3.fromRGB(255, 255, 150),
-    Color3.fromRGB(200, 200, 255),
-    Color3.fromRGB(255, 200, 255),
-    Color3.fromRGB(200, 255, 255)
-}
-
-for i = 1, 150 do
-    local star = Instance.new("Frame", starContainer)
-    local sizeVal = math.random(1, 3)
-    star.Size = UDim2.new(0, sizeVal, 0, sizeVal)
-    star.Position = UDim2.new(math.random(), 0, math.random(), 0)
-    star.BackgroundColor3 = starColors[math.random(#starColors)]
-    star.BackgroundTransparency = math.random(50, 85) / 100
-    local corner = Instance.new("UICorner", star)
-    corner.CornerRadius = UDim.new(1, 0)
-    
-    local twinkleDuration = math.random(2, 6)
-    local maxTransparency = math.random(40, 90) / 100
-    local minTransparency = math.random(10, 40) / 100
-    
+for i = 1, 100 do
+    local s = Instance.new("Frame", starContainer)
+    s.Size = UDim2.new(0, math.random(1, 2), 0, math.random(1, 2))
+    s.Position = UDim2.new(math.random(), 0, math.random(), 0)
+    s.BackgroundColor3 = Color3.fromRGB(255, 255, 200)
+    s.BackgroundTransparency = math.random(60, 85) / 100
+    Instance.new("UICorner", s).CornerRadius = UDim.new(1, 0)
     task.spawn(function()
-        while star.Parent do
-            local tweenInfo = TweenInfo.new(twinkleDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-            local goal = {BackgroundTransparency = maxTransparency}
-            TweenService:Create(star, tweenInfo, goal):Play()
-            task.wait(twinkleDuration)
-            local tweenInfo2 = TweenInfo.new(twinkleDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-            local goal2 = {BackgroundTransparency = minTransparency}
-            TweenService:Create(star, tweenInfo2, goal2):Play()
-            task.wait(twinkleDuration)
+        while s.Parent do
+            TweenService:Create(s, TweenInfo.new(math.random(2, 5)), {BackgroundTransparency = math.random(40, 90)/100}):Play()
+            task.wait(math.random(3, 8))
         end
     end)
 end
 
-local mountainLocations = {
-    MOUNT_EVEREST = {
-        name = "🏔️ MOUNT EVEREST - BASE CAMP",
-        cframe = CFrame.new(-1240, 280, 3450),
-        description = "Base camp tertinggi di dunia",
-        color = Color3.fromRGB(150, 200, 255)
-    },
-    MOUNT_FUJI = {
-        name = "🗻 MOUNT FUJI - PEAK",
-        cframe = CFrame.new(3250, 420, -2180),
-        description = "Gunung suci Jepang dengan puncak bersalju",
-        color = Color3.fromRGB(255, 200, 150)
-    },
-    MOUNT_KILIMANJARO = {
-        name = "⛰️ MOUNT KILIMANJARO - UHURU PEAK",
-        cframe = CFrame.new(-3850, 350, 2150),
-        description = "Puncak tertinggi di Afrika",
-        color = Color3.fromRGB(180, 150, 100)
-    },
-    ALPS_MATTERHORN = {
-        name = "🏔️ ALPS MATTERHORN",
-        cframe = CFrame.new(1850, 480, -3450),
-        description = "Gunung ikonik di Swiss",
-        color = Color3.fromRGB(200, 220, 255)
-    },
-    ROCKY_MOUNTAIN = {
-        name = "⛰️ ROCKY MOUNTAIN - PEAK",
-        cframe = CFrame.new(-2650, 520, 1850),
-        description = "Pegunungan terkenal di Amerika Utara",
-        color = Color3.fromRGB(170, 190, 210)
-    }
-}
+local function findHighestGroundPosition()
+    local character = LocalPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return nil end
+    
+    local startPos = character.HumanoidRootPart.Position
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    raycastParams.FilterDescendantsInstances = {character}
+    
+    local maxHeight = -1000
+    local highestPos = startPos
+    
+    local searchRadius = 500
+    local step = 50
+    
+    for x = -searchRadius, searchRadius, step do
+        for z = -searchRadius, searchRadius, step do
+            local origin = Vector3.new(startPos.X + x, startPos.Y + 500, startPos.Z + z)
+            local raycast = Workspace:Raycast(origin, Vector3.new(0, -1000, 0), raycastParams)
+            if raycast then
+                local hitPoint = raycast.Position
+                if hitPoint.Y > maxHeight then
+                    maxHeight = hitPoint.Y
+                    highestPos = hitPoint
+                end
+            end
+        end
+    end
+    
+    if maxHeight > -500 then
+        return CFrame.new(highestPos.X, highestPos.Y + 5, highestPos.Z)
+    end
+    return nil
+end
 
-local emergencyMountain = mountainLocations.MOUNT_EVEREST
-local isEmergencyActive = false
+local mountainLocationsInGame = {}
+
+local function scanMapForMountains()
+    mountainLocationsInGame = {}
+    
+    local terrain = Workspace:FindFirstChild("Terrain")
+    local parts = Workspace:GetDescendants()
+    
+    for _, part in ipairs(parts) do
+        if part:IsA("BasePart") and part.Size.Y > 30 and part.Position.Y > 50 then
+            local name = part.Name
+            local pos = part.Position
+            local size = part.Size
+            local topPos = CFrame.new(pos.X, pos.Y + part.Size.Y/2 + 5, pos.Z)
+            
+            table.insert(mountainLocationsInGame, {
+                name = name .. " Peak",
+                cframe = topPos,
+                height = math.floor(pos.Y + size.Y/2),
+                description = "Puncak " .. name,
+                color = Color3.fromRGB(200, 200, 255)
+            })
+        end
+    end
+    
+    if #mountainLocationsInGame < 3 then
+        local platformHeights = {150, 250, 350, 450, 550, 650}
+        for i, height in ipairs(platformHeights) do
+            if i <= 5 then
+                table.insert(mountainLocationsInGame, {
+                    name = "High Peak " .. i,
+                    cframe = CFrame.new(0 + (i-2)*200, height, 500 + (i-2)*150),
+                    height = height,
+                    description = "Dataran tinggi " .. height .. " meter",
+                    color = Color3.fromRGB(100, 200, 255)
+                })
+            end
+        end
+    end
+    
+    if #mountainLocationsInGame < 3 then
+        table.insert(mountainLocationsInGame, {
+            name = "Sky Platform",
+            cframe = CFrame.new(0, 500, 0),
+            height = 500,
+            description = "Platform udara 500 meter",
+            color = Color3.fromRGB(150, 150, 255)
+        })
+        table.insert(mountainLocationsInGame, {
+            name = "Cloud Peak",
+            cframe = CFrame.new(300, 600, 300),
+            height = 600,
+            description = "Puncak awan 600 meter",
+            color = Color3.fromRGB(180, 180, 255)
+        })
+        table.insert(mountainLocationsInGame, {
+            name = "Heaven's Gate",
+            cframe = CFrame.new(-300, 700, -300),
+            height = 700,
+            description = "Gerbang surga 700 meter",
+            color = Color3.fromRGB(220, 220, 255)
+        })
+    end
+    
+    return mountainLocationsInGame
+end
+
+local function teleportToMountainInGame(mountainIndex)
+    if not mountainLocationsInGame or #mountainLocationsInGame == 0 then
+        scanMapForMountains()
+    end
+    
+    if mountainIndex <= #mountainLocationsInGame then
+        local mountain = mountainLocationsInGame[mountainIndex]
+        local character = LocalPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            character.HumanoidRootPart.CFrame = mountain.cframe
+            showNotification("Teleported to: " .. mountain.name .. " (" .. mountain.height .. "m)", 2)
+            return true
+        end
+    end
+    return false
+end
+
+local function teleportToHighestPoint()
+    local highest = findHighestGroundPosition()
+    if highest then
+        local character = LocalPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            character.HumanoidRootPart.CFrame = highest
+            showNotification("Teleported to highest ground detected!", 2)
+            return true
+        end
+    end
+    return false
+end
+
+local currentPingValue = 0
+local pingHistory = {}
+local lastPingTime = 0
+
+local function getRealPing()
+    local networkStats = Stats:FindFirstChild("Network")
+    if networkStats and networkStats:FindFirstChild("Ping") then
+        local rawPing = networkStats.Ping.Value
+        if rawPing > 0 and rawPing < 1000 then
+            table.insert(pingHistory, rawPing)
+            if #pingHistory > 5 then table.remove(pingHistory, 1) end
+            local sum = 0
+            for _, v in ipairs(pingHistory) do sum = sum + v end
+            local smoothPing = math.floor(sum / #pingHistory)
+            currentPingValue = smoothPing
+            return smoothPing
+        end
+    end
+    local timeSinceLast = tick() - lastPingTime
+    if timeSinceLast > 2 then
+        lastPingTime = tick()
+        local simulatedFluctuation = 20 + math.random(0, 70)
+        table.insert(pingHistory, simulatedFluctuation)
+        if #pingHistory > 5 then table.remove(pingHistory, 1) end
+        local sum = 0
+        for _, v in ipairs(pingHistory) do sum = sum + v end
+        local smoothPing = math.floor(sum / #pingHistory)
+        currentPingValue = smoothPing
+        return smoothPing
+    end
+    return currentPingValue > 0 and currentPingValue or 45
+end
+
+local selectedTarget = nil
+local isActive = false
+local currentMode = "SOLO"
+local godMode = false
+local espOn = true
+local speedHack = false
+local speedMultiplier = 2
+local noClip = false
+local infiniteJump = false
+local teleportTarget = false
+local emergency = true
+local chamsOn = false
+local orbitAngle = 0
+local soloRadius = 5
+local orbitRadius = 5
+local orbitSpeed = 1
+local feetDist = 3
+local currentFF = nil
+local activeConns = {}
+local espDataStore = {}
+local isMinimized = false
+local originalCollisionStates = {}
+local currentTab = "COMBAT"
+local isGlowEnabled = true
+local isRainbowMode = false
+local rainbowHue = 0
+local chamsConnection = nil
+local espUpdateLoop = nil
+local notificationQueue = {}
+local isNotifying = false
 local emergencyPopup = nil
-local emergencySound = nil
 local emergencyBlur = nil
+local isEmergencyActive = false
+
+local soloRunning = false
+local orbitRunning = false
+local feetRunning = false
+local speedLoopRunning = false
+local noclipLoopRunning = false
+local teleportLoopRunning = false
+
+local screenGui = nil
+local mainFrame = nil
+local dragHandle = nil
+local statusLabel = nil
+local targetListScrollingFrame = nil
+local targetButtonList = {}
+local modeButtonList = {}
+local tabButtonList = {}
+local tabContentContainers = {}
+local visualFeatureButtonList = {}
+local movementFeatureButtonList = {}
 
 local function createEmergencyPopup()
     if emergencyPopup and emergencyPopup.Parent then
@@ -138,18 +264,6 @@ local function createEmergencyPopup()
     emergencyPopup.BorderColor3 = Color3.fromRGB(255, 0, 0)
     emergencyPopup.ZIndex = 1000
     Instance.new("UICorner", emergencyPopup).CornerRadius = UDim.new(0, 20)
-    
-    local glowBorder = Instance.new("Frame", emergencyPopup)
-    glowBorder.Size = UDim2.new(1, 10, 1, 10)
-    glowBorder.Position = UDim2.new(0, -5, 0, -5)
-    glowBorder.BackgroundTransparency = 1
-    glowBorder.BorderSizePixel = 0
-    local borderGrad = Instance.new("UIGradient", glowBorder)
-    borderGrad.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 0, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-    }
     
     local warningIcon = Instance.new("TextLabel", emergencyPopup)
     warningIcon.Size = UDim2.new(0, 80, 0, 80)
@@ -173,42 +287,13 @@ local function createEmergencyPopup()
     local subText = Instance.new("TextLabel", emergencyPopup)
     subText.Size = UDim2.new(1, -40, 0, 30)
     subText.Position = UDim2.new(0, 20, 0, 165)
-    subText.Text = "TELEPORTING TO SAFE MOUNTAIN..."
+    subText.Text = "TELEPORTING TO HIGHEST POINT..."
     subText.TextColor3 = Color3.fromRGB(255, 200, 100)
     subText.TextSize = 14
     subText.Font = Enum.Font.GothamBold
     subText.BackgroundTransparency = 1
     
-    local countdownText = Instance.new("TextLabel", emergencyPopup)
-    countdownText.Size = UDim2.new(0, 100, 0, 30)
-    countdownText.Position = UDim2.new(0.5, -50, 0, 200)
-    countdownText.Text = "3"
-    countdownText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    countdownText.TextSize = 24
-    countdownText.Font = Enum.Font.GothamBold
-    countdownText.BackgroundTransparency = 1
-    
-    local tick = 0
-    task.spawn(function()
-        while emergencyPopup and emergencyPopup.Parent do
-            tick = tick + 1
-            local alpha = 0.5 + math.sin(tick * 0.5) * 0.5
-            emergencyPopup.BackgroundColor3 = Color3.fromRGB(30 + alpha * 50, 0, 0)
-            emergencyPopup.BorderColor3 = Color3.fromRGB(255, alpha * 255, alpha * 255)
-            task.wait(0.05)
-        end
-    end)
-    
     return emergencyPopup
-end
-
-local function createEmergencySound()
-    local sound = Instance.new("Sound", CoreGui)
-    sound.SoundId = "rbxassetid://9120386437"
-    sound.Volume = 1
-    sound.PlayOnRemove = false
-    sound.Looped = true
-    return sound
 end
 
 local function createEmergencyBlur()
@@ -217,94 +302,67 @@ local function createEmergencyBlur()
     blur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     blur.BackgroundTransparency = 0.4
     blur.ZIndex = 999
-    blur.Name = "EmergencyBlur"
     return blur
 end
 
-local function emergencyTeleportToMountain()
-    local character = LocalPlayer.Character
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        character.HumanoidRootPart.CFrame = emergencyMountain.cframe
-        return true
-    end
-    return false
-end
-
-local function stopAllCombatActivities()
+local function emergencyProtocol()
+    if isEmergencyActive then return end
+    isEmergencyActive = true
+    
     if isActive then
         isActive = false
         soloRunning = false
         orbitRunning = false
         feetRunning = false
-        
-        local character = LocalPlayer.Character
-        if character and character:FindFirstChild("Humanoid") then
-            character.Humanoid.WalkSpeed = 16
-            character.Humanoid.JumpPower = 50
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = 16
+            char.Humanoid.JumpPower = 50
         end
-        
         if statusLabel then
-            statusLabel.Text = "⚡ EMERGENCY STOP - LOW HEALTH"
+            statusLabel.Text = "🚨 EMERGENCY - LOW HEALTH"
             statusLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
         end
     end
-end
-
-local function showEmergencyPopupWithCountdown()
+    
     local popup = createEmergencyPopup()
     local blur = createEmergencyBlur()
-    local sound = createEmergencySound()
     
-    sound:Play()
-    
-    local countdownValue = 3
-    local countdownLabel = popup:FindFirstChildWhichIsA("TextLabel") and popup:FindFirstChildWhichIsA("TextLabel").Parent and nil
-    for _, child in ipairs(popup:GetDescendants()) do
-        if child:IsA("TextLabel") and child.Text == "3" then
-            countdownLabel = child
+    for i = 3, 1, -1 do
+        if popup and popup.Parent then
+            local countdownLabel = Instance.new("TextLabel", popup)
+            countdownLabel.Size = UDim2.new(0, 100, 0, 40)
+            countdownLabel.Position = UDim2.new(0.5, -50, 0, 200)
+            countdownLabel.Text = tostring(i)
+            countdownLabel.TextColor3 = Color3.fromRGB(255, 255 - (3-i)*80, 0)
+            countdownLabel.TextSize = 32
+            countdownLabel.Font = Enum.Font.GothamBold
+            countdownLabel.BackgroundTransparency = 1
+            
+            local beep = Instance.new("Sound", CoreGui)
+            beep.SoundId = "rbxassetid://138753464"
+            beep.Volume = 0.5
+            beep:Play()
+            task.wait(0.05)
+            beep:Destroy()
+            
+            task.wait(0.95)
+            countdownLabel:Destroy()
+        else
             break
         end
     end
     
-    for i = 3, 1, -1 do
-        if countdownLabel then
-            countdownLabel.Text = tostring(i)
-            countdownLabel.TextColor3 = Color3.fromRGB(255, 255 - (3-i)*80, 0)
-            countdownLabel.TextSize = 32 + (3-i)*5
-        end
-        
-        local beepSound = Instance.new("Sound", CoreGui)
-        beepSound.SoundId = "rbxassetid://138753464"
-        beepSound.Volume = 0.5
-        beepSound:Play()
-        task.wait(0.05)
-        beepSound:Destroy()
-        
-        task.wait(0.95)
-    end
-    
-    if countdownLabel then
-        countdownLabel.Text = "GO!"
-    end
-    
-    emergencyTeleportToMountain()
+    teleportToHighestPoint()
     
     task.wait(0.5)
     
     if popup then popup:Destroy() end
     if blur then blur:Destroy() end
-    if sound then sound:Stop() sound:Destroy() end
-    
-    local completeSound = Instance.new("Sound", CoreGui)
-    completeSound.SoundId = "rbxassetid://9120386437"
-    completeSound.Volume = 0.7
-    completeSound:Play()
-    task.wait(0.5)
-    completeSound:Destroy()
     
     local successPopup = Instance.new("Frame", CoreGui)
-    successPopup.Size = UDim2.new(0, 400, 0, 150)
-    successPopup.Position = UDim2.new(0.5, -200, 0.5, -75)
+    successPopup.Size = UDim2.new(0, 400, 0, 120)
+    successPopup.Position = UDim2.new(0.5, -200, 0.5, -60)
     successPopup.BackgroundColor3 = Color3.fromRGB(0, 30, 0)
     successPopup.BackgroundTransparency = 0.1
     successPopup.BorderSizePixel = 2
@@ -314,240 +372,17 @@ local function showEmergencyPopupWithCountdown()
     local successText = Instance.new("TextLabel", successPopup)
     successText.Size = UDim2.new(1, -40, 1, -20)
     successText.Position = UDim2.new(0, 20, 0, 10)
-    successText.Text = "✅ TELEPORTED TO MOUNT EVEREST\n🚑 YOU ARE SAFE NOW"
+    successText.Text = "✅ TELEPORTED TO HIGHEST POINT\n🚑 YOU ARE SAFE NOW"
     successText.TextColor3 = Color3.fromRGB(0, 255, 0)
     successText.TextSize = 18
     successText.Font = Enum.Font.GothamBold
     successText.TextWrapped = true
     successText.BackgroundTransparency = 1
     
-    task.wait(2.5)
+    task.wait(2)
     successPopup:Destroy()
-end
-
-local function emergencyProtocol()
-    if isEmergencyActive then return end
-    isEmergencyActive = true
-    
-    stopAllCombatActivities()
-    
-    showEmergencyPopupWithCountdown()
     
     isEmergencyActive = false
-end
-
-local currentPingValue = 0
-local pingHistory = {}
-local lastPingTime = 0
-local pingFluctuationSpeed = 1
-
-local function getRealPing()
-    local networkStats = Stats:FindFirstChild("Network")
-    if networkStats and networkStats:FindFirstChild("Ping") then
-        local rawPing = networkStats.Ping.Value
-        if rawPing > 0 and rawPing < 1000 then
-            table.insert(pingHistory, rawPing)
-            if #pingHistory > 8 then table.remove(pingHistory, 1) end
-            local sum = 0
-            for _, v in ipairs(pingHistory) do sum = sum + v end
-            local smoothPing = math.floor(sum / #pingHistory)
-            currentPingValue = smoothPing
-            return smoothPing
-        end
-    end
-    local timeSinceLast = tick() - lastPingTime
-    if timeSinceLast > 1.5 then
-        lastPingTime = tick()
-        local variation = math.sin(tick() * pingFluctuationSpeed) * 35
-        local basePing = 45
-        local simulatedFluctuation = math.floor(basePing + variation + math.random(-15, 25))
-        simulatedFluctuation = math.clamp(simulatedFluctuation, 20, 140)
-        table.insert(pingHistory, simulatedFluctuation)
-        if #pingHistory > 8 then table.remove(pingHistory, 1) end
-        local sum = 0
-        for _, v in ipairs(pingHistory) do sum = sum + v end
-        local smoothPing = math.floor(sum / #pingHistory)
-        currentPingValue = smoothPing
-        return smoothPing
-    end
-    return currentPingValue > 0 and currentPingValue or 48
-end
-
-local serverRegions = {
-    {name = "US VIRGINIA", code = "US", basePing = 25, flag = "🇺🇸", ip = "216.98.48.0", region = "NA"},
-    {name = "US OREGON", code = "US-W", basePing = 30, flag = "🇺🇸", ip = "52.40.0.0", region = "NA"},
-    {name = "EU FRANKFURT", code = "EU", basePing = 35, flag = "🇪🇺", ip = "18.156.0.0", region = "EU"},
-    {name = "UK LONDON", code = "UK", basePing = 38, flag = "🇬🇧", ip = "35.176.0.0", region = "EU"},
-    {name = "SINGAPORE", code = "SG", basePing = 45, flag = "🇸🇬", ip = "54.254.0.0", region = "APAC"},
-    {name = "AUSTRALIA", code = "AU", basePing = 55, flag = "🇦🇺", ip = "13.210.0.0", region = "APAC"},
-    {name = "BRAZIL", code = "BR", basePing = 65, flag = "🇧🇷", ip = "54.207.0.0", region = "SA"},
-    {name = "JAPAN", code = "JP", basePing = 40, flag = "🇯🇵", ip = "54.199.0.0", region = "APAC"},
-    {name = "KOREA", code = "KR", basePing = 42, flag = "🇰🇷", ip = "13.124.0.0", region = "APAC"},
-    {name = "GERMANY", code = "DE", basePing = 35, flag = "🇩🇪", ip = "18.185.0.0", region = "EU"},
-    {name = "FRANCE", code = "FR", basePing = 36, flag = "🇫🇷", ip = "35.180.0.0", region = "EU"},
-    {name = "INDIA", code = "IN", basePing = 60, flag = "🇮🇳", ip = "13.232.0.0", region = "APAC"},
-    {name = "CANADA", code = "CA", basePing = 32, flag = "🇨🇦", ip = "52.60.0.0", region = "NA"},
-    {name = "MEXICO", code = "MX", basePing = 50, flag = "🇲🇽", ip = "18.224.0.0", region = "NA"},
-    {name = "SOUTH AFRICA", code = "ZA", basePing = 70, flag = "🇿🇦", ip = "13.244.0.0", region = "AF"}
-}
-
-local currentServerRegion = {name = "DETECTING", code = "??", basePing = 0, flag = "🌐", ip = "0.0.0.0", region = "??"}
-
-local function extractIPFromJobId(jobId)
-    if jobId and jobId ~= "" then
-        local numbers = {}
-        for num in string.gmatch(jobId, "%d+") do
-            table.insert(numbers, num)
-        end
-        if #numbers >= 4 then
-            return numbers[1] .. "." .. numbers[2] .. "." .. numbers[3] .. "." .. numbers[4]
-        end
-    end
-    return nil
-end
-
-local function detectServerRegion()
-    local jobId = game.JobId
-    if jobId and jobId ~= "" then
-        local extractedIP = extractIPFromJobId(jobId)
-        for _, region in ipairs(serverRegions) do
-            if string.find(string.upper(jobId), region.code) then
-                currentServerRegion = region
-                if extractedIP then currentServerRegion.ip = extractedIP end
-                return region
-            end
-        end
-    end
-    
-    local dataCenterStat = Stats:FindFirstChild("DataCenter")
-    if dataCenterStat and dataCenterStat:FindFirstChild("Location") then
-        local location = dataCenterStat.Location.Value
-        for _, region in ipairs(serverRegions) do
-            if string.find(string.upper(location), region.code) then
-                currentServerRegion = region
-                return region
-            end
-        end
-    end
-    
-    currentServerRegion = serverRegions[5]
-    return currentServerRegion
-end
-
-local function getDetailedServerInfo()
-    local region = currentServerRegion
-    local ping = getRealPing()
-    local pingColor = ping < 50 and "🟢" or (ping < 100 and "🟡" or (ping < 150 and "🟠" or "🔴"))
-    local qualityIcon = ping < 50 and "⚡" or (ping < 100 and "🌐" or "🐌")
-    return string.format("%s %s %s [%dms] %s | IP: %s | %s", 
-        region.flag, region.name, qualityIcon, ping, pingColor, region.ip, region.region)
-end
-
-local function getServerDisplayInfo()
-    local region = currentServerRegion
-    local ping = getRealPing()
-    local pingColor = ping < 50 and "🟢" or (ping < 100 and "🟡" or (ping < 150 and "🟠" or "🔴"))
-    return string.format("%s %s [%dms] %s", region.flag, region.name, ping, pingColor)
-end
-
-local selectedTarget = nil
-local isActive = false
-local currentMode = "SOLO"
-local godMode = false
-local espOn = true
-local speedHack = false
-local speedMultiplier = 2.5
-local noClip = false
-local infiniteJump = false
-local teleportTarget = false
-local emergencyEnabled = true
-local chamsOn = false
-local orbitAngle = 0
-local soloRadius = 5
-local orbitRadius = 5
-local orbitSpeed = 1.2
-local feetDist = 3
-local currentFF = nil
-local activeConnections = {}
-local espDataStore = {}
-local isMinimized = false
-local isGuiMinimized = false
-local originalCollisionStates = {}
-local currentTab = "COMBAT"
-local isGlowEnabled = true
-local isRainbowMode = false
-local rainbowHue = 0
-local chamsRenderConnection = nil
-local espUpdateLoop = nil
-local notificationQueue = {}
-local isNotifying = false
-local customHotkeys = {
-    activate = Enum.KeyCode.Insert,
-    deactivate = Enum.KeyCode.Delete,
-    godmode = Enum.KeyCode.V,
-    esp = Enum.KeyCode.E,
-    minimize = Enum.KeyCode.M,
-    panic = Enum.KeyCode.P,
-    combatTab = Enum.KeyCode.One,
-    visualsTab = Enum.KeyCode.Two,
-    movementTab = Enum.KeyCode.Three,
-    defenseTab = Enum.KeyCode.Four,
-    settingsTab = Enum.KeyCode.Five,
-    mountEverest = Enum.KeyCode.F1,
-    mountFuji = Enum.KeyCode.F2,
-    mountKilimanjaro = Enum.KeyCode.F3
-}
-local aimbotEnabled = false
-local aimbotSmoothing = 5
-local aimbotFOV = 120
-local autoFarmEnabled = false
-local farmRegion = nil
-local farmRadius = 50
-local antiAFKEnabled = true
-local antiAFKTimer = nil
-local macroRecorderActive = false
-local recordedMacro = {}
-local isPlayingMacro = false
-local currentPreset = "AGGRESSIVE"
-local presets = {
-    AGGRESSIVE = {speedMult = 3.5, orbitSpeed = 2, soloRadius = 3, emergency = true},
-    STEALTH = {speedMult = 1.5, orbitSpeed = 0.8, soloRadius = 8, emergency = true},
-    GODLIKE = {speedMult = 5, orbitSpeed = 3, soloRadius = 2, emergency = false}
-}
-
-local soloRunning = false
-local orbitRunning = false
-local feetRunning = false
-local speedLoopRunning = false
-local noclipLoopRunning = false
-local teleportLoopRunning = false
-
-local screenGui = nil
-local mainFrame = nil
-local dragHandle = nil
-local statusLabel = nil
-local targetListScrollingFrame = nil
-local targetButtonList = {}
-local modeButtonList = {}
-local tabButtonList = {}
-local tabContentContainers = {}
-local visualFeatureButtonList = {}
-local movementFeatureButtonList = {}
-local notificationFrame = nil
-local notificationText = nil
-local notificationTween = nil
-
-local function teleportToMountain(mountainKey)
-    local mountain = mountainLocations[mountainKey]
-    if not mountain then return false end
-    
-    local character = LocalPlayer.Character
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        character.HumanoidRootPart.CFrame = mountain.cframe
-        showNotification("Teleported to: " .. mountain.name, 2)
-        return true
-    end
-    return false
 end
 
 local function showNotification(message, duration)
@@ -558,54 +393,33 @@ local function showNotification(message, duration)
     local function processQueue()
         if #notificationQueue == 0 then
             isNotifying = false
-            if notificationFrame then
-                notificationFrame.Visible = false
-            end
             return
         end
         
         isNotifying = true
         local notif = table.remove(notificationQueue, 1)
         
-        if not notificationFrame or not notificationFrame.Parent then
-            if screenGui then
-                notificationFrame = Instance.new("Frame", screenGui)
-                notificationFrame.Size = UDim2.new(0, 350, 0, 60)
-                notificationFrame.Position = UDim2.new(0.5, -175, 0, 50)
-                notificationFrame.BackgroundColor3 = Color3.fromRGB(20, 15, 45)
-                notificationFrame.BackgroundTransparency = 0.15
-                notificationFrame.BorderSizePixel = 1
-                notificationFrame.BorderColor3 = Color3.fromRGB(150, 100, 255)
-                Instance.new("UICorner", notificationFrame).CornerRadius = UDim.new(0, 16)
-                
-                notificationText = Instance.new("TextLabel", notificationFrame)
-                notificationText.Size = UDim2.new(1, -20, 1, 0)
-                notificationText.Position = UDim2.new(0, 10, 0, 0)
-                notificationText.Text = ""
-                notificationText.TextColor3 = Color3.fromRGB(255, 255, 255)
-                notificationText.TextSize = 14
-                notificationText.Font = Enum.Font.Gotham
-                notificationText.TextWrapped = true
-                notificationText.BackgroundTransparency = 1
-                notificationFrame.Visible = false
-            end
-        end
+        local notifFrame = Instance.new("Frame", screenGui)
+        notifFrame.Size = UDim2.new(0, 350, 0, 50)
+        notifFrame.Position = UDim2.new(0.5, -175, 0, 100)
+        notifFrame.BackgroundColor3 = Color3.fromRGB(20, 15, 45)
+        notifFrame.BackgroundTransparency = 0.15
+        notifFrame.BorderSizePixel = 1
+        notifFrame.BorderColor3 = Color3.fromRGB(150, 100, 255)
+        Instance.new("UICorner", notifFrame).CornerRadius = UDim.new(0, 12)
         
-        notificationFrame.Visible = true
-        notificationText.Text = notif.msg
-        
-        local goal = {BackgroundTransparency = 0.25}
-        local tween = TweenService:Create(notificationFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal)
-        tween:Play()
+        local notifText = Instance.new("TextLabel", notifFrame)
+        notifText.Size = UDim2.new(1, -20, 1, 0)
+        notifText.Position = UDim2.new(0, 10, 0, 0)
+        notifText.Text = notif.msg
+        notifText.TextColor3 = Color3.fromRGB(255, 255, 255)
+        notifText.TextSize = 13
+        notifText.Font = Enum.Font.Gotham
+        notifText.TextWrapped = true
+        notifText.BackgroundTransparency = 1
         
         task.wait(notif.dur)
-        
-        local goal2 = {BackgroundTransparency = 1}
-        local tween2 = TweenService:Create(notificationFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), goal2)
-        tween2:Play()
-        tween2.Completed:Wait()
-        
-        notificationFrame.Visible = false
+        notifFrame:Destroy()
         processQueue()
     end
     
@@ -617,22 +431,21 @@ local function startSpeedBoost()
     speedLoopRunning = true
     task.spawn(function()
         while speedHack do
-            local character = LocalPlayer.Character
-            if character and character:FindFirstChild("Humanoid") then
-                local humanoid = character.Humanoid
-                humanoid.WalkSpeed = 16 * speedMultiplier
-                humanoid.JumpPower = 50 * math.min(speedMultiplier, 2.2)
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("Humanoid") then
+                char.Humanoid.WalkSpeed = 16 * speedMultiplier
+                char.Humanoid.JumpPower = 50 * math.min(speedMultiplier, 2)
             end
-            task.wait(0.12)
+            task.wait(0.15)
         end
         speedLoopRunning = false
     end)
 end
 
 local function storeOriginalCollision()
-    local character = LocalPlayer.Character
-    if not character then return end
-    for _, part in ipairs(character:GetDescendants()) do
+    local char = LocalPlayer.Character
+    if not char then return end
+    for _, part in ipairs(char:GetDescendants()) do
         if part:IsA("BasePart") and originalCollisionStates[part] == nil then
             originalCollisionStates[part] = part.CanCollide
         end
@@ -640,23 +453,19 @@ local function storeOriginalCollision()
 end
 
 local function activateNoclip()
-    local character = LocalPlayer.Character
-    if not character then return end
+    local char = LocalPlayer.Character
+    if not char then return end
     storeOriginalCollision()
-    for _, part in ipairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = false
-        end
+    for _, part in ipairs(char:GetDescendants()) do
+        if part:IsA("BasePart") then part.CanCollide = false end
     end
 end
 
 local function deactivateNoclip()
-    local character = LocalPlayer.Character
-    if not character then return end
-    for part, originalState in pairs(originalCollisionStates) do
-        if part and part.Parent then
-            part.CanCollide = originalState
-        end
+    local char = LocalPlayer.Character
+    if not char then return end
+    for part, orig in pairs(originalCollisionStates) do
+        if part and part.Parent then part.CanCollide = orig end
     end
     originalCollisionStates = {}
 end
@@ -667,16 +476,15 @@ local function runNoclipLoop()
     task.spawn(function()
         while noClip do
             activateNoclip()
-            task.wait(0.08)
+            task.wait(0.1)
         end
         deactivateNoclip()
         noclipLoopRunning = false
     end)
 end
 
-local infiniteJumpEnabled = false
 UserInputService.JumpRequest:Connect(function()
-    if infiniteJumpEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+    if infiniteJump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     end
 end)
@@ -686,21 +494,21 @@ local function runTeleportToTargetLoop()
     teleportLoopRunning = true
     task.spawn(function()
         while teleportTarget and selectedTarget and selectedTarget.Character do
-            local character = LocalPlayer.Character
-            local targetCharacter = selectedTarget.Character
-            if character and character:FindFirstChild("HumanoidRootPart") and targetCharacter and targetCharacter:FindFirstChild("HumanoidRootPart") then
-                character.HumanoidRootPart.CFrame = targetCharacter.HumanoidRootPart.CFrame * CFrame.new(0, 2.5, 0)
+            local char = LocalPlayer.Character
+            local targetChar = selectedTarget.Character
+            if char and char:FindFirstChild("HumanoidRootPart") and targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.CFrame = targetChar.HumanoidRootPart.CFrame * CFrame.new(0, 2, 0)
             end
-            task.wait(0.25)
+            task.wait(0.3)
         end
         teleportLoopRunning = false
     end)
 end
 
-local function stopChamsRenderer()
-    if chamsRenderConnection then
-        chamsRenderConnection:Disconnect()
-        chamsRenderConnection = nil
+local function stopChams()
+    if chamsConnection then
+        chamsConnection:Disconnect()
+        chamsConnection = nil
     end
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character then
@@ -714,14 +522,14 @@ local function stopChamsRenderer()
     end
 end
 
-local function startChamsRenderer()
-    if chamsRenderConnection then return end
-    chamsRenderConnection = RunService.RenderStepped:Connect(function()
+local function startChams()
+    if chamsConnection then return end
+    chamsConnection = RunService.RenderStepped:Connect(function()
         if not chamsOn then return end
-        local currentHue = rainbowHue
+        local hue = rainbowHue
         for _, player in ipairs(Players:GetPlayers()) do
             if player ~= LocalPlayer and player.Character then
-                local targetColor = isRainbowMode and Color3.fromHSV(currentHue, 1, 1) or Color3.fromRGB(255, 30, 30)
+                local colorToUse = isRainbowMode and Color3.fromHSV(hue, 1, 1) or Color3.fromRGB(255, 0, 0)
                 for _, part in ipairs(player.Character:GetDescendants()) do
                     if part:IsA("BasePart") then
                         if isGlowEnabled then
@@ -729,24 +537,24 @@ local function startChamsRenderer()
                         else
                             part.Material = Enum.Material.ForceField
                         end
-                        part.Color = targetColor
+                        part.Color = colorToUse
                     end
                 end
             end
         end
         if isRainbowMode then
-            rainbowHue = (rainbowHue + 0.012) % 1
+            rainbowHue = (rainbowHue + 0.01) % 1
         end
     end)
 end
 
-local function toggleChamsSystem()
+local function toggleChams()
     chamsOn = not chamsOn
     if chamsOn then
-        startChamsRenderer()
+        startChams()
         showNotification("CHAMS X-RAY ACTIVATED" .. (isGlowEnabled and " + NEON GLOW" or ""), 2)
     else
-        stopChamsRenderer()
+        stopChams()
         showNotification("CHAMS X-RAY DEACTIVATED", 2)
     end
 end
@@ -756,18 +564,18 @@ local function startSoloMode()
     soloRunning = true
     task.spawn(function()
         while isActive and currentMode == "SOLO" and selectedTarget and selectedTarget.Character do
-            local character = LocalPlayer.Character
-            local targetCharacter = selectedTarget.Character
-            if character and character:FindFirstChild("HumanoidRootPart") and targetCharacter and targetCharacter:FindFirstChild("HumanoidRootPart") then
-                local targetPosition = targetCharacter.HumanoidRootPart.Position
-                local randomAngle = math.random() * 2 * math.pi
-                local offsetX = targetPosition.X + math.cos(randomAngle) * soloRadius
-                local offsetZ = targetPosition.Z + math.sin(randomAngle) * soloRadius
-                local offsetY = math.random(1, 5)
-                character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(offsetX, targetPosition.Y + offsetY, offsetZ), targetPosition)
+            local char = LocalPlayer.Character
+            local targetChar = selectedTarget.Character
+            if char and char:FindFirstChild("HumanoidRootPart") and targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
+                local targetPos = targetChar.HumanoidRootPart.Position
+                local angle = math.random() * 2 * math.pi
+                local xOffset = targetPos.X + math.cos(angle) * soloRadius
+                local zOffset = targetPos.Z + math.sin(angle) * soloRadius
+                local yOffset = math.random(1, 4)
+                char.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(xOffset, targetPos.Y + yOffset, zOffset), targetPos)
                 pcall(function() VirtualUser:ClickButton1(Vector2.new(500, 500), 1) end)
             end
-            task.wait(0.04)
+            task.wait(0.05)
         end
         soloRunning = false
     end)
@@ -778,14 +586,14 @@ local function startOrbitMode()
     orbitRunning = true
     task.spawn(function()
         while isActive and currentMode == "ORBIT" and selectedTarget and selectedTarget.Character do
-            local character = LocalPlayer.Character
-            local targetCharacter = selectedTarget.Character
-            if character and character:FindFirstChild("HumanoidRootPart") and targetCharacter and targetCharacter:FindFirstChild("HumanoidRootPart") then
-                orbitAngle = orbitAngle + orbitSpeed * 0.07
-                local targetPosition = targetCharacter.HumanoidRootPart.Position
-                local offsetX = targetPosition.X + math.cos(orbitAngle) * orbitRadius
-                local offsetZ = targetPosition.Z + math.sin(orbitAngle) * orbitRadius
-                character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(offsetX, targetPosition.Y + 2.2, offsetZ), targetPosition)
+            local char = LocalPlayer.Character
+            local targetChar = selectedTarget.Character
+            if char and char:FindFirstChild("HumanoidRootPart") and targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
+                orbitAngle = orbitAngle + orbitSpeed * 0.05
+                local targetPos = targetChar.HumanoidRootPart.Position
+                local xOffset = targetPos.X + math.cos(orbitAngle) * orbitRadius
+                local zOffset = targetPos.Z + math.sin(orbitAngle) * orbitRadius
+                char.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(xOffset, targetPos.Y + 2, zOffset), targetPos)
                 pcall(function() VirtualUser:ClickButton1(Vector2.new(500, 500), 1) end)
             end
             task.wait()
@@ -799,11 +607,11 @@ local function startFeetMode()
     feetRunning = true
     task.spawn(function()
         while isActive and currentMode == "FEET" and selectedTarget and selectedTarget.Character do
-            local character = LocalPlayer.Character
-            local targetCharacter = selectedTarget.Character
-            if character and character:FindFirstChild("HumanoidRootPart") and targetCharacter and targetCharacter:FindFirstChild("HumanoidRootPart") then
-                local targetPosition = targetCharacter.HumanoidRootPart.Position
-                character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(targetPosition.X, targetPosition.Y - feetDist, targetPosition.Z), targetPosition)
+            local char = LocalPlayer.Character
+            local targetChar = selectedTarget.Character
+            if char and char:FindFirstChild("HumanoidRootPart") and targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
+                local targetPos = targetChar.HumanoidRootPart.Position
+                char.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(targetPos.X, targetPos.Y - feetDist, targetPos.Z), targetPos)
                 pcall(function() VirtualUser:ClickButton1(Vector2.new(500, 500), 1) end)
             end
             task.wait()
@@ -812,216 +620,167 @@ local function startFeetMode()
     end)
 end
 
-local function toggleGodModeSystem()
+local function toggleGodMode()
     godMode = not godMode
     if godMode then
         if currentFF then currentFF:Destroy() end
         currentFF = Instance.new("ForceField", LocalPlayer.Character)
-        currentFF.Name = "UltraGodMode"
+        currentFF.Name = "RedzGodMode"
         local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
         if humanoid then humanoid.BreakJointsOnDeath = false end
-        showNotification("GODMODE ACTIVATED - YOU ARE INVINCIBLE", 2)
+        showNotification("GODMODE ACTIVATED", 2)
     else
         if currentFF then currentFF:Destroy() end
-        local character = LocalPlayer.Character
-        if character then
-            for _, v in ipairs(character:GetChildren()) do
-                if v:IsA("ForceField") then v:Destroy() end
-            end
-            local humanoid = character:FindFirstChild("Humanoid")
+        local char = LocalPlayer.Character
+        if char then
+            for _, v in ipairs(char:GetChildren()) do if v:IsA("ForceField") then v:Destroy() end end
+            local humanoid = char:FindFirstChild("Humanoid")
             if humanoid then humanoid.BreakJointsOnDeath = true end
         end
         showNotification("GODMODE DEACTIVATED", 2)
     end
 end
 
-local function getPrecisionHealthColor(healthPercent)
-    if healthPercent >= 98 then return Color3.fromRGB(0, 255, 0)
-    elseif healthPercent >= 95 then return Color3.fromRGB(51, 255, 0)
-    elseif healthPercent >= 92 then return Color3.fromRGB(102, 255, 0)
-    elseif healthPercent >= 88 then return Color3.fromRGB(153, 255, 0)
-    elseif healthPercent >= 85 then return Color3.fromRGB(204, 255, 0)
-    elseif healthPercent >= 82 then return Color3.fromRGB(255, 255, 0)
-    elseif healthPercent >= 78 then return Color3.fromRGB(255, 242, 0)
-    elseif healthPercent >= 75 then return Color3.fromRGB(255, 229, 0)
-    elseif healthPercent >= 72 then return Color3.fromRGB(255, 216, 0)
-    elseif healthPercent >= 68 then return Color3.fromRGB(255, 204, 0)
-    elseif healthPercent >= 65 then return Color3.fromRGB(255, 191, 0)
-    elseif healthPercent >= 62 then return Color3.fromRGB(255, 178, 0)
-    elseif healthPercent >= 58 then return Color3.fromRGB(255, 165, 0)
-    elseif healthPercent >= 55 then return Color3.fromRGB(255, 153, 0)
-    elseif healthPercent >= 52 then return Color3.fromRGB(255, 140, 0)
-    elseif healthPercent >= 48 then return Color3.fromRGB(255, 127, 0)
-    elseif healthPercent >= 45 then return Color3.fromRGB(255, 114, 0)
-    elseif healthPercent >= 42 then return Color3.fromRGB(255, 102, 0)
-    elseif healthPercent >= 38 then return Color3.fromRGB(255, 89, 0)
-    elseif healthPercent >= 35 then return Color3.fromRGB(255, 76, 0)
-    elseif healthPercent >= 32 then return Color3.fromRGB(255, 63, 0)
-    elseif healthPercent >= 28 then return Color3.fromRGB(255, 51, 0)
-    elseif healthPercent >= 25 then return Color3.fromRGB(255, 38, 0)
-    elseif healthPercent >= 22 then return Color3.fromRGB(255, 25, 0)
-    elseif healthPercent >= 18 then return Color3.fromRGB(255, 13, 0)
+local function getHealthColor(healthPercent)
+    if healthPercent >= 75 then return Color3.fromRGB(0, 255, 0)
+    elseif healthPercent >= 60 then return Color3.fromRGB(255, 255, 0)
+    elseif healthPercent >= 45 then return Color3.fromRGB(255, 165, 0)
+    elseif healthPercent >= 30 then return Color3.fromRGB(255, 80, 0)
     elseif healthPercent >= 15 then return Color3.fromRGB(255, 0, 0)
-    elseif healthPercent >= 12 then return Color3.fromRGB(204, 0, 0)
-    elseif healthPercent >= 9 then return Color3.fromRGB(153, 0, 0)
-    elseif healthPercent >= 6 then return Color3.fromRGB(102, 0, 0)
-    elseif healthPercent >= 3 then return Color3.fromRGB(51, 0, 0)
-    else return Color3.fromRGB(20, 0, 0)
-    end
-end
-
-local function blendColors(colorA, colorB, blendFactor)
-    return Color3.new(
-        colorA.R + (colorB.R - colorA.R) * blendFactor,
-        colorA.G + (colorB.G - colorA.G) * blendFactor,
-        colorA.B + (colorB.B - colorA.B) * blendFactor
-    )
+    else return Color3.fromRGB(100, 0, 0) end
 end
 
 local function getSmoothHealthColor(healthPercent)
     if healthPercent >= 80 then
-        local blendFactor = (healthPercent - 80) / 20
-        return blendColors(Color3.fromRGB(204, 255, 0), Color3.fromRGB(0, 255, 0), blendFactor)
-    elseif healthPercent >= 60 and healthPercent < 80 then
-        local blendFactor = (healthPercent - 60) / 20
-        return blendColors(Color3.fromRGB(255, 178, 0), Color3.fromRGB(204, 255, 0), blendFactor)
-    elseif healthPercent >= 40 and healthPercent < 60 then
-        local blendFactor = (healthPercent - 40) / 20
-        return blendColors(Color3.fromRGB(255, 76, 0), Color3.fromRGB(255, 178, 0), blendFactor)
-    elseif healthPercent >= 20 and healthPercent < 40 then
-        local blendFactor = (healthPercent - 20) / 20
-        return blendColors(Color3.fromRGB(153, 0, 0), Color3.fromRGB(255, 76, 0), blendFactor)
+        local t = (healthPercent - 80) / 20
+        return Color3.new(0 + (204/255)*t, 1, 0)
+    elseif healthPercent >= 60 then
+        local t = (healthPercent - 60) / 20
+        return Color3.new((204/255) + (51/255)*t, 1 - t*0.5, 0)
+    elseif healthPercent >= 40 then
+        local t = (healthPercent - 40) / 20
+        return Color3.new(1, 1 - t*0.3, 0)
+    elseif healthPercent >= 20 then
+        local t = (healthPercent - 20) / 20
+        return Color3.new(1, 0.3 - t*0.3, 0)
     else
-        local blendFactor = healthPercent / 20
-        return blendColors(Color3.fromRGB(20, 0, 0), Color3.fromRGB(153, 0, 0), blendFactor)
+        local t = healthPercent / 20
+        return Color3.new(1, 0, t*0.4)
     end
 end
 
 local function refreshESPForPlayer(player)
     if not espDataStore[player] then return end
     if not player.Character or not player.Character:FindFirstChild("Humanoid") then return end
-    local humanoidObject = player.Character.Humanoid
-    local healthRatio = (humanoidObject.Health / humanoidObject.MaxHealth) * 100
-    local preciseHealthColor = getSmoothHealthColor(healthRatio)
+    local humanoidObj = player.Character.Humanoid
+    local healthPercent = (humanoidObj.Health / humanoidObj.MaxHealth) * 100
+    local preciseColor = getSmoothHealthColor(healthPercent)
     
     if espDataStore[player].healthFill then
-        espDataStore[player].healthFill.Size = UDim2.new(humanoidObject.Health / humanoidObject.MaxHealth, 0, 1, 0)
-        espDataStore[player].healthFill.BackgroundColor3 = preciseHealthColor
+        espDataStore[player].healthFill.Size = UDim2.new(humanoidObj.Health / humanoidObj.MaxHealth, 0, 1, 0)
+        espDataStore[player].healthFill.BackgroundColor3 = preciseColor
     end
     if espDataStore[player].healthLabel then
-        espDataStore[player].healthLabel.Text = string.format("%.1f%%", healthRatio)
-        espDataStore[player].healthLabel.TextColor3 = preciseHealthColor
+        espDataStore[player].healthLabel.Text = math.floor(healthPercent) .. "%"
+        espDataStore[player].healthLabel.TextColor3 = preciseColor
     end
-    if espDataStore[player].highlightObject then
-        espDataStore[player].highlightObject.FillColor = preciseHealthColor
-        espDataStore[player].highlightObject.OutlineColor = preciseHealthColor
-        espDataStore[player].highlightObject.FillTransparency = 0.42
-        espDataStore[player].highlightObject.OutlineTransparency = 0.12
+    if espDataStore[player].highlight then
+        espDataStore[player].highlight.FillColor = preciseColor
+        espDataStore[player].highlight.OutlineColor = preciseColor
     end
     if espDataStore[player].distanceLabel and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("HumanoidRootPart") then
-        local distanceValue = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-        local distanceColorChoice = distanceValue < 25 and Color3.fromRGB(255, 60, 60) or (distanceValue < 60 and Color3.fromRGB(255, 210, 60) or Color3.fromRGB(100, 255, 100))
-        espDataStore[player].distanceLabel.Text = math.floor(distanceValue) .. "m"
-        espDataStore[player].distanceLabel.TextColor3 = distanceColorChoice
+        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+        espDataStore[player].distanceLabel.Text = math.floor(distance) .. "m"
     end
 end
 
 local function buildESPForPlayer(player)
     if player == LocalPlayer or espDataStore[player] then return end
     if not player.Character then 
-        local connectionHandler
-        connectionHandler = player.CharacterAdded:Connect(function()
-            task.wait(0.6)
+        local conn = player.CharacterAdded:Connect(function()
+            task.wait(0.5)
             buildESPForPlayer(player)
-            if connectionHandler then connectionHandler:Disconnect() end
+            conn:Disconnect()
         end)
         return 
     end
-    local playerHumanoid = player.Character:FindFirstChild("Humanoid")
-    if not playerHumanoid then return end
-    local healthPercentage = (playerHumanoid.Health / playerHumanoid.MaxHealth) * 100
-    local healthColor = getSmoothHealthColor(healthPercentage)
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+    if not humanoid then return end
+    local healthPercent = (humanoid.Health / humanoid.MaxHealth) * 100
+    local preciseColor = getSmoothHealthColor(healthPercent)
     
-    local highlightComponent = Instance.new("Highlight")
-    highlightComponent.FillColor = healthColor
-    highlightComponent.FillTransparency = 0.42
-    highlightComponent.OutlineColor = healthColor
-    highlightComponent.OutlineTransparency = 0.12
-    highlightComponent.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    highlightComponent.Adornee = player.Character
-    highlightComponent.Parent = player.Character
+    local highlight = Instance.new("Highlight")
+    highlight.FillColor = preciseColor
+    highlight.FillTransparency = 0.5
+    highlight.OutlineColor = preciseColor
+    highlight.OutlineTransparency = 0.2
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Adornee = player.Character
+    highlight.Parent = player.Character
     
-    local billboardGui = Instance.new("BillboardGui")
-    billboardGui.Size = UDim2.new(0, 220, 0, 95)
-    billboardGui.StudsOffset = Vector3.new(0, 3, 0)
-    billboardGui.AlwaysOnTop = true
-    billboardGui.Parent = player.Character
+    local billboard = Instance.new("BillboardGui")
+    billboard.Size = UDim2.new(0, 180, 0, 70)
+    billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = player.Character
     
-    local backgroundPanel = Instance.new("Frame", billboardGui)
-    backgroundPanel.Size = UDim2.new(1, 0, 1, 0)
-    backgroundPanel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    backgroundPanel.BackgroundTransparency = 0.68
-    Instance.new("UICorner", backgroundPanel).CornerRadius = UDim.new(0, 14)
+    local bg = Instance.new("Frame", billboard)
+    bg.Size = UDim2.new(1, 0, 1, 0)
+    bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    bg.BackgroundTransparency = 0.6
+    Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 12)
     
-    local displayNameLabel = Instance.new("TextLabel", backgroundPanel)
-    displayNameLabel.Size = UDim2.new(1, 0, 0, 32)
-    displayNameLabel.Position = UDim2.new(0, 0, 0, 4)
-    displayNameLabel.Text = player.DisplayName
-    displayNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    displayNameLabel.TextSize = 15
-    displayNameLabel.Font = Enum.Font.GothamBold
-    displayNameLabel.BackgroundTransparency = 1
+    local name = Instance.new("TextLabel", bg)
+    name.Size = UDim2.new(1, 0, 0, 28)
+    name.Position = UDim2.new(0, 0, 0, 2)
+    name.Text = player.DisplayName
+    name.TextColor3 = Color3.fromRGB(255, 255, 255)
+    name.TextSize = 13
+    name.Font = Enum.Font.GothamBold
+    name.BackgroundTransparency = 1
     
-    local usernameLabel = Instance.new("TextLabel", backgroundPanel)
-    usernameLabel.Size = UDim2.new(1, 0, 0, 18)
-    usernameLabel.Position = UDim2.new(0, 0, 0, 36)
-    usernameLabel.Text = "@" .. player.Name
-    usernameLabel.TextColor3 = Color3.fromRGB(190, 190, 190)
-    usernameLabel.TextSize = 10
-    usernameLabel.BackgroundTransparency = 1
+    local user = Instance.new("TextLabel", bg)
+    user.Size = UDim2.new(1, 0, 0, 16)
+    user.Position = UDim2.new(0, 0, 0, 30)
+    user.Text = "@" .. player.Name
+    user.TextColor3 = Color3.fromRGB(180, 180, 180)
+    user.TextSize = 9
+    user.BackgroundTransparency = 1
     
-    local healthBarBackground = Instance.new("Frame", backgroundPanel)
-    healthBarBackground.Size = UDim2.new(0.9, 0, 0, 10)
-    healthBarBackground.Position = UDim2.new(0.05, 0, 0, 56)
-    healthBarBackground.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    Instance.new("UICorner", healthBarBackground).CornerRadius = UDim.new(0, 5)
+    local hbBg = Instance.new("Frame", bg)
+    hbBg.Size = UDim2.new(0.9, 0, 0, 8)
+    hbBg.Position = UDim2.new(0.05, 0, 0, 48)
+    hbBg.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    Instance.new("UICorner", hbBg).CornerRadius = UDim.new(0, 4)
     
-    local healthBarFill = Instance.new("Frame", healthBarBackground)
-    healthBarFill.Size = UDim2.new(healthPercentage / 100, 0, 1, 0)
-    healthBarFill.BackgroundColor3 = healthColor
-    Instance.new("UICorner", healthBarFill).CornerRadius = UDim.new(0, 5)
+    local hbFill = Instance.new("Frame", hbBg)
+    hbFill.Size = UDim2.new(healthPercent / 100, 0, 1, 0)
+    hbFill.BackgroundColor3 = preciseColor
+    Instance.new("UICorner", hbFill).CornerRadius = UDim.new(0, 4)
     
-    local healthValueLabel = Instance.new("TextLabel", backgroundPanel)
-    healthValueLabel.Size = UDim2.new(1, 0, 0, 18)
-    healthValueLabel.Position = UDim2.new(0, 0, 0, 66)
-    healthValueLabel.Text = string.format("%.1f%%", healthPercentage)
-    healthValueLabel.TextColor3 = healthColor
-    healthValueLabel.TextSize = 11
-    healthValueLabel.Font = Enum.Font.GothamBold
-    healthValueLabel.BackgroundTransparency = 1
+    local hpText = Instance.new("TextLabel", bg)
+    hpText.Size = UDim2.new(1, 0, 0, 16)
+    hpText.Position = UDim2.new(0, 0, 0, 56)
+    hpText.Text = math.floor(healthPercent) .. "%"
+    hpText.TextColor3 = preciseColor
+    hpText.TextSize = 10
+    hpText.BackgroundTransparency = 1
     
-    local distanceValueLabel = Instance.new("TextLabel", backgroundPanel)
-    distanceValueLabel.Size = UDim2.new(1, 0, 0, 14)
-    distanceValueLabel.Position = UDim2.new(0, 0, 0, 82)
-    distanceValueLabel.Text = "0m"
-    distanceValueLabel.TextColor3 = Color3.fromRGB(160, 160, 210)
-    distanceValueLabel.TextSize = 9
-    distanceValueLabel.BackgroundTransparency = 1
+    local distText = Instance.new("TextLabel", bg)
+    distText.Size = UDim2.new(1, 0, 0, 12)
+    distText.Position = UDim2.new(0, 0, 0, 68)
+    distText.Text = "0m"
+    distText.TextColor3 = Color3.fromRGB(150, 150, 200)
+    distText.TextSize = 9
+    distText.BackgroundTransparency = 1
     
-    espDataStore[player] = {
-        highlightObject = highlightComponent,
-        healthFill = healthBarFill,
-        healthLabel = healthValueLabel,
-        distanceLabel = distanceValueLabel,
-        billboardGui = billboardGui,
-        backgroundPanel = backgroundPanel
-    }
+    espDataStore[player] = {highlight = highlight, healthFill = hbFill, healthLabel = hpText, distanceLabel = distText, billboard = billboard}
 end
 
 local function destroyAllESP()
     for player, data in pairs(espDataStore) do
-        if data.highlightObject then pcall(function() data.highlightObject:Destroy() end) end
-        if data.billboardGui then pcall(function() data.billboardGui:Destroy() end) end
+        if data.highlight then pcall(function() data.highlight:Destroy() end) end
+        if data.billboard then pcall(function() data.billboard:Destroy() end) end
     end
     espDataStore = {}
 end
@@ -1043,7 +802,7 @@ local function startESPLoop()
     end)
 end
 
-local function toggleESPSystem()
+local function toggleESP()
     espOn = not espOn
     if espOn then
         destroyAllESP()
@@ -1051,7 +810,7 @@ local function toggleESPSystem()
             if player ~= LocalPlayer then buildESPForPlayer(player) end
         end
         startESPLoop()
-        showNotification("ESP ACTIVATED - TRACKING ALL PLAYERS", 2)
+        showNotification("ESP ACTIVATED", 2)
     else
         stopESPLoop()
         destroyAllESP()
@@ -1064,37 +823,37 @@ local function stopAllActions()
     soloRunning = false
     orbitRunning = false
     feetRunning = false
-    local character = LocalPlayer.Character
-    if character and character:FindFirstChild("Humanoid") then
-        character.Humanoid.WalkSpeed = 16
-        character.Humanoid.JumpPower = 50
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("Humanoid") then
+        char.Humanoid.WalkSpeed = 16
+        char.Humanoid.JumpPower = 50
     end
     if statusLabel then
-        statusLabel.Text = "⚡ SYSTEM INACTIVE"
+        statusLabel.Text = "● INACTIVE"
         statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
     end
     showNotification("All actions stopped", 1.5)
 end
 
-local function startAllActions()
+local function activate()
     if not selectedTarget then
-        if statusLabel then statusLabel.Text = "⚠️ NO TARGET SELECTED" end
-        showNotification("Please select a target first!", 2)
+        if statusLabel then statusLabel.Text = "⚠️ NO TARGET" end
+        showNotification("Select target first!", 2)
         return
     end
     stopAllActions()
     task.wait(0.1)
     isActive = true
     
-    local character = LocalPlayer.Character
-    if character and character:FindFirstChild("Humanoid") then
-        character.Humanoid.WalkSpeed = 190
-        character.Humanoid.JumpPower = 130
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("Humanoid") then
+        char.Humanoid.WalkSpeed = 180
+        char.Humanoid.JumpPower = 120
     end
     
     if statusLabel then
-        statusLabel.Text = "🔥 ACTIVE - " .. currentMode .. " → " .. selectedTarget.Name
-        statusLabel.TextColor3 = Color3.fromRGB(0, 255, 80)
+        statusLabel.Text = "● ACTIVE - " .. currentMode .. " → " .. selectedTarget.Name
+        statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
     end
     
     if currentMode == "SOLO" then startSoloMode()
@@ -1102,54 +861,52 @@ local function startAllActions()
     elseif currentMode == "FEET" then startFeetMode() end
     
     task.spawn(function()
-        while isActive and emergencyEnabled do
+        while isActive and emergency do
             local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
             if humanoid and (humanoid.Health / humanoid.MaxHealth) * 100 < 25 then
                 emergencyProtocol()
             end
-            task.wait(0.5)
+            task.wait(1)
         end
     end)
 end
 
 local function refreshTargetList()
     if not targetListScrollingFrame then return end
-    for _, button in pairs(targetButtonList) do
-        pcall(function() button:Destroy() end)
-    end
+    for _, btn in pairs(targetButtonList) do pcall(function() btn:Destroy() end) end
     targetButtonList = {}
-    local currentY = 0
+    local y = 0
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer then
-            local playerButton = Instance.new("TextButton", targetListScrollingFrame)
-            playerButton.Size = UDim2.new(1, -12, 0, 52)
-            playerButton.Position = UDim2.new(0, 6, 0, currentY)
-            playerButton.Text = "  👤  " .. player.DisplayName .. "\n  🆔 " .. player.Name
-            playerButton.TextColor3 = Color3.fromRGB(225, 225, 255)
-            playerButton.TextSize = 12
-            playerButton.TextXAlignment = Enum.TextXAlignment.Left
-            playerButton.Font = Enum.Font.Gotham
-            playerButton.BackgroundColor3 = Color3.fromRGB(38, 28, 75)
-            playerButton.BackgroundTransparency = 0.25
-            playerButton.TextWrapped = true
-            playerButton.TextYAlignment = Enum.TextYAlignment.Center
-            Instance.new("UICorner", playerButton).CornerRadius = UDim.new(0, 12)
-            playerButton.MouseButton1Click:Connect(function()
+            local btn = Instance.new("TextButton", targetListScrollingFrame)
+            btn.Size = UDim2.new(1, -10, 0, 48)
+            btn.Position = UDim2.new(0, 5, 0, y)
+            btn.Text = "  👤  " .. player.DisplayName .. "\n  @" .. player.Name
+            btn.TextColor3 = Color3.fromRGB(220, 220, 255)
+            btn.TextSize = 12
+            btn.TextXAlignment = Enum.TextXAlignment.Left
+            btn.Font = Enum.Font.Gotham
+            btn.BackgroundColor3 = Color3.fromRGB(35, 25, 70)
+            btn.BackgroundTransparency = 0.3
+            btn.TextWrapped = true
+            btn.TextYAlignment = Enum.TextYAlignment.Center
+            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+            btn.MouseButton1Click:Connect(function()
                 selectedTarget = player
-                for _, btn in pairs(targetButtonList) do
-                    btn.BackgroundColor3 = Color3.fromRGB(38, 28, 75)
-                    btn.BackgroundTransparency = 0.25
+                for _, b in pairs(targetButtonList) do
+                    b.BackgroundColor3 = Color3.fromRGB(35, 25, 70)
+                    b.BackgroundTransparency = 0.3
                 end
-                playerButton.BackgroundColor3 = Color3.fromRGB(120, 60, 210)
-                playerButton.BackgroundTransparency = 0.08
-                if statusLabel then statusLabel.Text = "🎯 TARGET LOCKED: " .. player.DisplayName end
-                showNotification("Target set to: " .. player.DisplayName, 1.5)
+                btn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
+                btn.BackgroundTransparency = 0.1
+                if statusLabel then statusLabel.Text = "🎯 TARGET: " .. player.DisplayName end
+                showNotification("Target set: " .. player.DisplayName, 1.5)
             end)
-            table.insert(targetButtonList, playerButton)
-            currentY = currentY + 58
+            table.insert(targetButtonList, btn)
+            y = y + 56
         end
     end
-    targetListScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, currentY + 15)
+    targetListScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, y + 10)
 end
 
 local function switchTab(tabName)
@@ -1161,1089 +918,910 @@ local function switchTab(tabName)
             btn.BackgroundColor3 = Color3.fromRGB(55, 42, 105)
         end
     end
-    for contentName, contentFrame in pairs(tabContentContainers) do
-        if contentFrame then
-            contentFrame.Visible = (contentName == tabName)
-        end
+    for name, frame in pairs(tabContentContainers) do
+        if frame then frame.Visible = (name == tabName) end
     end
-    showNotification("Switched to " .. tabName .. " tab", 1)
 end
 
-local function createAdvancedSlider(parent, startX, startY, width, minVal, maxVal, defaultValue, onChange, labelText, accentColor)
-    local sliderContainer = Instance.new("Frame", parent)
-    sliderContainer.Size = UDim2.new(0, width + 50, 0, 65)
-    sliderContainer.Position = UDim2.new(0, startX, 0, startY)
-    sliderContainer.BackgroundTransparency = 1
+local function createAdvancedSlider(parent, x, y, width, minVal, maxVal, defaultVal, callback, labelText, color)
+    local container = Instance.new("Frame", parent)
+    container.Size = UDim2.new(0, width + 40, 0, 60)
+    container.Position = UDim2.new(0, x, 0, y)
+    container.BackgroundTransparency = 1
     
-    local titleLabel = Instance.new("TextLabel", sliderContainer)
-    titleLabel.Size = UDim2.new(0.7, 0, 0, 25)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = labelText
-    titleLabel.TextColor3 = accentColor or Color3.fromRGB(210, 210, 255)
-    titleLabel.TextSize = 12
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.Gotham
+    local label = Instance.new("TextLabel", container)
+    label.Size = UDim2.new(1, 0, 0, 24)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.Text = labelText
+    label.TextColor3 = color or Color3.fromRGB(200, 200, 255)
+    label.TextSize = 12
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.Gotham
     
-    local valueDisplay = Instance.new("TextLabel", sliderContainer)
-    valueDisplay.Size = UDim2.new(0.25, 0, 0, 25)
-    valueDisplay.Position = UDim2.new(0.75, 0, 0, 0)
-    valueDisplay.Text = string.format("%.1f", defaultValue)
-    valueDisplay.TextColor3 = accentColor or Color3.fromRGB(255, 210, 100)
-    valueDisplay.TextSize = 13
-    valueDisplay.TextXAlignment = Enum.TextXAlignment.Right
-    valueDisplay.BackgroundTransparency = 1
-    valueDisplay.Font = Enum.Font.GothamBold
+    local valueLabel = Instance.new("TextLabel", container)
+    valueLabel.Size = UDim2.new(0, 50, 0, 24)
+    valueLabel.Position = UDim2.new(1, -50, 0, 0)
+    valueLabel.Text = string.format("%.1f", defaultVal)
+    valueLabel.TextColor3 = color or Color3.fromRGB(255, 200, 100)
+    valueLabel.TextSize = 12
+    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+    valueLabel.BackgroundTransparency = 1
+    valueLabel.Font = Enum.Font.GothamBold
     
-    local trackBackground = Instance.new("Frame", sliderContainer)
-    trackBackground.Size = UDim2.new(1, 0, 0, 6)
-    trackBackground.Position = UDim2.new(0, 0, 0, 30)
-    trackBackground.BackgroundColor3 = Color3.fromRGB(65, 45, 110)
-    Instance.new("UICorner", trackBackground).CornerRadius = UDim.new(1, 0)
+    local bg = Instance.new("Frame", container)
+    bg.Size = UDim2.new(1, 0, 0, 6)
+    bg.Position = UDim2.new(0, 0, 0, 28)
+    bg.BackgroundColor3 = Color3.fromRGB(60, 40, 100)
+    Instance.new("UICorner", bg).CornerRadius = UDim.new(1, 0)
     
-    local trackFill = Instance.new("Frame", trackBackground)
-    trackFill.Size = UDim2.new((defaultValue - minVal) / (maxVal - minVal), 0, 1, 0)
-    trackFill.BackgroundColor3 = accentColor or Color3.fromRGB(170, 110, 255)
-    Instance.new("UICorner", trackFill).CornerRadius = UDim.new(1, 0)
+    local fill = Instance.new("Frame", bg)
+    fill.Size = UDim2.new((defaultVal - minVal) / (maxVal - minVal), 0, 1, 0)
+    fill.BackgroundColor3 = color or Color3.fromRGB(150, 100, 255)
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
     
-    local controlKnob = Instance.new("Frame", trackBackground)
-    controlKnob.Size = UDim2.new(0, 20, 0, 20)
-    controlKnob.Position = UDim2.new((defaultValue - minVal) / (maxVal - minVal), -10, 0.5, -10)
-    controlKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Instance.new("UICorner", controlKnob).CornerRadius = UDim.new(1, 0)
-    controlKnob.BorderSizePixel = 2
-    controlKnob.BorderColor3 = accentColor or Color3.fromRGB(170, 110, 255)
+    local knob = Instance.new("Frame", bg)
+    knob.Size = UDim2.new(0, 18, 0, 18)
+    knob.Position = UDim2.new((defaultVal - minVal) / (maxVal - minVal), -9, 0.5, -9)
+    knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
+    knob.BorderSizePixel = 2
+    knob.BorderColor3 = color or Color3.fromRGB(150, 100, 255)
     
-    local isDraggingKnob = false
+    local dragging = false
     
-    local function updateSliderFromPosition(inputX)
-        local clampedPos = math.clamp((inputX - trackBackground.AbsolutePosition.X) / trackBackground.AbsoluteSize.X, 0, 1)
-        local newSliderValue = minVal + clampedPos * (maxVal - minVal)
-        trackFill.Size = UDim2.new(clampedPos, 0, 1, 0)
-        controlKnob.Position = UDim2.new(clampedPos, -10, 0.5, -10)
-        valueDisplay.Text = string.format("%.1f", newSliderValue)
-        onChange(newSliderValue)
+    local function update(pos)
+        local p = math.clamp((pos - bg.AbsolutePosition.X) / bg.AbsoluteSize.X, 0, 1)
+        local val = minVal + p * (maxVal - minVal)
+        fill.Size = UDim2.new(p, 0, 1, 0)
+        knob.Position = UDim2.new(p, -9, 0.5, -9)
+        valueLabel.Text = string.format("%.1f", val)
+        callback(val)
     end
     
-    trackBackground.InputBegan:Connect(function(input)
+    bg.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            isDraggingKnob = true
-            updateSliderFromPosition(input.Position.X)
+            dragging = true
+            update(input.Position.X)
         end
     end)
-    
-    controlKnob.InputBegan:Connect(function(input)
+    knob.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            isDraggingKnob = true
-            updateSliderFromPosition(input.Position.X)
+            dragging = true
+            update(input.Position.X)
         end
     end)
-    
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            isDraggingKnob = false
-        end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
     end)
-    
     UserInputService.InputChanged:Connect(function(input)
-        if isDraggingKnob and input.UserInputType == Enum.UserInputType.MouseMovement then
-            updateSliderFromPosition(input.Position.X)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            update(input.Position.X)
         end
     end)
 end
 
 screenGui = Instance.new("ScreenGui", CoreGui)
-screenGui.Name = "RedzBrocoliUltimate"
+screenGui.Name = "RedzBrocoli"
 screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 
 mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 1380, 0, 860)
-mainFrame.Position = UDim2.new(0.5, -690, 0.5, -430)
-mainFrame.BackgroundColor3 = Color3.fromRGB(8, 5, 25)
-mainFrame.BackgroundTransparency = 0.03
+mainFrame.Size = UDim2.new(0, 1300, 0, 800)
+mainFrame.Position = UDim2.new(0.5, -650, 0.5, -400)
+mainFrame.BackgroundColor3 = Color3.fromRGB(8, 5, 22)
+mainFrame.BackgroundTransparency = 0.05
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 34)
-
-local blurOverlay = Instance.new("Frame", mainFrame)
-blurOverlay.Size = UDim2.new(1, 0, 1, 0)
-blurOverlay.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-blurOverlay.BackgroundTransparency = 0.98
-
-local gradientBorderFrame = Instance.new("Frame", mainFrame)
-gradientBorderFrame.Size = UDim2.new(1, 24, 1, 24)
-gradientBorderFrame.Position = UDim2.new(0, -12, 0, -12)
-gradientBorderFrame.BackgroundTransparency = 0.92
-gradientBorderFrame.BorderSizePixel = 0
-Instance.new("UICorner", gradientBorderFrame).CornerRadius = UDim.new(0, 40)
-local borderGradientEffect = Instance.new("UIGradient", gradientBorderFrame)
-borderGradientEffect.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 20, 140)),
-    ColorSequenceKeypoint.new(0.15, Color3.fromRGB(140, 20, 255)),
-    ColorSequenceKeypoint.new(0.3, Color3.fromRGB(20, 200, 255)),
-    ColorSequenceKeypoint.new(0.45, Color3.fromRGB(20, 255, 140)),
-    ColorSequenceKeypoint.new(0.6, Color3.fromRGB(140, 255, 20)),
-    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 200, 20)),
-    ColorSequenceKeypoint.new(0.9, Color3.fromRGB(255, 20, 140)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 20, 140))
-}
-
-local rotationAngle = 0
-task.spawn(function()
-    while screenGui and screenGui.Parent do
-        rotationAngle = rotationAngle + 0.35
-        borderGradientEffect.Rotation = rotationAngle % 360
-        task.wait(0.05)
-    end
-end)
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 28)
 
 dragHandle = Instance.new("Frame", mainFrame)
-dragHandle.Size = UDim2.new(1, 0, 0, 90)
+dragHandle.Size = UDim2.new(1, 0, 0, 80)
 dragHandle.Position = UDim2.new(0, 0, 0, 0)
 dragHandle.BackgroundTransparency = 1
 
-local isDraggingWindow = false
+local isDraggingGUI = false
 local dragStartPos = nil
-local dragStartMousePos = nil
+local dragStartMouse = nil
 
 dragHandle.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        isDraggingWindow = true
+        isDraggingGUI = true
         dragStartPos = mainFrame.Position
-        dragStartMousePos = input.Position
+        dragStartMouse = input.Position
     end
 end)
 
 UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        isDraggingWindow = false
-    end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then isDraggingGUI = false end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if isDraggingWindow and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local deltaMovement = input.Position - dragStartMousePos
-        local newPosition = UDim2.new(dragStartPos.X.Scale, dragStartPos.X.Offset + deltaMovement.X, dragStartPos.Y.Scale, dragStartPos.Y.Offset + deltaMovement.Y)
-        mainFrame.Position = newPosition
+    if isDraggingGUI and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStartMouse
+        local newPos = UDim2.new(dragStartPos.X.Scale, dragStartPos.X.Offset + delta.X, dragStartPos.Y.Scale, dragStartPos.Y.Offset + delta.Y)
+        mainFrame.Position = newPos
     end
 end)
 
-local minimizeWindowButton = Instance.new("TextButton", mainFrame)
-minimizeWindowButton.Size = UDim2.new(0, 130, 0, 42)
-minimizeWindowButton.Position = UDim2.new(1, -145, 0, 24)
-minimizeWindowButton.Text = "➖"
-minimizeWindowButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-minimizeWindowButton.TextSize = 22
-minimizeWindowButton.Font = Enum.Font.GothamBold
-minimizeWindowButton.BackgroundColor3 = Color3.fromRGB(120, 75, 200)
-Instance.new("UICorner", minimizeWindowButton).CornerRadius = UDim.new(0, 16)
+local gradientBorder = Instance.new("Frame", mainFrame)
+gradientBorder.Size = UDim2.new(1, 16, 1, 16)
+gradientBorder.Position = UDim2.new(0, -8, 0, -8)
+gradientBorder.BackgroundTransparency = 0.9
+gradientBorder.BorderSizePixel = 0
+Instance.new("UICorner", gradientBorder).CornerRadius = UDim.new(0, 32)
+local borderGrad = Instance.new("UIGradient", gradientBorder)
+borderGrad.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 128)),
+    ColorSequenceKeypoint.new(0.25, Color3.fromRGB(128, 0, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(0, 255, 128)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 128))
+}
 
-local headerBar = Instance.new("Frame", dragHandle)
-headerBar.Size = UDim2.new(1, 0, 1, 0)
-headerBar.BackgroundColor3 = Color3.fromRGB(50, 35, 100)
-headerBar.BackgroundTransparency = 0.08
-Instance.new("UICorner", headerBar).CornerRadius = UDim.new(0, 34)
+task.spawn(function()
+    local angle = 0
+    while screenGui and screenGui.Parent do
+        angle = angle + 0.5
+        borderGrad.Rotation = angle % 360
+        task.wait(0.05)
+    end
+end)
 
-local mainTitle = Instance.new("TextLabel", headerBar)
-mainTitle.Size = UDim2.new(1, 0, 1, 0)
-mainTitle.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v25.0 • EMERGENCY MOUNTAIN TP ⚡"
-mainTitle.TextColor3 = Color3.fromRGB(255, 215, 130)
-mainTitle.TextScaled = true
-mainTitle.Font = Enum.Font.GothamBlack
-mainTitle.BackgroundTransparency = 1
+local minimizeBtn = Instance.new("TextButton", mainFrame)
+minimizeBtn.Size = UDim2.new(0, 120, 0, 38)
+minimizeBtn.Position = UDim2.new(1, -135, 0, 21)
+minimizeBtn.Text = "➖"
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.TextSize = 20
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(100, 60, 180)
+Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 12)
 
-local subTitleText = Instance.new("TextLabel", headerBar)
-subTitleText.Size = UDim2.new(1, 0, 0, 24)
-subTitleText.Position = UDim2.new(0, 0, 1, -26)
-subTitleText.Text = "EMERGENCY PROTOCOL • ALARM SYSTEM • MOUNTAIN TELEPORT • 3500+ LINES"
-subTitleText.TextColor3 = Color3.fromRGB(200, 170, 255)
-subTitleText.TextSize = 12
-subTitleText.Font = Enum.Font.Gotham
-subTitleText.BackgroundTransparency = 1
+local headerFrame = Instance.new("Frame", dragHandle)
+headerFrame.Size = UDim2.new(1, 0, 1, 0)
+headerFrame.BackgroundColor3 = Color3.fromRGB(40, 25, 80)
+headerFrame.BackgroundTransparency = 0.15
+Instance.new("UICorner", headerFrame).CornerRadius = UDim.new(0, 28)
 
-local infoPanel = Instance.new("Frame", mainFrame)
-infoPanel.Size = UDim2.new(1, -50, 0, 48)
-infoPanel.Position = UDim2.new(0, 25, 0, 95)
-infoPanel.BackgroundColor3 = Color3.fromRGB(40, 28, 80)
-infoPanel.BackgroundTransparency = 0.32
-Instance.new("UICorner", infoPanel).CornerRadius = UDim.new(0, 20)
+local titleLabel = Instance.new("TextLabel", headerFrame)
+titleLabel.Size = UDim2.new(1, 0, 1, 0)
+titleLabel.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v26.0 • MOUNTAIN TP EDITION ⚡"
+titleLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.GothamBlack
+titleLabel.BackgroundTransparency = 1
 
-local infoText = Instance.new("TextLabel", infoPanel)
-infoText.Size = UDim2.new(1, -25, 1, 0)
-infoText.Position = UDim2.new(0, 12, 0, 0)
-infoText.Text = "👤 " .. LocalPlayer.Name .. " | 🌐 DETECTING SERVER..."
-infoText.TextColor3 = Color3.fromRGB(215, 215, 255)
+local infoBar = Instance.new("Frame", mainFrame)
+infoBar.Size = UDim2.new(1, -40, 0, 45)
+infoBar.Position = UDim2.new(0, 20, 0, 85)
+infoBar.BackgroundColor3 = Color3.fromRGB(30, 20, 60)
+infoBar.BackgroundTransparency = 0.4
+Instance.new("UICorner", infoBar).CornerRadius = UDim.new(0, 16)
+
+local infoText = Instance.new("TextLabel", infoBar)
+infoText.Size = UDim2.new(1, -20, 1, 0)
+infoText.Position = UDim2.new(0, 10, 0, 0)
+infoText.Text = "👤 " .. LocalPlayer.Name .. " | 📶 LOADING..."
+infoText.TextColor3 = Color3.fromRGB(200, 200, 255)
 infoText.TextSize = 13
 infoText.TextXAlignment = Enum.TextXAlignment.Left
 infoText.BackgroundTransparency = 1
 infoText.Font = Enum.Font.Gotham
 
-local serverRegionButton = Instance.new("TextButton", infoPanel)
-serverRegionButton.Size = UDim2.new(0, 160, 0, 34)
-serverRegionButton.Position = UDim2.new(1, -170, 0.5, -17)
-serverRegionButton.Text = "🌐 CHANGE REGION"
-serverRegionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-serverRegionButton.TextSize = 12
-serverRegionButton.Font = Enum.Font.GothamBold
-serverRegionButton.BackgroundColor3 = Color3.fromRGB(120, 80, 220)
-Instance.new("UICorner", serverRegionButton).CornerRadius = UDim.new(0, 12)
-
-local regionDropdownOpen = false
-local regionDropdownMenu = nil
-
-serverRegionButton.MouseButton1Click:Connect(function()
-    if regionDropdownMenu then regionDropdownMenu:Destroy() end
-    regionDropdownOpen = not regionDropdownOpen
-    
-    if regionDropdownOpen then
-        regionDropdownMenu = Instance.new("Frame", mainFrame)
-        regionDropdownMenu.Size = UDim2.new(0, 240, 0, 360)
-        regionDropdownMenu.Position = UDim2.new(1, -250, 0, 150)
-        regionDropdownMenu.BackgroundColor3 = Color3.fromRGB(25, 18, 60)
-        regionDropdownMenu.BackgroundTransparency = 0.06
-        Instance.new("UICorner", regionDropdownMenu).CornerRadius = UDim.new(0, 16)
-        regionDropdownMenu.BorderSizePixel = 1
-        regionDropdownMenu.BorderColor3 = Color3.fromRGB(120, 80, 220)
-        
-        local scrollContainer = Instance.new("ScrollingFrame", regionDropdownMenu)
-        scrollContainer.Size = UDim2.new(1, -12, 1, -12)
-        scrollContainer.Position = UDim2.new(0, 6, 0, 6)
-        scrollContainer.BackgroundTransparency = 1
-        scrollContainer.ScrollBarThickness = 5
-        
-        local itemY = 0
-        for _, regionData in ipairs(serverRegions) do
-            local regionItem = Instance.new("TextButton", scrollContainer)
-            regionItem.Size = UDim2.new(1, -12, 0, 42)
-            regionItem.Position = UDim2.new(0, 6, 0, itemY)
-            regionItem.Text = regionData.flag .. " " .. regionData.name .. " [" .. regionData.basePing .. "ms]"
-            regionItem.TextColor3 = Color3.fromRGB(235, 235, 255)
-            regionItem.TextSize = 12
-            regionItem.TextXAlignment = Enum.TextXAlignment.Left
-            regionItem.Font = Enum.Font.Gotham
-            regionItem.BackgroundColor3 = Color3.fromRGB(55, 45, 105)
-            Instance.new("UICorner", regionItem).CornerRadius = UDim.new(0, 10)
-            regionItem.MouseButton1Click:Connect(function()
-                currentServerRegion = regionData
-                regionDropdownMenu:Destroy()
-                regionDropdownOpen = false
-                showNotification("Server region set to: " .. regionData.name, 2)
-            end)
-            itemY = itemY + 48
-        end
-        scrollContainer.CanvasSize = UDim2.new(0, 0, 0, itemY + 10)
-        
-        task.delay(6, function()
-            if regionDropdownMenu and regionDropdownMenu.Parent then
-                regionDropdownMenu:Destroy()
-                regionDropdownOpen = false
-            end
-        end)
-    end
+local scanMountainBtn = Instance.new("TextButton", infoBar)
+scanMountainBtn.Size = UDim2.new(0, 140, 0, 32)
+scanMountainBtn.Position = UDim2.new(1, -290, 0.5, -16)
+scanMountainBtn.Text = "🗻 SCAN MOUNTAINS"
+scanMountainBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+scanMountainBtn.TextSize = 11
+scanMountainBtn.Font = Enum.Font.GothamBold
+scanMountainBtn.BackgroundColor3 = Color3.fromRGB(70, 180, 100)
+Instance.new("UICorner", scanMountainBtn).CornerRadius = UDim.new(0, 10)
+scanMountainBtn.MouseButton1Click:Connect(function()
+    scanMapForMountains()
+    showNotification("Scanned " .. #mountainLocationsInGame .. " mountain locations found!", 2)
 end)
 
-detectServerRegion()
+local tpHighestBtn = Instance.new("TextButton", infoBar)
+tpHighestBtn.Size = UDim2.new(0, 140, 0, 32)
+tpHighestBtn.Position = UDim2.new(1, -140, 0.5, -16)
+tpHighestBtn.Text = "🏔️ TP HIGHEST"
+tpHighestBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tpHighestBtn.TextSize = 11
+tpHighestBtn.Font = Enum.Font.GothamBold
+tpHighestBtn.BackgroundColor3 = Color3.fromRGB(100, 70, 200)
+Instance.new("UICorner", tpHighestBtn).CornerRadius = UDim.new(0, 10)
+tpHighestBtn.MouseButton1Click:Connect(function()
+    teleportToHighestPoint()
+end)
 
-local leftSidePanel = Instance.new("Frame", mainFrame)
-leftSidePanel.Size = UDim2.new(0, 235, 1, -165)
-leftSidePanel.Position = UDim2.new(0, 25, 0, 160)
-leftSidePanel.BackgroundColor3 = Color3.fromRGB(35, 25, 70)
-leftSidePanel.BackgroundTransparency = 0.22
-leftSidePanel.BorderSizePixel = 1
-leftSidePanel.BorderColor3 = Color3.fromRGB(100, 75, 170)
-Instance.new("UICorner", leftSidePanel).CornerRadius = UDim.new(0, 22)
+scanMapForMountains()
 
-local tabItems = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS", "PRESETS", "MOUNTAINS"}
-local tabStartY = 18
-for _, tabLabel in ipairs(tabItems) do
-    local tabBtn = Instance.new("TextButton", leftSidePanel)
-    tabBtn.Size = UDim2.new(0.88, 0, 0, 52)
-    tabBtn.Position = UDim2.new(0.06, 0, 0, tabStartY)
-    tabBtn.Text = tabLabel
-    tabBtn.TextColor3 = Color3.fromRGB(215, 215, 255)
-    tabBtn.TextSize = 14
-    tabBtn.Font = Enum.Font.GothamBold
-    tabBtn.BackgroundColor3 = (tabLabel == "COMBAT") and Color3.fromRGB(150, 95, 240) or Color3.fromRGB(55, 42, 105)
-    Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 16)
-    tabBtn.MouseButton1Click:Connect(function()
-        switchTab(tabLabel)
+local leftPanel = Instance.new("Frame", mainFrame)
+leftPanel.Size = UDim2.new(0, 220, 1, -150)
+leftPanel.Position = UDim2.new(0, 20, 0, 145)
+leftPanel.BackgroundColor3 = Color3.fromRGB(25, 18, 50)
+leftPanel.BackgroundTransparency = 0.3
+leftPanel.BorderSizePixel = 1
+leftPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
+Instance.new("UICorner", leftPanel).CornerRadius = UDim.new(0, 18)
+
+local tabNames = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS", "MOUNTAINS"}
+local tabY = 15
+for _, tab in ipairs(tabNames) do
+    local btn = Instance.new("TextButton", leftPanel)
+    btn.Size = UDim2.new(0.9, 0, 0, 52)
+    btn.Position = UDim2.new(0.05, 0, 0, tabY)
+    btn.Text = tab
+    btn.TextColor3 = Color3.fromRGB(200, 200, 255)
+    btn.TextSize = 15
+    btn.Font = Enum.Font.GothamBold
+    btn.BackgroundColor3 = (tab == "COMBAT") and Color3.fromRGB(130, 80, 220) or Color3.fromRGB(45, 35, 85)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 14)
+    btn.MouseButton1Click:Connect(function()
+        switchTab(tab)
     end)
-    table.insert(tabButtonList, tabBtn)
-    tabStartY = tabStartY + 60
+    table.insert(tabButtonList, btn)
+    tabY = tabY + 60
 end
 
-local rightContentPanel = Instance.new("Frame", mainFrame)
-rightContentPanel.Size = UDim2.new(1, -285, 1, -165)
-rightContentPanel.Position = UDim2.new(0, 275, 0, 160)
-rightContentPanel.BackgroundColor3 = Color3.fromRGB(35, 25, 70)
-rightContentPanel.BackgroundTransparency = 0.22
-rightContentPanel.BorderSizePixel = 1
-rightContentPanel.BorderColor3 = Color3.fromRGB(100, 75, 170)
-rightContentPanel.ClipsDescendants = true
-Instance.new("UICorner", rightContentPanel).CornerRadius = UDim.new(0, 22)
+local rightPanel = Instance.new("Frame", mainFrame)
+rightPanel.Size = UDim2.new(1, -260, 1, -150)
+rightPanel.Position = UDim2.new(0, 240, 0, 145)
+rightPanel.BackgroundColor3 = Color3.fromRGB(25, 18, 50)
+rightPanel.BackgroundTransparency = 0.3
+rightPanel.BorderSizePixel = 1
+rightPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
+rightPanel.ClipsDescendants = true
+Instance.new("UICorner", rightPanel).CornerRadius = UDim.new(0, 18)
 
-local combatContent = Instance.new("Frame", rightContentPanel)
-combatContent.Size = UDim2.new(1, -50, 1, -40)
-combatContent.Position = UDim2.new(0, 25, 0, 20)
+local combatContent = Instance.new("Frame", rightPanel)
+combatContent.Size = UDim2.new(1, -40, 1, -30)
+combatContent.Position = UDim2.new(0, 20, 0, 15)
 combatContent.BackgroundTransparency = 1
 tabContentContainers["COMBAT"] = combatContent
 
 statusLabel = Instance.new("TextLabel", combatContent)
-statusLabel.Size = UDim2.new(1, 0, 0, 50)
+statusLabel.Size = UDim2.new(1, 0, 0, 45)
 statusLabel.Position = UDim2.new(0, 0, 0, 0)
 statusLabel.Text = "⚡ SYSTEM READY"
-statusLabel.TextColor3 = Color3.fromRGB(50, 255, 120)
-statusLabel.TextSize = 18
+statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
+statusLabel.TextSize = 16
 statusLabel.Font = Enum.Font.GothamBold
 statusLabel.BackgroundTransparency = 1
 
-local targetListHeader = Instance.new("TextLabel", combatContent)
-targetListHeader.Size = UDim2.new(0, 280, 0, 35)
-targetListHeader.Position = UDim2.new(0, 0, 0, 60)
-targetListHeader.Text = "🎯 AVAILABLE TARGETS"
-targetListHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
-targetListHeader.TextSize = 15
-targetListHeader.Font = Enum.Font.GothamBold
-targetListHeader.BackgroundTransparency = 1
+local targetListLabel = Instance.new("TextLabel", combatContent)
+targetListLabel.Size = UDim2.new(0, 250, 0, 30)
+targetListLabel.Position = UDim2.new(0, 0, 0, 55)
+targetListLabel.Text = "🎯 TARGET LIST"
+targetListLabel.TextColor3 = Color3.fromRGB(0, 220, 255)
+targetListLabel.TextSize = 14
+targetListLabel.Font = Enum.Font.GothamBold
+targetListLabel.BackgroundTransparency = 1
 
 targetListScrollingFrame = Instance.new("ScrollingFrame", combatContent)
-targetListScrollingFrame.Size = UDim2.new(0, 330, 0, 320)
-targetListScrollingFrame.Position = UDim2.new(0, 0, 0, 100)
-targetListScrollingFrame.BackgroundColor3 = Color3.fromRGB(20, 14, 50)
-targetListScrollingFrame.BackgroundTransparency = 0.32
+targetListScrollingFrame.Size = UDim2.new(0, 300, 0, 300)
+targetListScrollingFrame.Position = UDim2.new(0, 0, 0, 90)
+targetListScrollingFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 40)
+targetListScrollingFrame.BackgroundTransparency = 0.4
 targetListScrollingFrame.BorderSizePixel = 0
 targetListScrollingFrame.ScrollBarThickness = 6
-Instance.new("UICorner", targetListScrollingFrame).CornerRadius = UDim.new(0, 16)
+Instance.new("UICorner", targetListScrollingFrame).CornerRadius = UDim.new(0, 14)
 
-local modeHeader = Instance.new("TextLabel", combatContent)
-modeHeader.Size = UDim2.new(0, 280, 0, 35)
-modeHeader.Position = UDim2.new(0, 360, 0, 60)
-modeHeader.Text = "⚔️ COMBAT MODE"
-modeHeader.TextColor3 = Color3.fromRGB(255, 170, 110)
-modeHeader.TextSize = 15
-modeHeader.Font = Enum.Font.GothamBold
-modeHeader.BackgroundTransparency = 1
+local modeLabel = Instance.new("TextLabel", combatContent)
+modeLabel.Size = UDim2.new(0, 250, 0, 30)
+modeLabel.Position = UDim2.new(0, 330, 0, 55)
+modeLabel.Text = "⚔️ SELECT MODE"
+modeLabel.TextColor3 = Color3.fromRGB(255, 150, 100)
+modeLabel.TextSize = 14
+modeLabel.Font = Enum.Font.GothamBold
+modeLabel.BackgroundTransparency = 1
 
-local modeButtonPanel = Instance.new("Frame", combatContent)
-modeButtonPanel.Size = UDim2.new(0, 320, 0, 210)
-modeButtonPanel.Position = UDim2.new(0, 360, 0, 100)
-modeButtonPanel.BackgroundTransparency = 1
+local modeContainer = Instance.new("Frame", combatContent)
+modeContainer.Size = UDim2.new(0, 280, 0, 180)
+modeContainer.Position = UDim2.new(0, 330, 0, 90)
+modeContainer.BackgroundTransparency = 1
 
-local availableModes = {"SOLO", "ORBIT", "FEET"}
-local modeBtnY = 0
-for idx, modeLabel in ipairs(availableModes) do
-    local modeBtn = Instance.new("TextButton", modeButtonPanel)
-    modeBtn.Size = UDim2.new(1, 0, 0, 58)
-    modeBtn.Position = UDim2.new(0, 0, 0, modeBtnY)
-    modeBtn.Text = modeLabel
-    modeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    modeBtn.TextSize = 18
-    modeBtn.Font = Enum.Font.GothamBold
-    modeBtn.BackgroundColor3 = (idx == 1) and Color3.fromRGB(240, 70, 130) or Color3.fromRGB(65, 52, 115)
-    Instance.new("UICorner", modeBtn).CornerRadius = UDim.new(0, 16)
-    modeBtn.MouseButton1Click:Connect(function()
-        currentMode = modeLabel
-        for _, btn in pairs(modeButtonList) do
-            btn.BackgroundColor3 = Color3.fromRGB(65, 52, 115)
+local modeList = {"SOLO", "ORBIT", "FEET"}
+local modeY = 0
+for i, m in ipairs(modeList) do
+    local btn = Instance.new("TextButton", modeContainer)
+    btn.Size = UDim2.new(1, 0, 0, 52)
+    btn.Position = UDim2.new(0, 0, 0, modeY)
+    btn.Text = m
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 16
+    btn.Font = Enum.Font.GothamBold
+    btn.BackgroundColor3 = (i == 1) and Color3.fromRGB(220, 60, 120) or Color3.fromRGB(55, 45, 95)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 14)
+    btn.MouseButton1Click:Connect(function()
+        currentMode = m
+        for _, b in pairs(modeButtonList) do
+            b.BackgroundColor3 = Color3.fromRGB(55, 45, 95)
         end
-        modeBtn.BackgroundColor3 = Color3.fromRGB(240, 70, 130)
-        statusLabel.Text = "📌 MODE SELECTED: " .. modeLabel
-        showNotification("Combat mode set to: " .. modeLabel, 1.5)
+        btn.BackgroundColor3 = Color3.fromRGB(220, 60, 120)
+        statusLabel.Text = "📌 MODE: " .. m
+        showNotification("Mode set to: " .. m, 1.5)
     end)
-    table.insert(modeButtonList, modeBtn)
-    modeBtnY = modeBtnY + 66
+    table.insert(modeButtonList, btn)
+    modeY = modeY + 58
 end
 
-local actionPanel = Instance.new("Frame", combatContent)
-actionPanel.Size = UDim2.new(0, 320, 0, 140)
-actionPanel.Position = UDim2.new(0, 360, 0, 325)
-actionPanel.BackgroundTransparency = 1
+local actionContainer = Instance.new("Frame", combatContent)
+actionContainer.Size = UDim2.new(0, 280, 0, 120)
+actionContainer.Position = UDim2.new(0, 330, 0, 290)
+actionContainer.BackgroundTransparency = 1
 
-local activateSystemBtn = Instance.new("TextButton", actionPanel)
-activateSystemBtn.Size = UDim2.new(1, 0, 0, 56)
-activateSystemBtn.Position = UDim2.new(0, 0, 0, 0)
-activateSystemBtn.Text = "✅ ACTIVATE SYSTEM"
-activateSystemBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-activateSystemBtn.TextSize = 16
-activateSystemBtn.Font = Enum.Font.GothamBold
-activateSystemBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-Instance.new("UICorner", activateSystemBtn).CornerRadius = UDim.new(0, 16)
+local activateBtn = Instance.new("TextButton", actionContainer)
+activateBtn.Size = UDim2.new(1, 0, 0, 50)
+activateBtn.Position = UDim2.new(0, 0, 0, 0)
+activateBtn.Text = "✅ ACTIVATE"
+activateBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+activateBtn.TextSize = 15
+activateBtn.Font = Enum.Font.GothamBold
+activateBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 0)
+Instance.new("UICorner", activateBtn).CornerRadius = UDim.new(0, 14)
 
-local deactivateSystemBtn = Instance.new("TextButton", actionPanel)
-deactivateSystemBtn.Size = UDim2.new(1, 0, 0, 56)
-deactivateSystemBtn.Position = UDim2.new(0, 0, 0, 68)
-deactivateSystemBtn.Text = "❌ DEACTIVATE SYSTEM"
-deactivateSystemBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-deactivateSystemBtn.TextSize = 16
-deactivateSystemBtn.Font = Enum.Font.GothamBold
-deactivateSystemBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-Instance.new("UICorner", deactivateSystemBtn).CornerRadius = UDim.new(0, 16)
+local deactivateBtn = Instance.new("TextButton", actionContainer)
+deactivateBtn.Size = UDim2.new(1, 0, 0, 50)
+deactivateBtn.Position = UDim2.new(0, 0, 0, 60)
+deactivateBtn.Text = "❌ DEACTIVATE"
+deactivateBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+deactivateBtn.TextSize = 15
+deactivateBtn.Font = Enum.Font.GothamBold
+deactivateBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+Instance.new("UICorner", deactivateBtn).CornerRadius = UDim.new(0, 14)
 
-createAdvancedSlider(combatContent, 0, 460, 340, 2, 14, soloRadius, function(val) soloRadius = val end, "📍 TELEPORT RADIUS", Color3.fromRGB(255, 120, 210))
-createAdvancedSlider(combatContent, 0, 535, 340, 3, 14, orbitRadius, function(val) orbitRadius = val end, "🔄 ORBIT RADIUS", Color3.fromRGB(170, 110, 255))
-createAdvancedSlider(combatContent, 0, 610, 340, 0.3, 3.5, orbitSpeed, function(val) orbitSpeed = val end, "⚡ ORBIT SPEED", Color3.fromRGB(100, 255, 100))
-createAdvancedSlider(combatContent, 0, 685, 340, 1, 12, feetDist, function(val) feetDist = val end, "🦶 FEET DISTANCE", Color3.fromRGB(100, 220, 160))
+createAdvancedSlider(combatContent, 0, 420, 280, 2, 12, soloRadius, function(v) soloRadius = v end, "📍 TELEPORT RADIUS", Color3.fromRGB(255, 100, 200))
+createAdvancedSlider(combatContent, 0, 490, 280, 3, 12, orbitRadius, function(v) orbitRadius = v end, "🔄 ORBIT RADIUS", Color3.fromRGB(150, 100, 255))
+createAdvancedSlider(combatContent, 0, 560, 280, 0.3, 3, orbitSpeed, function(v) orbitSpeed = v end, "⚡ ORBIT SPEED", Color3.fromRGB(100, 255, 100))
+createAdvancedSlider(combatContent, 0, 630, 280, 1, 10, feetDist, function(v) feetDist = v end, "🦶 FEET DISTANCE", Color3.fromRGB(100, 200, 150))
 
-local visualsContent = Instance.new("Frame", rightContentPanel)
-visualsContent.Size = UDim2.new(1, -50, 1, -40)
-visualsContent.Position = UDim2.new(0, 25, 0, 20)
+local visualsContent = Instance.new("Frame", rightPanel)
+visualsContent.Size = UDim2.new(1, -40, 1, -30)
+visualsContent.Position = UDim2.new(0, 20, 0, 15)
 visualsContent.BackgroundTransparency = 1
 visualsContent.Visible = false
 tabContentContainers["VISUALS"] = visualsContent
 
-local visualsHeader = Instance.new("TextLabel", visualsContent)
-visualsHeader.Size = UDim2.new(1, 0, 0, 45)
-visualsHeader.Text = "👁️ VISUAL ENHANCEMENTS • PRECISION ESP"
-visualsHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
-visualsHeader.TextSize = 19
-visualsHeader.Font = Enum.Font.GothamBold
-visualsHeader.BackgroundTransparency = 1
+local visTitle = Instance.new("TextLabel", visualsContent)
+visTitle.Size = UDim2.new(1, 0, 0, 40)
+visTitle.Text = "👁️ VISUAL SETTINGS"
+visTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
+visTitle.TextSize = 18
+visTitle.Font = Enum.Font.GothamBold
+visTitle.BackgroundTransparency = 1
 
-local visualOptions = {
-    {name = "PLAYER ESP", var = "esp", defaultValue = true, yPos = 70, btnColor = Color3.fromRGB(0, 200, 90)},
-    {name = "CHAMS X-RAY", var = "chams", defaultValue = false, yPos = 150, btnColor = Color3.fromRGB(220, 120, 0)},
-    {name = "NEON GLOW EFFECT", var = "glow", defaultValue = true, yPos = 230, btnColor = Color3.fromRGB(0, 170, 220)},
-    {name = "RAINBOW CHROMA", var = "rainbow", defaultValue = false, yPos = 310, btnColor = Color3.fromRGB(255, 0, 220)},
+local visFeatures = {
+    {name = "PLAYER ESP", var = "esp", default = true, y = 55, color = Color3.fromRGB(0, 180, 80)},
+    {name = "CHAMS X-RAY", var = "chams", default = false, y = 125, color = Color3.fromRGB(200, 100, 0)},
+    {name = "NEON GLOW", var = "glow", default = true, y = 195, color = Color3.fromRGB(0, 150, 200)},
+    {name = "RAINBOW MODE", var = "rainbow", default = false, y = 265, color = Color3.fromRGB(255, 0, 200)},
 }
 
-local currentEspStateVar = espOn
-local currentChamsStateVar = chamsOn
-local currentGlowStateVar = isGlowEnabled
-local currentRainbowStateVar = isRainbowMode
+local currentEsp = espOn
+local currentChams = chamsOn
+local currentGlow = isGlowEnabled
+local currentRainbow = isRainbowMode
 
-for _, opt in ipairs(visualOptions) do
-    local optButton = Instance.new("TextButton", visualsContent)
-    optButton.Size = UDim2.new(0, 380, 0, 60)
-    optButton.Position = UDim2.new(0, 0, 0, opt.yPos)
-    
-    local initState = false
-    if opt.var == "esp" then initState = currentEspStateVar
-    elseif opt.var == "chams" then initState = currentChamsStateVar
-    elseif opt.var == "glow" then initState = currentGlowStateVar
-    elseif opt.var == "rainbow" then initState = currentRainbowStateVar end
-    
-    optButton.Text = (initState and "✅ " or "⬜ ") .. opt.name
-    optButton.TextColor3 = initState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-    optButton.TextSize = 15
-    optButton.Font = Enum.Font.Gotham
-    optButton.BackgroundColor3 = initState and opt.btnColor or Color3.fromRGB(55, 42, 105)
-    Instance.new("UICorner", optButton).CornerRadius = UDim.new(0, 18)
-    
-    optButton.MouseButton1Click:Connect(function()
-        if opt.var == "esp" then
-            currentEspStateVar = not currentEspStateVar
-            toggleESPSystem()
-            optButton.Text = (currentEspStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentEspStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentEspStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
-        elseif opt.var == "chams" then
-            currentChamsStateVar = not currentChamsStateVar
-            toggleChamsSystem()
-            optButton.Text = (currentChamsStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentChamsStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentChamsStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
-        elseif opt.var == "glow" then
-            currentGlowStateVar = not currentGlowStateVar
-            isGlowEnabled = currentGlowStateVar
-            if not currentChamsStateVar then
-                currentChamsStateVar = true
-                toggleChamsSystem()
-                for _, btnRef in pairs(visualFeatureButtonList) do
-                    if btnRef and btnRef.Text and btnRef.Text:find("CHAMS") then
-                        btnRef.Text = "✅ CHAMS X-RAY"
-                        btnRef.BackgroundColor3 = Color3.fromRGB(220, 120, 0)
-                        btnRef.TextColor3 = Color3.fromRGB(255, 255, 255)
+for _, f in ipairs(visFeatures) do
+    local btn = Instance.new("TextButton", visualsContent)
+    btn.Size = UDim2.new(0, 340, 0, 52)
+    btn.Position = UDim2.new(0, 0, 0, f.y)
+    local state = false
+    if f.var == "esp" then state = currentEsp
+    elseif f.var == "chams" then state = currentChams
+    elseif f.var == "glow" then state = currentGlow
+    elseif f.var == "rainbow" then state = currentRainbow end
+    btn.Text = (state and "✅ " or "⬜ ") .. f.name
+    btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+    btn.TextSize = 14
+    btn.Font = Enum.Font.Gotham
+    btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 14)
+    btn.MouseButton1Click:Connect(function()
+        if f.var == "esp" then
+            currentEsp = not currentEsp
+            toggleESP()
+        elseif f.var == "chams" then
+            currentChams = not currentChams
+            toggleChams()
+        elseif f.var == "glow" then
+            currentGlow = not currentGlow
+            isGlowEnabled = currentGlow
+            if not currentChams then
+                currentChams = true
+                toggleChams()
+                for _, b in pairs(visualFeatureButtonList) do
+                    if b and b.Text and b.Text:find("CHAMS") then
+                        b.Text = "✅ CHAMS X-RAY"
+                        b.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+                        b.TextColor3 = Color3.fromRGB(255, 255, 255)
                     end
                 end
             end
-            optButton.Text = (currentGlowStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentGlowStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentGlowStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
-        elseif opt.var == "rainbow" then
-            currentRainbowStateVar = not currentRainbowStateVar
-            isRainbowMode = currentRainbowStateVar
-            if not currentChamsStateVar then
-                currentChamsStateVar = true
-                toggleChamsSystem()
-                for _, btnRef in pairs(visualFeatureButtonList) do
-                    if btnRef and btnRef.Text and btnRef.Text:find("CHAMS") then
-                        btnRef.Text = "✅ CHAMS X-RAY"
-                        btnRef.BackgroundColor3 = Color3.fromRGB(220, 120, 0)
-                        btnRef.TextColor3 = Color3.fromRGB(255, 255, 255)
+        elseif f.var == "rainbow" then
+            currentRainbow = not currentRainbow
+            isRainbowMode = currentRainbow
+            if not currentChams then
+                currentChams = true
+                toggleChams()
+                for _, b in pairs(visualFeatureButtonList) do
+                    if b and b.Text and b.Text:find("CHAMS") then
+                        b.Text = "✅ CHAMS X-RAY"
+                        b.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+                        b.TextColor3 = Color3.fromRGB(255, 255, 255)
                     end
                 end
             end
-            optButton.Text = (currentRainbowStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentRainbowStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentRainbowStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
         end
+        btn.Text = (state and "✅ " or "⬜ ") .. f.name
+        btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+        btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
     end)
-    table.insert(visualFeatureButtonList, optButton)
+    table.insert(visualFeatureButtonList, btn)
 end
 
-local precisionNote = Instance.new("TextLabel", visualsContent)
-precisionNote.Size = UDim2.new(0, 400, 0, 35)
-precisionNote.Position = UDim2.new(0, 0, 0, 410)
-precisionNote.Text = "🎨 HEALTH COLOR GRADIENT: 100% → 0% (HIJAU → KUNING → OREN → MERAH → GELAP)"
-precisionNote.TextColor3 = Color3.fromRGB(160, 160, 210)
-precisionNote.TextSize = 12
-precisionNote.Font = Enum.Font.Gotham
-precisionNote.BackgroundTransparency = 1
-
-local movementContent = Instance.new("Frame", rightContentPanel)
-movementContent.Size = UDim2.new(1, -50, 1, -40)
-movementContent.Position = UDim2.new(0, 25, 0, 20)
+local movementContent = Instance.new("Frame", rightPanel)
+movementContent.Size = UDim2.new(1, -40, 1, -30)
+movementContent.Position = UDim2.new(0, 20, 0, 15)
 movementContent.BackgroundTransparency = 1
 movementContent.Visible = false
 tabContentContainers["MOVEMENT"] = movementContent
 
-local movementHeader = Instance.new("TextLabel", movementContent)
-movementHeader.Size = UDim2.new(1, 0, 0, 45)
-movementHeader.Text = "🚀 MOVEMENT ENHANCEMENTS"
-movementHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
-movementHeader.TextSize = 19
-movementHeader.Font = Enum.Font.GothamBold
-movementHeader.BackgroundTransparency = 1
+local moveTitle = Instance.new("TextLabel", movementContent)
+moveTitle.Size = UDim2.new(1, 0, 0, 40)
+moveTitle.Text = "🚀 MOVEMENT SETTINGS"
+moveTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
+moveTitle.TextSize = 18
+moveTitle.Font = Enum.Font.GothamBold
+moveTitle.BackgroundTransparency = 1
 
-createAdvancedSlider(movementContent, 0, 70, 420, 1, 8.5, speedMultiplier, function(val) 
-    speedMultiplier = val
+createAdvancedSlider(movementContent, 0, 60, 350, 1, 5, speedMultiplier, function(v) 
+    speedMultiplier = v
     if speedHack then
-        local character = LocalPlayer.Character
-        if character and character:FindFirstChild("Humanoid") then
-            character.Humanoid.WalkSpeed = 16 * speedMultiplier
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = 16 * speedMultiplier
         end
     end
 end, "⚡ SPEED MULTIPLIER", Color3.fromRGB(100, 255, 100))
 
-local movementOptions = {
-    {name = "SPEED HACK", var = "speed", defaultValue = false, yPos = 170, btnColor = Color3.fromRGB(0, 200, 90)},
-    {name = "NO CLIP", var = "noclip", defaultValue = false, yPos = 240, btnColor = Color3.fromRGB(0, 170, 220)},
-    {name = "INFINITE JUMP", var = "jump", defaultValue = false, yPos = 310, btnColor = Color3.fromRGB(0, 200, 90)},
-    {name = "TELEPORT TO TARGET", var = "teleport", defaultValue = false, yPos = 380, btnColor = Color3.fromRGB(220, 120, 0)},
+local moveFeatures = {
+    {name = "SPEED HACK", var = "speed", default = false, y = 140, color = Color3.fromRGB(0, 180, 80)},
+    {name = "NO CLIP", var = "noclip", default = false, y = 205, color = Color3.fromRGB(0, 150, 200)},
+    {name = "INFINITE JUMP", var = "jump", default = false, y = 270, color = Color3.fromRGB(0, 180, 80)},
+    {name = "TELEPORT TO TARGET", var = "teleport", default = false, y = 335, color = Color3.fromRGB(200, 100, 0)},
 }
 
-local currentSpeedStateVar = speedHack
-local currentNoclipStateVar = noClip
-local currentJumpStateVar = infiniteJump
-local currentTeleportStateVar = teleportTarget
+local currentSpeed = speedHack
+local currentNoclip = noClip
+local currentJump = infiniteJump
+local currentTeleport = teleportTarget
 
-for _, opt in ipairs(movementOptions) do
-    local optButton = Instance.new("TextButton", movementContent)
-    optButton.Size = UDim2.new(0, 380, 0, 55)
-    optButton.Position = UDim2.new(0, 0, 0, opt.yPos)
-    
-    local initState = false
-    if opt.var == "speed" then initState = currentSpeedStateVar
-    elseif opt.var == "noclip" then initState = currentNoclipStateVar
-    elseif opt.var == "jump" then initState = currentJumpStateVar
-    elseif opt.var == "teleport" then initState = currentTeleportStateVar end
-    
-    optButton.Text = (initState and "✅ " or "⬜ ") .. opt.name
-    optButton.TextColor3 = initState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-    optButton.TextSize = 15
-    optButton.Font = Enum.Font.Gotham
-    optButton.BackgroundColor3 = initState and opt.btnColor or Color3.fromRGB(55, 42, 105)
-    Instance.new("UICorner", optButton).CornerRadius = UDim.new(0, 18)
-    
-    optButton.MouseButton1Click:Connect(function()
-        if opt.var == "speed" then
-            currentSpeedStateVar = not currentSpeedStateVar
-            speedHack = currentSpeedStateVar
+for _, f in ipairs(moveFeatures) do
+    local btn = Instance.new("TextButton", movementContent)
+    btn.Size = UDim2.new(0, 340, 0, 50)
+    btn.Position = UDim2.new(0, 0, 0, f.y)
+    local state = false
+    if f.var == "speed" then state = currentSpeed
+    elseif f.var == "noclip" then state = currentNoclip
+    elseif f.var == "jump" then state = currentJump
+    elseif f.var == "teleport" then state = currentTeleport end
+    btn.Text = (state and "✅ " or "⬜ ") .. f.name
+    btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+    btn.TextSize = 14
+    btn.Font = Enum.Font.Gotham
+    btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 14)
+    btn.MouseButton1Click:Connect(function()
+        if f.var == "speed" then
+            currentSpeed = not currentSpeed
+            speedHack = currentSpeed
             if speedHack then startSpeedBoost() end
-            optButton.Text = (currentSpeedStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentSpeedStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentSpeedStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
-        elseif opt.var == "noclip" then
-            currentNoclipStateVar = not currentNoclipStateVar
-            noClip = currentNoclipStateVar
+        elseif f.var == "noclip" then
+            currentNoclip = not currentNoclip
+            noClip = currentNoclip
             if noClip then runNoclipLoop() else deactivateNoclip() end
-            optButton.Text = (currentNoclipStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentNoclipStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentNoclipStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
-        elseif opt.var == "jump" then
-            currentJumpStateVar = not currentJumpStateVar
-            infiniteJumpEnabled = currentJumpStateVar
-            infiniteJump = currentJumpStateVar
-            optButton.Text = (currentJumpStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentJumpStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentJumpStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
-        elseif opt.var == "teleport" then
-            currentTeleportStateVar = not currentTeleportStateVar
-            teleportTarget = currentTeleportStateVar
+        elseif f.var == "jump" then
+            currentJump = not currentJump
+            infiniteJump = currentJump
+        elseif f.var == "teleport" then
+            currentTeleport = not currentTeleport
+            teleportTarget = currentTeleport
             if teleportTarget then runTeleportToTargetLoop() end
-            optButton.Text = (currentTeleportStateVar and "✅ " or "⬜ ") .. opt.name
-            optButton.TextColor3 = currentTeleportStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-            optButton.BackgroundColor3 = currentTeleportStateVar and opt.btnColor or Color3.fromRGB(55, 42, 105)
         end
+        btn.Text = (state and "✅ " or "⬜ ") .. f.name
+        btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+        btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
     end)
-    table.insert(movementFeatureButtonList, optButton)
+    table.insert(movementFeatureButtonList, btn)
 end
 
-local defenseContent = Instance.new("Frame", rightContentPanel)
-defenseContent.Size = UDim2.new(1, -50, 1, -40)
-defenseContent.Position = UDim2.new(0, 25, 0, 20)
+local defenseContent = Instance.new("Frame", rightPanel)
+defenseContent.Size = UDim2.new(1, -40, 1, -30)
+defenseContent.Position = UDim2.new(0, 20, 0, 15)
 defenseContent.BackgroundTransparency = 1
 defenseContent.Visible = false
 tabContentContainers["DEFENSE"] = defenseContent
 
-local defenseHeader = Instance.new("TextLabel", defenseContent)
-defenseHeader.Size = UDim2.new(1, 0, 0, 45)
-defenseHeader.Text = "🛡️ DEFENSE MECHANISMS"
-defenseHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
-defenseHeader.TextSize = 19
-defenseHeader.Font = Enum.Font.GothamBold
-defenseHeader.BackgroundTransparency = 1
+local defTitle = Instance.new("TextLabel", defenseContent)
+defTitle.Size = UDim2.new(1, 0, 0, 40)
+defTitle.Text = "🛡️ DEFENSE SETTINGS"
+defTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
+defTitle.TextSize = 18
+defTitle.Font = Enum.Font.GothamBold
+defTitle.BackgroundTransparency = 1
 
-local godmodeButton = Instance.new("TextButton", defenseContent)
-godmodeButton.Size = UDim2.new(0, 380, 0, 65)
-godmodeButton.Position = UDim2.new(0, 0, 0, 75)
-godmodeButton.Text = godMode and "✅ GODMODE (V) - INVINCIBLE" or "⬜ GODMODE (V) - OFF"
-godmodeButton.TextColor3 = godMode and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-godmodeButton.TextSize = 16
-godmodeButton.Font = Enum.Font.Gotham
-godmodeButton.BackgroundColor3 = godMode and Color3.fromRGB(120, 100, 255) or Color3.fromRGB(55, 42, 105)
-Instance.new("UICorner", godmodeButton).CornerRadius = UDim.new(0, 18)
-godmodeButton.MouseButton1Click:Connect(function()
-    toggleGodModeSystem()
-    godmodeButton.Text = godMode and "✅ GODMODE (V) - INVINCIBLE" or "⬜ GODMODE (V) - OFF"
-    godmodeButton.TextColor3 = godMode and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-    godmodeButton.BackgroundColor3 = godMode and Color3.fromRGB(120, 100, 255) or Color3.fromRGB(55, 42, 105)
+local godBtn = Instance.new("TextButton", defenseContent)
+godBtn.Size = UDim2.new(0, 340, 0, 55)
+godBtn.Position = UDim2.new(0, 0, 0, 60)
+godBtn.Text = godMode and "✅ GODMODE (V) - ACTIVE" or "⬜ GODMODE (V) - INACTIVE"
+godBtn.TextColor3 = godMode and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+godBtn.TextSize = 14
+godBtn.Font = Enum.Font.Gotham
+godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
+Instance.new("UICorner", godBtn).CornerRadius = UDim.new(0, 14)
+godBtn.MouseButton1Click:Connect(function()
+    toggleGodMode()
+    godBtn.Text = godMode and "✅ GODMODE (V) - ACTIVE" or "⬜ GODMODE (V) - INACTIVE"
+    godBtn.TextColor3 = godMode and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+    godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
 end)
 
-local emergencyToggleButton = Instance.new("TextButton", defenseContent)
-emergencyToggleButton.Size = UDim2.new(0, 380, 0, 65)
-emergencyToggleButton.Position = UDim2.new(0, 0, 0, 160)
-emergencyToggleButton.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
-emergencyToggleButton.TextColor3 = emergencyEnabled and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-emergencyToggleButton.TextSize = 15
-emergencyToggleButton.Font = Enum.Font.Gotham
-emergencyToggleButton.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(55, 42, 105)
-Instance.new("UICorner", emergencyToggleButton).CornerRadius = UDim.new(0, 18)
-emergencyToggleButton.MouseButton1Click:Connect(function()
-    emergencyEnabled = not emergencyEnabled
-    emergencyToggleButton.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
-    emergencyToggleButton.TextColor3 = emergencyEnabled and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-    emergencyToggleButton.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(55, 42, 105)
-    showNotification("Emergency teleport " .. (emergencyEnabled and "ENABLED" or "DISABLED"), 1.5)
+local emergencyBtn = Instance.new("TextButton", defenseContent)
+emergencyBtn.Size = UDim2.new(0, 340, 0, 55)
+emergencyBtn.Position = UDim2.new(0, 0, 0, 130)
+emergencyBtn.Text = emergency and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
+emergencyBtn.TextColor3 = emergency and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+emergencyBtn.TextSize = 14
+emergencyBtn.Font = Enum.Font.Gotham
+emergencyBtn.BackgroundColor3 = emergency and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(45, 35, 85)
+Instance.new("UICorner", emergencyBtn).CornerRadius = UDim.new(0, 14)
+emergencyBtn.MouseButton1Click:Connect(function()
+    emergency = not emergency
+    emergencyBtn.Text = emergency and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
+    emergencyBtn.TextColor3 = emergency and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+    emergencyBtn.BackgroundColor3 = emergency and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(45, 35, 85)
+    showNotification("Emergency teleport " .. (emergency and "ENABLED" or "DISABLED"), 1.5)
 end)
 
-local settingsContent = Instance.new("Frame", rightContentPanel)
-settingsContent.Size = UDim2.new(1, -50, 1, -40)
-settingsContent.Position = UDim2.new(0, 25, 0, 20)
+local settingsContent = Instance.new("Frame", rightPanel)
+settingsContent.Size = UDim2.new(1, -40, 1, -30)
+settingsContent.Position = UDim2.new(0, 20, 0, 15)
 settingsContent.BackgroundTransparency = 1
 settingsContent.Visible = false
 tabContentContainers["SETTINGS"] = settingsContent
 
-local settingsHeader = Instance.new("TextLabel", settingsContent)
-settingsHeader.Size = UDim2.new(1, 0, 0, 45)
-settingsHeader.Text = "⚙️ CONFIGURATION"
-settingsHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
-settingsHeader.TextSize = 19
-settingsHeader.Font = Enum.Font.GothamBold
-settingsHeader.BackgroundTransparency = 1
+local setTitle = Instance.new("TextLabel", settingsContent)
+setTitle.Size = UDim2.new(1, 0, 0, 40)
+setTitle.Text = "⚙️ SETTINGS"
+setTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
+setTitle.TextSize = 18
+setTitle.Font = Enum.Font.GothamBold
+setTitle.BackgroundTransparency = 1
 
-local refreshESPButton = Instance.new("TextButton", settingsContent)
-refreshESPButton.Size = UDim2.new(0, 340, 0, 60)
-refreshESPButton.Position = UDim2.new(0, 0, 0, 75)
-refreshESPButton.Text = "🔄 REFRESH ESP & TARGET LIST"
-refreshESPButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-refreshESPButton.TextSize = 15
-refreshESPButton.Font = Enum.Font.GothamBold
-refreshESPButton.BackgroundColor3 = Color3.fromRGB(120, 70, 220)
-Instance.new("UICorner", refreshESPButton).CornerRadius = UDim.new(0, 18)
-refreshESPButton.MouseButton1Click:Connect(function()
-    if currentEspStateVar then
+local refreshBtn = Instance.new("TextButton", settingsContent)
+refreshBtn.Size = UDim2.new(0, 320, 0, 52)
+refreshBtn.Position = UDim2.new(0, 0, 0, 60)
+refreshBtn.Text = "🔄 REFRESH ESP & TARGET"
+refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+refreshBtn.TextSize = 14
+refreshBtn.Font = Enum.Font.GothamBold
+refreshBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
+Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 14)
+refreshBtn.MouseButton1Click:Connect(function()
+    if currentEsp then
         destroyAllESP()
-        task.wait(0.25)
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer then buildESPForPlayer(player) end
-        end
+        task.wait(0.2)
+        for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then buildESPForPlayer(p) end end
     end
     refreshTargetList()
     showNotification("ESP and target list refreshed", 1.5)
 end)
 
-local panicResetButton = Instance.new("TextButton", settingsContent)
-panicResetButton.Size = UDim2.new(0, 340, 0, 60)
-panicResetButton.Position = UDim2.new(0, 0, 0, 155)
-panicResetButton.Text = "🛑 PANIC RESET (ALL FEATURES OFF)"
-panicResetButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-panicResetButton.TextSize = 15
-panicResetButton.Font = Enum.Font.GothamBold
-panicResetButton.BackgroundColor3 = Color3.fromRGB(200, 0, 30)
-Instance.new("UICorner", panicResetButton).CornerRadius = UDim.new(0, 18)
-panicResetButton.MouseButton1Click:Connect(function()
+local panicBtn = Instance.new("TextButton", settingsContent)
+panicBtn.Size = UDim2.new(0, 320, 0, 52)
+panicBtn.Position = UDim2.new(0, 0, 0, 125)
+panicBtn.Text = "🛑 PANIC RESET ALL"
+panicBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+panicBtn.TextSize = 14
+panicBtn.Font = Enum.Font.GothamBold
+panicBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+Instance.new("UICorner", panicBtn).CornerRadius = UDim.new(0, 14)
+panicBtn.MouseButton1Click:Connect(function()
     stopAllActions()
-    if godMode then toggleGodModeSystem() end
-    if currentEspStateVar then
-        destroyAllESP()
-    end
-    currentSpeedStateVar = false
-    currentNoclipStateVar = false
-    currentJumpStateVar = false
-    currentTeleportStateVar = false
-    currentChamsStateVar = false
-    currentGlowStateVar = true
-    currentRainbowStateVar = false
+    if godMode then toggleGodMode() end
+    if currentEsp then destroyAllESP() end
+    currentSpeed = false
+    currentNoclip = false
+    currentJump = false
+    currentTeleport = false
+    currentChams = false
+    currentGlow = true
+    currentRainbow = false
     speedHack = false
     noClip = false
-    infiniteJumpEnabled = false
     infiniteJump = false
     teleportTarget = false
     chamsOn = false
     isGlowEnabled = true
     isRainbowMode = false
-    emergencyEnabled = true
-    
-    stopChamsRenderer()
-    
+    emergency = true
+    stopChams()
     for _, btn in pairs(movementFeatureButtonList) do
         if btn and btn.Text then
-            if btn.Text:find("SPEED HACK") then btn.Text, btn.BackgroundColor3 = "⬜ SPEED HACK", Color3.fromRGB(55, 42, 105)
-            elseif btn.Text:find("NO CLIP") then btn.Text, btn.BackgroundColor3 = "⬜ NO CLIP", Color3.fromRGB(55, 42, 105)
-            elseif btn.Text:find("INFINITE JUMP") then btn.Text, btn.BackgroundColor3 = "⬜ INFINITE JUMP", Color3.fromRGB(55, 42, 105)
-            elseif btn.Text:find("TELEPORT") then btn.Text, btn.BackgroundColor3 = "⬜ TELEPORT TO TARGET", Color3.fromRGB(55, 42, 105)
+            if btn.Text:find("SPEED HACK") then btn.Text, btn.BackgroundColor3 = "⬜ SPEED HACK", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("NO CLIP") then btn.Text, btn.BackgroundColor3 = "⬜ NO CLIP", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("INFINITE JUMP") then btn.Text, btn.BackgroundColor3 = "⬜ INFINITE JUMP", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("TELEPORT") then btn.Text, btn.BackgroundColor3 = "⬜ TELEPORT TO TARGET", Color3.fromRGB(45, 35, 85)
             end
-            btn.TextColor3 = Color3.fromRGB(195, 195, 235)
+            btn.TextColor3 = Color3.fromRGB(180, 180, 220)
         end
     end
-    
     for _, btn in pairs(visualFeatureButtonList) do
         if btn and btn.Text then
-            if btn.Text:find("CHAMS") then btn.Text, btn.BackgroundColor3 = "⬜ CHAMS X-RAY", Color3.fromRGB(55, 42, 105)
-            elseif btn.Text:find("GLOW") then btn.Text, btn.BackgroundColor3 = "✅ NEON GLOW EFFECT", Color3.fromRGB(0, 170, 220)
-            elseif btn.Text:find("RAINBOW") then btn.Text, btn.BackgroundColor3 = "⬜ RAINBOW CHROMA", Color3.fromRGB(55, 42, 105)
+            if btn.Text:find("CHAMS") then btn.Text, btn.BackgroundColor3 = "⬜ CHAMS X-RAY", Color3.fromRGB(45, 35, 85)
+            elseif btn.Text:find("GLOW") then btn.Text, btn.BackgroundColor3 = "✅ NEON GLOW", Color3.fromRGB(0, 150, 200)
+            elseif btn.Text:find("RAINBOW") then btn.Text, btn.BackgroundColor3 = "⬜ RAINBOW MODE", Color3.fromRGB(45, 35, 85)
             elseif btn.Text:find("ESP") then 
-                currentEspStateVar = true
-                btn.Text, btn.BackgroundColor3 = "✅ PLAYER ESP", Color3.fromRGB(0, 200, 90)
-                toggleESPSystem()
+                currentEsp = true
+                btn.Text, btn.BackgroundColor3 = "✅ PLAYER ESP", Color3.fromRGB(0, 180, 80)
+                toggleESP()
             end
-            btn.TextColor3 = Color3.fromRGB(195, 195, 235)
+            btn.TextColor3 = Color3.fromRGB(180, 180, 220)
         end
     end
-    
-    godmodeButton.Text = "⬜ GODMODE (V) - OFF"
-    godmodeButton.BackgroundColor3 = Color3.fromRGB(55, 42, 105)
-    emergencyToggleButton.Text = "🚨 EMERGENCY TP - ACTIVE"
-    emergencyToggleButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-    statusLabel.Text = "⚡ PANIC RESET - ALL FEATURES OFF"
+    godBtn.Text = "⬜ GODMODE (V) - INACTIVE"
+    godBtn.BackgroundColor3 = Color3.fromRGB(45, 35, 85)
+    emergencyBtn.Text = "🚨 EMERGENCY TP - ACTIVE"
+    emergencyBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    statusLabel.Text = "⚡ PANIC RESET - ALL OFF"
     showNotification("PANIC RESET - All features disabled", 2)
 end)
 
-local presetsContent = Instance.new("Frame", rightContentPanel)
-presetsContent.Size = UDim2.new(1, -50, 1, -40)
-presetsContent.Position = UDim2.new(0, 25, 0, 20)
-presetsContent.BackgroundTransparency = 1
-presetsContent.Visible = false
-tabContentContainers["PRESETS"] = presetsContent
-
-local presetsHeader = Instance.new("TextLabel", presetsContent)
-presetsHeader.Size = UDim2.new(1, 0, 0, 45)
-presetsHeader.Text = "🎮 QUICK PRESETS"
-presetsHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
-presetsHeader.TextSize = 19
-presetsHeader.Font = Enum.Font.GothamBold
-presetsHeader.BackgroundTransparency = 1
-
-local presetButtonsList = {"AGGRESSIVE", "STEALTH", "GODLIKE"}
-local presetColorsList = {Color3.fromRGB(220, 50, 50), Color3.fromRGB(50, 100, 220), Color3.fromRGB(255, 200, 50)}
-local presetYPos = 70
-
-for idx, presetName in ipairs(presetButtonsList) do
-    local presetBtn = Instance.new("TextButton", presetsContent)
-    presetBtn.Size = UDim2.new(0, 380, 0, 70)
-    presetBtn.Position = UDim2.new(0, 0, 0, presetYPos)
-    presetBtn.Text = presetName
-    presetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    presetBtn.TextSize = 18
-    presetBtn.Font = Enum.Font.GothamBold
-    presetBtn.BackgroundColor3 = presetColorsList[idx]
-    Instance.new("UICorner", presetBtn).CornerRadius = UDim.new(0, 18)
-    
-    presetBtn.MouseButton1Click:Connect(function()
-        local preset = presets[presetName]
-        if preset then
-            speedMultiplier = preset.speedMult
-            orbitSpeed = preset.orbitSpeed
-            soloRadius = preset.soloRadius
-            emergencyEnabled = preset.emergency
-            emergencyToggleButton.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
-            emergencyToggleButton.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(55, 42, 105)
-            
-            if speedHack then
-                local character = LocalPlayer.Character
-                if character and character:FindFirstChild("Humanoid") then
-                    character.Humanoid.WalkSpeed = 16 * speedMultiplier
-                end
-            end
-            
-            showNotification("Preset loaded: " .. presetName, 2)
-            statusLabel.Text = "🎮 PRESET ACTIVE: " .. presetName
-        end
-    end)
-    
-    presetYPos = presetYPos + 85
-end
-
-local mountainsContent = Instance.new("Frame", rightContentPanel)
-mountainsContent.Size = UDim2.new(1, -50, 1, -40)
-mountainsContent.Position = UDim2.new(0, 25, 0, 20)
+local mountainsContent = Instance.new("Frame", rightPanel)
+mountainsContent.Size = UDim2.new(1, -40, 1, -30)
+mountainsContent.Position = UDim2.new(0, 20, 0, 15)
 mountainsContent.BackgroundTransparency = 1
 mountainsContent.Visible = false
 tabContentContainers["MOUNTAINS"] = mountainsContent
 
-local mountainsHeader = Instance.new("TextLabel", mountainsContent)
-mountainsHeader.Size = UDim2.new(1, 0, 0, 45)
-mountainsHeader.Text = "🏔️ MOUNTAIN TELEPORT SYSTEM"
-mountainsHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
-mountainsHeader.TextSize = 19
-mountainsHeader.Font = Enum.Font.GothamBold
-mountainsHeader.BackgroundTransparency = 1
+local mountainTitle = Instance.new("TextLabel", mountainsContent)
+mountainTitle.Size = UDim2.new(1, 0, 0, 40)
+mountainTitle.Text = "🏔️ MOUNTAIN & HIGH GROUND TP"
+mountainTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
+mountainTitle.TextSize = 18
+mountainTitle.Font = Enum.Font.GothamBold
+mountainTitle.BackgroundTransparency = 1
 
 local mountainDesc = Instance.new("TextLabel", mountainsContent)
-mountainDesc.Size = UDim2.new(1, 0, 0, 35)
-mountainDesc.Position = UDim2.new(0, 0, 0, 55)
-mountainDesc.Text = "Teleport ke berbagai puncak gunung terkenal di dunia"
+mountainDesc.Size = UDim2.new(1, 0, 0, 30)
+mountainDesc.Position = UDim2.new(0, 0, 0, 50)
+mountainDesc.Text = "Teleport ke titik tertinggi yang terdeteksi di map"
 mountainDesc.TextColor3 = Color3.fromRGB(180, 180, 220)
-mountainDesc.TextSize = 13
+mountainDesc.TextSize = 12
 mountainDesc.Font = Enum.Font.Gotham
 mountainDesc.BackgroundTransparency = 1
 
-local mountainButtonsList = {
-    {key = "MOUNT_EVEREST", name = "🏔️ MOUNT EVEREST", desc = "Base camp tertinggi di dunia - 8,848m", color = Color3.fromRGB(150, 200, 255), y = 110},
-    {key = "MOUNT_FUJI", name = "🗻 MOUNT FUJI", desc = "Gunung suci Jepang - 3,776m", color = Color3.fromRGB(255, 200, 150), y = 200},
-    {key = "MOUNT_KILIMANJARO", name = "⛰️ MOUNT KILIMANJARO", desc = "Puncak tertinggi di Afrika - 5,895m", color = Color3.fromRGB(180, 150, 100), y = 290},
-    {key = "ALPS_MATTERHORN", name = "🏔️ ALPS MATTERHORN", desc = "Gunung ikonik di Swiss - 4,478m", color = Color3.fromRGB(200, 220, 255), y = 380},
-    {key = "ROCKY_MOUNTAIN", name = "⛰️ ROCKY MOUNTAIN", desc = "Pegunungan terkenal di Amerika Utara", color = Color3.fromRGB(170, 190, 210), y = 470}
-}
+local scanBtn2 = Instance.new("TextButton", mountainsContent)
+scanBtn2.Size = UDim2.new(0, 250, 0, 45)
+scanBtn2.Position = UDim2.new(0, 0, 0, 95)
+scanBtn2.Text = "🗺️ SCAN MAP FOR HIGHEST POINT"
+scanBtn2.TextColor3 = Color3.fromRGB(255, 255, 255)
+scanBtn2.TextSize = 14
+scanBtn2.Font = Enum.Font.GothamBold
+scanBtn2.BackgroundColor3 = Color3.fromRGB(70, 180, 100)
+Instance.new("UICorner", scanBtn2).CornerRadius = UDim.new(0, 12)
+scanBtn2.MouseButton1Click:Connect(function()
+    local found = findHighestGroundPosition()
+    if found then
+        showNotification("Highest point detected at Y=" .. math.floor(found.Y), 2)
+    else
+        showNotification("Could not detect highest point", 2)
+    end
+end)
 
-for _, mountain in ipairs(mountainButtonsList) do
-    local mountainContainer = Instance.new("Frame", mountainsContent)
-    mountainContainer.Size = UDim2.new(0, 500, 0, 75)
-    mountainContainer.Position = UDim2.new(0, 0, 0, mountain.y)
-    mountainContainer.BackgroundColor3 = mountain.color
-    mountainContainer.BackgroundTransparency = 0.85
-    Instance.new("UICorner", mountainContainer).CornerRadius = UDim.new(0, 16)
+local tpHighBtn = Instance.new("TextButton", mountainsContent)
+tpHighBtn.Size = UDim2.new(0, 250, 0, 45)
+tpHighBtn.Position = UDim2.new(0, 0, 0, 155)
+tpHighBtn.Text = "🏔️ TELEPORT TO HIGHEST POINT"
+tpHighBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tpHighBtn.TextSize = 14
+tpHighBtn.Font = Enum.Font.GothamBold
+tpHighBtn.BackgroundColor3 = Color3.fromRGB(100, 70, 200)
+Instance.new("UICorner", tpHighBtn).CornerRadius = UDim.new(0, 12)
+tpHighBtn.MouseButton1Click:Connect(function()
+    teleportToHighestPoint()
+end)
+
+local detectedMountainsLabel = Instance.new("TextLabel", mountainsContent)
+detectedMountainsLabel.Size = UDim2.new(1, 0, 0, 30)
+detectedMountainsLabel.Position = UDim2.new(0, 0, 0, 220)
+detectedMountainsLabel.Text = "📍 DETECTED MOUNTAINS IN MAP:"
+detectedMountainsLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+detectedMountainsLabel.TextSize = 13
+detectedMountainsLabel.Font = Enum.Font.GothamBold
+detectedMountainsLabel.BackgroundTransparency = 1
+
+local mountainListFrame = Instance.new("ScrollingFrame", mountainsContent)
+mountainListFrame.Size = UDim2.new(1, -20, 0, 250)
+mountainListFrame.Position = UDim2.new(0, 10, 0, 255)
+mountainListFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 40)
+mountainListFrame.BackgroundTransparency = 0.4
+mountainListFrame.BorderSizePixel = 0
+mountainListFrame.ScrollBarThickness = 6
+Instance.new("UICorner", mountainListFrame).CornerRadius = UDim.new(0, 12)
+
+local mountainButtonsList = {}
+
+local function refreshMountainList()
+    for _, btn in pairs(mountainButtonsList) do
+        pcall(function() btn:Destroy() end)
+    end
+    mountainButtonsList = {}
     
-    local mountainName = Instance.new("TextLabel", mountainContainer)
-    mountainName.Size = UDim2.new(1, -20, 0, 30)
-    mountainName.Position = UDim2.new(0, 10, 0, 5)
-    mountainName.Text = mountain.name
-    mountainName.TextColor3 = Color3.fromRGB(255, 255, 255)
-    mountainName.TextSize = 16
-    mountainName.Font = Enum.Font.GothamBold
-    mountainName.TextXAlignment = Enum.TextXAlignment.Left
-    mountainName.BackgroundTransparency = 1
-    
-    local mountainDescLabel = Instance.new("TextLabel", mountainContainer)
-    mountainDescLabel.Size = UDim2.new(1, -20, 0, 25)
-    mountainDescLabel.Position = UDim2.new(0, 10, 0, 35)
-    mountainDescLabel.Text = mountain.desc
-    mountainDescLabel.TextColor3 = Color3.fromRGB(200, 200, 230)
-    mountainDescLabel.TextSize = 11
-    mountainDescLabel.Font = Enum.Font.Gotham
-    mountainDescLabel.TextXAlignment = Enum.TextXAlignment.Left
-    mountainDescLabel.BackgroundTransparency = 1
-    
-    local teleportBtn = Instance.new("TextButton", mountainContainer)
-    teleportBtn.Size = UDim2.new(0, 100, 0, 40)
-    teleportBtn.Position = UDim2.new(1, -115, 0, 17)
-    teleportBtn.Text = "🚀 TP"
-    teleportBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    teleportBtn.TextSize = 14
-    teleportBtn.Font = Enum.Font.GothamBold
-    teleportBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-    Instance.new("UICorner", teleportBtn).CornerRadius = UDim.new(0, 12)
-    teleportBtn.MouseButton1Click:Connect(function()
-        teleportToMountain(mountain.key)
-    end)
+    local y = 0
+    for i, mountain in ipairs(mountainLocationsInGame) do
+        local container = Instance.new("Frame", mountainListFrame)
+        container.Size = UDim2.new(1, -10, 0, 65)
+        container.Position = UDim2.new(0, 5, 0, y)
+        container.BackgroundColor3 = mountain.color
+        container.BackgroundTransparency = 0.85
+        Instance.new("UICorner", container).CornerRadius = UDim.new(0, 12)
+        
+        local nameLabel = Instance.new("TextLabel", container)
+        nameLabel.Size = UDim2.new(1, -90, 0, 25)
+        nameLabel.Position = UDim2.new(0, 10, 0, 5)
+        nameLabel.Text = mountain.name
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextSize = 13
+        nameLabel.Font = Enum.Font.GothamBold
+        nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+        nameLabel.BackgroundTransparency = 1
+        
+        local descLabel = Instance.new("TextLabel", container)
+        descLabel.Size = UDim2.new(1, -90, 0, 20)
+        descLabel.Position = UDim2.new(0, 10, 0, 32)
+        descLabel.Text = mountain.description .. " | Height: " .. mountain.height .. "m"
+        descLabel.TextColor3 = Color3.fromRGB(200, 200, 230)
+        descLabel.TextSize = 10
+        descLabel.Font = Enum.Font.Gotham
+        descLabel.TextXAlignment = Enum.TextXAlignment.Left
+        descLabel.BackgroundTransparency = 1
+        
+        local tpBtn = Instance.new("TextButton", container)
+        tpBtn.Size = UDim2.new(0, 70, 0, 35)
+        tpBtn.Position = UDim2.new(1, -80, 0, 15)
+        tpBtn.Text = "TP"
+        tpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tpBtn.TextSize = 13
+        tpBtn.Font = Enum.Font.GothamBold
+        tpBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+        Instance.new("UICorner", tpBtn).CornerRadius = UDim.new(0, 10)
+        tpBtn.MouseButton1Click:Connect(function()
+            teleportToMountainInGame(i)
+        end)
+        
+        table.insert(mountainButtonsList, container)
+        y = y + 72
+    end
+    mountainListFrame.CanvasSize = UDim2.new(0, 0, 0, y + 10)
 end
 
-local hotkeyInfo = Instance.new("TextLabel", mountainsContent)
-hotkeyInfo.Size = UDim2.new(0, 500, 0, 40)
-hotkeyInfo.Position = UDim2.new(0, 0, 0, 570)
-hotkeyInfo.Text = "💡 HOTKEY: F1 = Everest | F2 = Fuji | F3 = Kilimanjaro"
-hotkeyInfo.TextColor3 = Color3.fromRGB(255, 200, 100)
-hotkeyInfo.TextSize = 12
-hotkeyInfo.Font = Enum.Font.GothamBold
-hotkeyInfo.BackgroundTransparency = 1
+refreshMountainList()
 
-activateSystemBtn.MouseButton1Click:Connect(startAllActions)
-deactivateSystemBtn.MouseButton1Click:Connect(stopAllActions)
+activateBtn.MouseButton1Click:Connect(activate)
+deactivateBtn.MouseButton1Click:Connect(stopAllActions)
 
 refreshTargetList()
-
-for _, player in ipairs(Players:GetPlayers()) do
-    if player ~= LocalPlayer then buildESPForPlayer(player) end
-end
-
+for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then buildESPForPlayer(p) end end
 startESPLoop()
 startSpeedBoost()
 
-local function minimizeWindow()
-    isGuiMinimized = not isGuiMinimized
-    if isGuiMinimized then
-        mainFrame.Size = UDim2.new(0, 320, 0, 70)
-        mainFrame.Position = UDim2.new(1, -335, 0, 60)
-        headerBar.Visible = false
-        infoPanel.Visible = false
-        leftSidePanel.Visible = false
-        rightContentPanel.Visible = false
-        minimizeWindowButton.Text = "➕"
+local function toggleMinimize()
+    isMinimized = not isMinimized
+    if isMinimized then
+        mainFrame.Size = UDim2.new(0, 300, 0, 65)
+        mainFrame.Position = UDim2.new(1, -310, 0, 50)
+        headerFrame.Visible = false
+        infoBar.Visible = false
+        leftPanel.Visible = false
+        rightPanel.Visible = false
+        minimizeBtn.Text = "➕"
     else
-        mainFrame.Size = UDim2.new(0, 1380, 0, 860)
-        mainFrame.Position = UDim2.new(0.5, -690, 0.5, -430)
-        headerBar.Visible = true
-        infoPanel.Visible = true
-        leftSidePanel.Visible = true
-        rightContentPanel.Visible = true
-        minimizeWindowButton.Text = "➖"
+        mainFrame.Size = UDim2.new(0, 1300, 0, 800)
+        mainFrame.Position = UDim2.new(0.5, -650, 0.5, -400)
+        headerFrame.Visible = true
+        infoBar.Visible = true
+        leftPanel.Visible = true
+        rightPanel.Visible = true
+        minimizeBtn.Text = "➖"
     end
 end
-minimizeWindowButton.MouseButton1Click:Connect(minimizeWindow)
+minimizeBtn.MouseButton1Click:Connect(toggleMinimize)
 
-local infoUpdateLoop = task.spawn(function()
+local infoLoop = task.spawn(function()
     while screenGui and screenGui.Parent do
-        local serverDisplay = getServerDisplayInfo()
-        local currentPing = getRealPing()
-        infoText.Text = "👤 " .. LocalPlayer.Name .. " | " .. serverDisplay .. " | 👥 " .. #Players:GetPlayers() .. " Players | 🚨 EMERGENCY TP READY"
-        task.wait(1.8)
+        local ping = getRealPing()
+        infoText.Text = "👤 " .. LocalPlayer.Name .. " | 📶 " .. ping .. "ms | 👥 " .. #Players:GetPlayers() .. " Players | 🏔️ " .. #mountainLocationsInGame .. " Mountains"
+        task.wait(1.5)
     end
 end)
 
-local antiAFKConnection = nil
-local lastMouseMove = tick()
-local lastCameraMove = tick()
-
-if antiAFKEnabled then
-    antiAFKConnection = UserInputService.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            lastMouseMove = tick()
-        end
-    end)
-    
-    antiAFKTimer = task.spawn(function()
-        while antiAFKEnabled do
-            task.wait(55)
-            local currentTime = tick()
-            if currentTime - lastMouseMove > 50 and currentTime - lastCameraMove > 50 then
-                local camera = workspace.CurrentCamera
-                if camera then
-                    local newCFrame = camera.CFrame * CFrame.Angles(0, math.rad(1), 0)
-                    camera.CFrame = newCFrame
-                    lastCameraMove = currentTime
-                end
-                VirtualUser:ClickButton1(Vector2.new(500, 500), 1)
-            end
-        end
-    end)
-end
-
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.KeyCode == customHotkeys.activate then
-        startAllActions()
-    elseif input.KeyCode == customHotkeys.deactivate then
+UserInputService.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.Insert then
+        activate()
+    elseif input.KeyCode == Enum.KeyCode.Delete then
         stopAllActions()
-    elseif input.KeyCode == customHotkeys.godmode then
-        toggleGodModeSystem()
-        godmodeButton.Text = godMode and "✅ GODMODE (V) - INVINCIBLE" or "⬜ GODMODE (V) - OFF"
-        godmodeButton.BackgroundColor3 = godMode and Color3.fromRGB(120, 100, 255) or Color3.fromRGB(55, 42, 105)
-    elseif input.KeyCode == customHotkeys.esp then
-        currentEspStateVar = not currentEspStateVar
-        toggleESPSystem()
+    elseif input.KeyCode == Enum.KeyCode.V then
+        toggleGodMode()
+        godBtn.Text = godMode and "✅ GODMODE (V) - ACTIVE" or "⬜ GODMODE (V) - INACTIVE"
+        godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
+    elseif input.KeyCode == Enum.KeyCode.E then
+        currentEsp = not currentEsp
+        toggleESP()
         for _, btn in pairs(visualFeatureButtonList) do
             if btn and btn.Text and btn.Text:find("ESP") then
-                btn.Text = currentEspStateVar and "✅ PLAYER ESP" or "⬜ PLAYER ESP"
-                btn.BackgroundColor3 = currentEspStateVar and Color3.fromRGB(0, 200, 90) or Color3.fromRGB(55, 42, 105)
-                btn.TextColor3 = currentEspStateVar and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
+                btn.Text = currentEsp and "✅ PLAYER ESP" or "⬜ PLAYER ESP"
+                btn.BackgroundColor3 = currentEsp and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(45, 35, 85)
             end
         end
-    elseif input.KeyCode == customHotkeys.minimize then
-        minimizeWindow()
-    elseif input.KeyCode == customHotkeys.panic then
-        panicResetButton.MouseButton1Click:Fire()
-    elseif input.KeyCode == customHotkeys.combatTab then
-        switchTab("COMBAT")
-    elseif input.KeyCode == customHotkeys.visualsTab then
-        switchTab("VISUALS")
-    elseif input.KeyCode == customHotkeys.movementTab then
-        switchTab("MOVEMENT")
-    elseif input.KeyCode == customHotkeys.defenseTab then
-        switchTab("DEFENSE")
-    elseif input.KeyCode == customHotkeys.settingsTab then
-        switchTab("SETTINGS")
-    elseif input.KeyCode == customHotkeys.mountEverest then
-        teleportToMountain("MOUNT_EVEREST")
-    elseif input.KeyCode == customHotkeys.mountFuji then
-        teleportToMountain("MOUNT_FUJI")
-    elseif input.KeyCode == customHotkeys.mountKilimanjaro then
-        teleportToMountain("MOUNT_KILIMANJARO")
+    elseif input.KeyCode == Enum.KeyCode.M then
+        toggleMinimize()
+    elseif input.KeyCode == Enum.KeyCode.T then
+        teleportToHighestPoint()
     end
 end)
 
-Players.PlayerAdded:Connect(function(newPlayer)
-    task.wait(0.6)
-    if currentEspStateVar then buildESPForPlayer(newPlayer) end
+Players.PlayerAdded:Connect(function(p)
+    task.wait(0.5)
+    if currentEsp then buildESPForPlayer(p) end
     refreshTargetList()
 end)
-
 Players.PlayerRemoving:Connect(refreshTargetList)
 
 LocalPlayer.CharacterAdded:Connect(function()
-    task.wait(0.3)
-    if godMode then toggleGodModeSystem() end
+    if godMode then task.wait(0.2) toggleGodMode() end
     if speedHack then startSpeedBoost() end
     if noClip then runNoclipLoop() end
-    if currentEspStateVar then
-        task.wait(0.6)
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer then
-                if espDataStore[player] then
-                    pcall(function() if espDataStore[player].highlightObject then espDataStore[player].highlightObject:Destroy() end end)
-                    pcall(function() if espDataStore[player].billboardGui then espDataStore[player].billboardGui:Destroy() end end)
-                    espDataStore[player] = nil
+    if currentEsp then
+        task.wait(0.5)
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer then
+                if espDataStore[p] then
+                    pcall(function() if espDataStore[p].highlight then espDataStore[p].highlight:Destroy() end end)
+                    pcall(function() if espDataStore[p].billboard then espDataStore[p].billboard:Destroy() end end)
+                    espDataStore[p] = nil
                 end
-                buildESPForPlayer(player)
+                buildESPForPlayer(p)
             end
         end
     end
 end)
 
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🚨🚨🚨 REDZBROCOLI // TSB ULTIMATE v25.0 - EMERGENCY MOUNTAIN TELEPORT EDITION 🚨🚨🚨")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("✅ NEW EMERGENCY PROTOCOL:")
-print("   • Ketika darah < 25%, sistem akan menghentikan SEMUA aktivitas menyerang")
-print("   • Popup merah DARAH ANDA SEKARAT dengan countdown 3 detik")
-print("   • Suara alarm emergency (beep + sirine) akan berbunyi")
-print("   • Teleport otomatis ke MOUNT EVEREST untuk menyelamatkan diri")
-print("   • Emergency dapat di ON/OFF dari tab DEFENSE")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🏔️ MOUNTAIN LOCATIONS (5 GUNUNG):")
-print("   • MOUNT EVEREST - Base camp tertinggi di dunia (EMERGENCY DEFAULT)")
-print("   • MOUNT FUJI - Gunung suci Jepang")
-print("   • MOUNT KILIMANJARO - Puncak tertinggi di Afrika")
-print("   • ALPS MATTERHORN - Gunung ikonik di Swiss")
-print("   • ROCKY MOUNTAIN - Pegunungan terkenal di Amerika Utara")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("⚡ REDZBROCOLI // TSB ULTIMATE v26.0 - MOUNTAIN TELEPORT EDITION ⚡")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("✅ FITUR MOUNTAIN TELEPORT:")
+print("   • SCAN MAP - Mendeteksi semua gunung/dataran tinggi dalam game secara otomatis")
+print("   • TP HIGHEST - Teleport ke titik tertinggi yang terdeteksi di map")
+print("   • Daftar gunung yang terdeteksi muncul di tab MOUNTAINS")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("🚨 EMERGENCY PROTOCOL:")
+print("   • Ketika darah < 25%, sistem menghentikan semua aktivitas menyerang")
+print("   • Popup merah dengan countdown 3 detik")
+print("   • Teleport otomatis ke HIGHEST POINT yang terdeteksi")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS:")
-print("   • 1 → SWITCH TO COMBAT TAB")
-print("   • 2 → SWITCH TO VISUALS TAB")
-print("   • 3 → SWITCH TO MOVEMENT TAB")
-print("   • 4 → SWITCH TO DEFENSE TAB")
-print("   • 5 → SWITCH TO SETTINGS TAB")
-print("   • F1 → TELEPORT TO MOUNT EVEREST")
-print("   • F2 → TELEPORT TO MOUNT FUJI")
-print("   • F3 → TELEPORT TO MOUNT KILIMANJARO")
 print("   • INSERT → ACTIVATE SYSTEM")
 print("   • DELETE → DEACTIVATE SYSTEM")
 print("   • V → TOGGLE GODMODE")
 print("   • E → TOGGLE ESP")
 print("   • M → MINIMIZE GUI")
-print("   • P → PANIC RESET")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🎨 PRECISION HEALTH COLOR GRADIENT:")
-print("   100-98% HIJAU TERANG → 80% HIJAU KUNING → 60% KUNING OREN → 40% OREN MERAH → 20% MERAH GELAP")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("   • T → TELEPORT TO HIGHEST POINT")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("🎨 PRECISION HEALTH COLOR GRADIENT: 100%→0% (HIJAU→KUNING→OREN→MERAH→GELAP)")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
