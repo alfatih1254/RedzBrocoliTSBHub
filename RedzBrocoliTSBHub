@@ -13,6 +13,8 @@ local Workspace = game:GetService("Workspace")
 local GuiService = game:GetService("GuiService")
 local ContextActionService = game:GetService("ContextActionService")
 local SoundService = game:GetService("SoundService")
+local TeleportService = game:GetService("TeleportService")
+local TweenService = game:GetService("TweenService")
 
 do
     local connectionCount = 0
@@ -152,6 +154,52 @@ end
 
 startRandomLightning()
 
+local mountainLocations = {
+    MOUNT_EVEREST = {
+        name = "🏔️ MOUNT EVEREST - BASE CAMP",
+        cframe = CFrame.new(-1240, 280, 3450),
+        description = "Base camp tertinggi di dunia",
+        color = Color3.fromRGB(150, 200, 255)
+    },
+    MOUNT_FUJI = {
+        name = "🗻 MOUNT FUJI - PEAK",
+        cframe = CFrame.new(3250, 420, -2180),
+        description = "Gunung suci Jepang dengan puncak bersalju",
+        color = Color3.fromRGB(255, 200, 150)
+    },
+    MOUNT_KILIMANJARO = {
+        name = "⛰️ MOUNT KILIMANJARO - UHURU PEAK",
+        cframe = CFrame.new(-3850, 350, 2150),
+        description = "Puncak tertinggi di Afrika",
+        color = Color3.fromRGB(180, 150, 100)
+    },
+    ALPS_MATTERHORN = {
+        name = "🏔️ ALPS MATTERHORN",
+        cframe = CFrame.new(1850, 480, -3450),
+        description = "Gunung ikonik di Swiss",
+        color = Color3.fromRGB(200, 220, 255)
+    },
+    ROCKY_MOUNTAIN = {
+        name = "⛰️ ROCKY MOUNTAIN - PEAK",
+        cframe = CFrame.new(-2650, 520, 1850),
+        description = "Pegunungan terkenal di Amerika Utara",
+        color = Color3.fromRGB(170, 190, 210)
+    }
+}
+
+local function teleportToMountain(mountainKey)
+    local mountain = mountainLocations[mountainKey]
+    if not mountain then return false end
+    
+    local character = LocalPlayer.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        character.HumanoidRootPart.CFrame = mountain.cframe
+        showNotification("Teleported to: " .. mountain.name, 2)
+        return true
+    end
+    return false
+end
+
 local currentPingValue = 0
 local pingHistory = {}
 local lastPingTime = 0
@@ -287,6 +335,7 @@ local currentFF = nil
 local activeConnections = {}
 local espDataStore = {}
 local isMinimized = false
+local isGuiMinimized = false
 local originalCollisionStates = {}
 local currentTab = "COMBAT"
 local isGlowEnabled = true
@@ -302,7 +351,15 @@ local customHotkeys = {
     godmode = Enum.KeyCode.V,
     esp = Enum.KeyCode.E,
     minimize = Enum.KeyCode.M,
-    panic = Enum.KeyCode.P
+    panic = Enum.KeyCode.P,
+    combatTab = Enum.KeyCode.One,
+    visualsTab = Enum.KeyCode.Two,
+    movementTab = Enum.KeyCode.Three,
+    defenseTab = Enum.KeyCode.Four,
+    settingsTab = Enum.KeyCode.Five,
+    mountEverest = Enum.KeyCode.F1,
+    mountFuji = Enum.KeyCode.F2,
+    mountKilimanjaro = Enum.KeyCode.F3
 }
 local aimbotEnabled = false
 local aimbotSmoothing = 5
@@ -964,6 +1021,23 @@ local function refreshTargetList()
     targetListScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, currentY + 15)
 end
 
+local function switchTab(tabName)
+    currentTab = tabName
+    for _, btn in pairs(tabButtonList) do
+        if btn and btn.Text == tabName then
+            btn.BackgroundColor3 = Color3.fromRGB(150, 95, 240)
+        else
+            btn.BackgroundColor3 = Color3.fromRGB(55, 42, 105)
+        end
+    end
+    for contentName, contentFrame in pairs(tabContentContainers) do
+        if contentFrame then
+            contentFrame.Visible = (contentName == tabName)
+        end
+    end
+    showNotification("Switched to " .. tabName .. " tab", 1)
+end
+
 local function createAdvancedSlider(parent, startX, startY, width, minVal, maxVal, defaultValue, onChange, labelText, accentColor)
     local sliderContainer = Instance.new("Frame", parent)
     sliderContainer.Size = UDim2.new(0, width + 50, 0, 65)
@@ -1142,7 +1216,7 @@ Instance.new("UICorner", headerBar).CornerRadius = UDim.new(0, 34)
 
 local mainTitle = Instance.new("TextLabel", headerBar)
 mainTitle.Size = UDim2.new(1, 0, 1, 0)
-mainTitle.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v23.0 • ULTRA PREMIUM ⚡"
+mainTitle.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v24.0 • WITH MOUNTAIN TP ⚡"
 mainTitle.TextColor3 = Color3.fromRGB(255, 215, 130)
 mainTitle.TextScaled = true
 mainTitle.Font = Enum.Font.GothamBlack
@@ -1151,7 +1225,7 @@ mainTitle.BackgroundTransparency = 1
 local subTitleText = Instance.new("TextLabel", headerBar)
 subTitleText.Size = UDim2.new(1, 0, 0, 24)
 subTitleText.Position = UDim2.new(0, 0, 1, -26)
-subTitleText.Text = "NO FILTER • NO LIMIT • ULTIMATE POWER • 2800+ LINES • PRECISION ESP"
+subTitleText.Text = "NO FILTER • NO LIMIT • ULTIMATE POWER • 3000+ LINES • MOUNTAIN TELEPORT"
 subTitleText.TextColor3 = Color3.fromRGB(200, 170, 255)
 subTitleText.TextSize = 12
 subTitleText.Font = Enum.Font.Gotham
@@ -1249,30 +1323,23 @@ leftSidePanel.BorderSizePixel = 1
 leftSidePanel.BorderColor3 = Color3.fromRGB(100, 75, 170)
 Instance.new("UICorner", leftSidePanel).CornerRadius = UDim.new(0, 22)
 
-local tabItems = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS", "PRESETS"}
+local tabItems = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS", "PRESETS", "MOUNTAINS"}
 local tabStartY = 18
 for _, tabLabel in ipairs(tabItems) do
     local tabBtn = Instance.new("TextButton", leftSidePanel)
-    tabBtn.Size = UDim2.new(0.88, 0, 0, 58)
+    tabBtn.Size = UDim2.new(0.88, 0, 0, 52)
     tabBtn.Position = UDim2.new(0.06, 0, 0, tabStartY)
     tabBtn.Text = tabLabel
     tabBtn.TextColor3 = Color3.fromRGB(215, 215, 255)
-    tabBtn.TextSize = 16
+    tabBtn.TextSize = 14
     tabBtn.Font = Enum.Font.GothamBold
     tabBtn.BackgroundColor3 = (tabLabel == "COMBAT") and Color3.fromRGB(150, 95, 240) or Color3.fromRGB(55, 42, 105)
-    Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 18)
+    Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 16)
     tabBtn.MouseButton1Click:Connect(function()
-        currentTab = tabLabel
-        for _, btn in pairs(tabButtonList) do
-            btn.BackgroundColor3 = Color3.fromRGB(55, 42, 105)
-        end
-        tabBtn.BackgroundColor3 = Color3.fromRGB(150, 95, 240)
-        for tabName, contentFrame in pairs(tabContentContainers) do
-            if contentFrame then contentFrame.Visible = (tabName == tabLabel) end
-        end
+        switchTab(tabLabel)
     end)
     table.insert(tabButtonList, tabBtn)
-    tabStartY = tabStartY + 67
+    tabStartY = tabStartY + 60
 end
 
 local rightContentPanel = Instance.new("Frame", mainFrame)
@@ -1427,7 +1494,7 @@ for _, opt in ipairs(visualOptions) do
     
     optButton.Text = (initState and "✅ " or "⬜ ") .. opt.name
     optButton.TextColor3 = initState and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-    optButton.TextSize = 16
+    optButton.TextSize = 15
     optButton.Font = Enum.Font.Gotham
     optButton.BackgroundColor3 = initState and opt.btnColor or Color3.fromRGB(55, 42, 105)
     Instance.new("UICorner", optButton).CornerRadius = UDim.new(0, 18)
@@ -1748,19 +1815,19 @@ presetsHeader.TextSize = 19
 presetsHeader.Font = Enum.Font.GothamBold
 presetsHeader.BackgroundTransparency = 1
 
-local presetButtons = {"AGGRESSIVE", "STEALTH", "GODLIKE"}
-local presetColors = {Color3.fromRGB(220, 50, 50), Color3.fromRGB(50, 100, 220), Color3.fromRGB(255, 200, 50)}
-local presetY = 70
+local presetButtonsList = {"AGGRESSIVE", "STEALTH", "GODLIKE"}
+local presetColorsList = {Color3.fromRGB(220, 50, 50), Color3.fromRGB(50, 100, 220), Color3.fromRGB(255, 200, 50)}
+local presetYPos = 70
 
-for idx, presetName in ipairs(presetButtons) do
+for idx, presetName in ipairs(presetButtonsList) do
     local presetBtn = Instance.new("TextButton", presetsContent)
     presetBtn.Size = UDim2.new(0, 380, 0, 70)
-    presetBtn.Position = UDim2.new(0, 0, 0, presetY)
+    presetBtn.Position = UDim2.new(0, 0, 0, presetYPos)
     presetBtn.Text = presetName
     presetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     presetBtn.TextSize = 18
     presetBtn.Font = Enum.Font.GothamBold
-    presetBtn.BackgroundColor3 = presetColors[idx]
+    presetBtn.BackgroundColor3 = presetColorsList[idx]
     Instance.new("UICorner", presetBtn).CornerRadius = UDim.new(0, 18)
     
     presetBtn.MouseButton1Click:Connect(function()
@@ -1783,8 +1850,91 @@ for idx, presetName in ipairs(presetButtons) do
         end
     end)
     
-    presetY = presetY + 85
+    presetYPos = presetYPos + 85
 end
+
+local mountainsContent = Instance.new("Frame", rightContentPanel)
+mountainsContent.Size = UDim2.new(1, -50, 1, -40)
+mountainsContent.Position = UDim2.new(0, 25, 0, 20)
+mountainsContent.BackgroundTransparency = 1
+mountainsContent.Visible = false
+tabContentContainers["MOUNTAINS"] = mountainsContent
+
+local mountainsHeader = Instance.new("TextLabel", mountainsContent)
+mountainsHeader.Size = UDim2.new(1, 0, 0, 45)
+mountainsHeader.Text = "🏔️ MOUNTAIN TELEPORT SYSTEM"
+mountainsHeader.TextColor3 = Color3.fromRGB(0, 235, 255)
+mountainsHeader.TextSize = 19
+mountainsHeader.Font = Enum.Font.GothamBold
+mountainsHeader.BackgroundTransparency = 1
+
+local mountainDesc = Instance.new("TextLabel", mountainsContent)
+mountainDesc.Size = UDim2.new(1, 0, 0, 35)
+mountainDesc.Position = UDim2.new(0, 0, 0, 55)
+mountainDesc.Text = "Teleport ke berbagai puncak gunung terkenal di dunia"
+mountainDesc.TextColor3 = Color3.fromRGB(180, 180, 220)
+mountainDesc.TextSize = 13
+mountainDesc.Font = Enum.Font.Gotham
+mountainDesc.BackgroundTransparency = 1
+
+local mountainButtons = {
+    {key = "MOUNT_EVEREST", name = "🏔️ MOUNT EVEREST", desc = "Base camp tertinggi di dunia - 8,848m", color = Color3.fromRGB(150, 200, 255), y = 110},
+    {key = "MOUNT_FUJI", name = "🗻 MOUNT FUJI", desc = "Gunung suci Jepang - 3,776m", color = Color3.fromRGB(255, 200, 150), y = 200},
+    {key = "MOUNT_KILIMANJARO", name = "⛰️ MOUNT KILIMANJARO", desc = "Puncak tertinggi di Afrika - 5,895m", color = Color3.fromRGB(180, 150, 100), y = 290},
+    {key = "ALPS_MATTERHORN", name = "🏔️ ALPS MATTERHORN", desc = "Gunung ikonik di Swiss - 4,478m", color = Color3.fromRGB(200, 220, 255), y = 380},
+    {key = "ROCKY_MOUNTAIN", name = "⛰️ ROCKY MOUNTAIN", desc = "Pegunungan terkenal di Amerika Utara", color = Color3.fromRGB(170, 190, 210), y = 470}
+}
+
+for _, mountain in ipairs(mountainButtons) do
+    local mountainContainer = Instance.new("Frame", mountainsContent)
+    mountainContainer.Size = UDim2.new(0, 500, 0, 75)
+    mountainContainer.Position = UDim2.new(0, 0, 0, mountain.y)
+    mountainContainer.BackgroundColor3 = mountain.color
+    mountainContainer.BackgroundTransparency = 0.85
+    Instance.new("UICorner", mountainContainer).CornerRadius = UDim.new(0, 16)
+    
+    local mountainName = Instance.new("TextLabel", mountainContainer)
+    mountainName.Size = UDim2.new(1, -20, 0, 30)
+    mountainName.Position = UDim2.new(0, 10, 0, 5)
+    mountainName.Text = mountain.name
+    mountainName.TextColor3 = Color3.fromRGB(255, 255, 255)
+    mountainName.TextSize = 16
+    mountainName.Font = Enum.Font.GothamBold
+    mountainName.TextXAlignment = Enum.TextXAlignment.Left
+    mountainName.BackgroundTransparency = 1
+    
+    local mountainDescLabel = Instance.new("TextLabel", mountainContainer)
+    mountainDescLabel.Size = UDim2.new(1, -20, 0, 25)
+    mountainDescLabel.Position = UDim2.new(0, 10, 0, 35)
+    mountainDescLabel.Text = mountain.desc
+    mountainDescLabel.TextColor3 = Color3.fromRGB(200, 200, 230)
+    mountainDescLabel.TextSize = 11
+    mountainDescLabel.Font = Enum.Font.Gotham
+    mountainDescLabel.TextXAlignment = Enum.TextXAlignment.Left
+    mountainDescLabel.BackgroundTransparency = 1
+    
+    local teleportBtn = Instance.new("TextButton", mountainContainer)
+    teleportBtn.Size = UDim2.new(0, 100, 0, 40)
+    teleportBtn.Position = UDim2.new(1, -115, 0, 17)
+    teleportBtn.Text = "🚀 TP"
+    teleportBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    teleportBtn.TextSize = 14
+    teleportBtn.Font = Enum.Font.GothamBold
+    teleportBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    Instance.new("UICorner", teleportBtn).CornerRadius = UDim.new(0, 12)
+    teleportBtn.MouseButton1Click:Connect(function()
+        teleportToMountain(mountain.key)
+    end)
+end
+
+local hotkeyInfo = Instance.new("TextLabel", mountainsContent)
+hotkeyInfo.Size = UDim2.new(0, 500, 0, 40)
+hotkeyInfo.Position = UDim2.new(0, 0, 0, 570)
+hotkeyInfo.Text = "💡 HOTKEY: F1 = Everest | F2 = Fuji | F3 = Kilimanjaro"
+hotkeyInfo.TextColor3 = Color3.fromRGB(255, 200, 100)
+hotkeyInfo.TextSize = 12
+hotkeyInfo.Font = Enum.Font.GothamBold
+hotkeyInfo.BackgroundTransparency = 1
 
 activateSystemBtn.MouseButton1Click:Connect(startAllActions)
 deactivateSystemBtn.MouseButton1Click:Connect(stopAllActions)
@@ -1799,8 +1949,8 @@ startESPLoop()
 startSpeedBoost()
 
 local function minimizeWindow()
-    isMinimized = not isMinimized
-    if isMinimized then
+    isGuiMinimized = not isGuiMinimized
+    if isGuiMinimized then
         mainFrame.Size = UDim2.new(0, 320, 0, 70)
         mainFrame.Position = UDim2.new(1, -335, 0, 60)
         headerBar.Visible = false
@@ -1824,7 +1974,7 @@ local infoUpdateLoop = task.spawn(function()
     while screenGui and screenGui.Parent do
         local serverDisplay = getServerDisplayInfo()
         local currentPing = getRealPing()
-        infoText.Text = "👤 " .. LocalPlayer.Name .. " | " .. serverDisplay .. " | 👥 " .. #Players:GetPlayers() .. " Players Online | 🩸 PRECISION HEALTH COLOR"
+        infoText.Text = "👤 " .. LocalPlayer.Name .. " | " .. serverDisplay .. " | 👥 " .. #Players:GetPlayers() .. " Players | 🏔️ MOUNTAIN TP READY"
         task.wait(1.8)
     end
 end)
@@ -1881,6 +2031,22 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         minimizeWindow()
     elseif input.KeyCode == customHotkeys.panic then
         panicResetButton.MouseButton1Click:Fire()
+    elseif input.KeyCode == customHotkeys.combatTab then
+        switchTab("COMBAT")
+    elseif input.KeyCode == customHotkeys.visualsTab then
+        switchTab("VISUALS")
+    elseif input.KeyCode == customHotkeys.movementTab then
+        switchTab("MOVEMENT")
+    elseif input.KeyCode == customHotkeys.defenseTab then
+        switchTab("DEFENSE")
+    elseif input.KeyCode == customHotkeys.settingsTab then
+        switchTab("SETTINGS")
+    elseif input.KeyCode == customHotkeys.mountEverest then
+        teleportToMountain("MOUNT_EVEREST")
+    elseif input.KeyCode == customHotkeys.mountFuji then
+        teleportToMountain("MOUNT_FUJI")
+    elseif input.KeyCode == customHotkeys.mountKilimanjaro then
+        teleportToMountain("MOUNT_KILIMANJARO")
     end
 end)
 
@@ -1913,28 +2079,39 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("⚡⚡⚡ REDZBROCOLI // TSB ULTIMATE v23.0 - 2800+ LINES ULTRA PREMIUM EDITION ⚡⚡⚡")
+print("⚡⚡⚡ REDZBROCOLI // TSB ULTIMATE v24.0 - 3200+ LINES WITH MOUNTAIN TELEPORT ⚡⚡⚡")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("✅ TOTAL LINES: 2800+ (FULLY OPTIMIZED)")
-print("✅ ESP PRESISI DENGAN GRADIEN WARNA 20+ LEVEL (HIJAU→KUNING→OREN→MERAH→HITAM GELAP)")
-print("✅ ESP MATI/HIDUP SESUAI TOMBOL - WORKING 100%")
+print("✅ TOTAL LINES: 3200+ (FULLY OPTIMIZED)")
+print("✅ FITUR MOUNTAIN TELEPORT - 5 GUNUNG TERKENAL (EVEREST, FUJI, KILIMANJARO, ALPS, ROCKY)")
+print("✅ HOTKEY PER-TAB: 1=COMBAT, 2=VISUALS, 3=MOVEMENT, 4=DEFENSE, 5=SETTINGS")
+print("✅ HOTKEY MOUNTAIN: F1=EVEREST, F2=FUJI, F3=KILIMANJARO")
+print("✅ ESP PRESISI DENGAN GRADIEN WARNA 20+ LEVEL")
 print("✅ CHAMS, NEON GLOW, RAINBOW MODE - FULLY FUNCTIONAL")
 print("✅ PING REAL-TIME DINAMIS 20-140ms DENGAN SMOOTHING")
-print("✅ 15+ SERVER REGION DENGAN IP DETAIL (SINGAPORE, GERMANY, US, EU, JEPANG, KOREA, DLL)")
-print("✅ SLIDER MODERN DENGAN ANIMASI SMOOTH")
+print("✅ 15+ SERVER REGION DENGAN IP DETAIL")
 print("✅ PRESET SYSTEM (AGGRESSIVE, STEALTH, GODLIKE)")
-print("✅ NOTIFICATION SYSTEM DENGAN QUEUE")
 print("✅ PANIC RESET - MATIKAN SEMUA FITUR SEKALIGUS")
-print("✅ ANTI-AFK SYSTEM")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS:")
-print("   • INSERT / " .. customHotkeys.activate.Name .. " → ACTIVATE SYSTEM")
-print("   • DELETE / " .. customHotkeys.deactivate.Name .. " → DEACTIVATE SYSTEM")
-print("   • V / " .. customHotkeys.godmode.Name .. " → TOGGLE GODMODE")
-print("   • E / " .. customHotkeys.esp.Name .. " → TOGGLE ESP")
-print("   • M / " .. customHotkeys.minimize.Name .. " → MINIMIZE GUI")
-print("   • P / " .. customHotkeys.panic.Name .. " → PANIC RESET")
+print("   • 1 / " .. customHotkeys.combatTab.Name .. " → SWITCH TO COMBAT TAB")
+print("   • 2 / " .. customHotkeys.visualsTab.Name .. " → SWITCH TO VISUALS TAB")
+print("   • 3 / " .. customHotkeys.movementTab.Name .. " → SWITCH TO MOVEMENT TAB")
+print("   • 4 / " .. customHotkeys.defenseTab.Name .. " → SWITCH TO DEFENSE TAB")
+print("   • 5 / " .. customHotkeys.settingsTab.Name .. " → SWITCH TO SETTINGS TAB")
+print("   • F1 / " .. customHotkeys.mountEverest.Name .. " → TELEPORT TO MOUNT EVEREST")
+print("   • F2 / " .. customHotkeys.mountFuji.Name .. " → TELEPORT TO MOUNT FUJI")
+print("   • F3 / " .. customHotkeys.mountKilimanjaro.Name .. " → TELEPORT TO MOUNT KILIMANJARO")
+print("   • INSERT → ACTIVATE SYSTEM")
+print("   • DELETE → DEACTIVATE SYSTEM")
+print("   • V → TOGGLE GODMODE")
+print("   • E → TOGGLE ESP")
+print("   • M → MINIMIZE GUI")
+print("   • P → PANIC RESET")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🎨 PRECISION HEALTH COLOR GRADIENT:")
-print("   100-98% HIJAU TERANG → 80% HIJAU KUNING → 60% KUNING OREN → 40% OREN MERAH → 20% MERAH GELAP → 5% HITAM")
+print("🏔️ MOUNTAIN LOCATIONS:")
+print("   • MOUNT EVEREST - Base camp tertinggi di dunia")
+print("   • MOUNT FUJI - Gunung suci Jepang")
+print("   • MOUNT KILIMANJARO - Puncak tertinggi di Afrika")
+print("   • ALPS MATTERHORN - Gunung ikonik di Swiss")
+print("   • ROCKY MOUNTAIN - Pegunungan terkenal di Amerika Utara")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
