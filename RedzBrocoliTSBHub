@@ -1,8 +1,5 @@
--- REDZBROCOLI // TSB ULTIMATE v18.0 - FULL TABS + SLIDER BULAT + 1500+ LINE
+-- REDZBROCOLI // TSB ULTIMATE v20.0 - FULL WORKING + PING REAL + SLIDER TIDAK KEDRAG
 
--- ============================================
--- SECTION 1: SERVICES & SETUP
--- ============================================
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -14,7 +11,7 @@ local Stats = game:GetService("Stats")
 local LocalPlayer = Players.LocalPlayer
 
 -- ============================================
--- SECTION 2: LIGHTING (TIDAK GELAP)
+-- LIGHTING
 -- ============================================
 Lighting.Brightness = 2
 Lighting.Ambient = Color3.fromRGB(128, 128, 128)
@@ -24,7 +21,7 @@ for _, e in ipairs(Lighting:GetChildren()) do
 end
 
 -- ============================================
--- SECTION 3: EFEK BINTANG & PETIR
+-- BINTANG & PETIR
 -- ============================================
 local starContainer = Instance.new("Folder", CoreGui)
 for i = 1, 100 do
@@ -53,7 +50,27 @@ task.spawn(function()
 end)
 
 -- ============================================
--- SECTION 4: GLOBAL VARIABLES
+-- GET REAL PING & SERVER ID
+-- ============================================
+local function getRealPing()
+    local stats = Stats:FindFirstChild("Network")
+    if stats and stats:FindFirstChild("Ping") then
+        return math.floor(stats.Ping.Value)
+    end
+    return 0
+end
+
+local function getServerId()
+    local jobId = game.JobId
+    if jobId and jobId ~= "" then
+        local shortId = string.sub(jobId, 1, 8)
+        return shortId:upper()
+    end
+    return "UNKNOWN"
+end
+
+-- ============================================
+-- GLOBAL VARIABLES
 -- ============================================
 local selectedTarget = nil
 local isActive = false
@@ -67,7 +84,6 @@ local infiniteJump = false
 local teleportTarget = false
 local emergency = true
 local chams = false
-local tracerLines = false
 local orbitAngle = 0
 local soloRadius = 5
 local orbitRadius = 5
@@ -92,25 +108,19 @@ local chamsRunning = false
 -- UI Elements
 local screenGui = nil
 local mainFrame = nil
+local dragHandle = nil
 local statusLabel = nil
 local targetListFrame = nil
 local targetButtons = {}
 local modeBtns = {}
 local tabButtons = {}
 local rightContents = {}
-local comboFeatureBtns = {}
 local visualFeatureBtns = {}
 local moveFeatureBtns = {}
 
 -- ============================================
--- SECTION 5: UTILITY FUNCTIONS
+-- UTILITY
 -- ============================================
-local function getPing()
-    local stats = Stats:FindFirstChild("Network")
-    if stats and stats:FindFirstChild("Ping") then return math.floor(stats.Ping.Value) end
-    return 0
-end
-
 local safePos = {
     Vector3.new(0, 500, 0), Vector3.new(100, 450, 100), Vector3.new(-100, 480, -100),
     Vector3.new(200, 520, -150), Vector3.new(-200, 550, 150), Vector3.new(0, 600, 0)
@@ -124,7 +134,7 @@ local function teleportSafe()
 end
 
 -- ============================================
--- SECTION 6: SPEED HACK
+-- SPEED HACK
 -- ============================================
 local function runSpeedHack()
     if speedRunning then return end
@@ -143,7 +153,7 @@ local function runSpeedHack()
 end
 
 -- ============================================
--- SECTION 7: NO CLIP (FIX)
+-- NO CLIP
 -- ============================================
 local function saveCollision()
     local c = LocalPlayer.Character
@@ -187,7 +197,7 @@ local function runNoClip()
 end
 
 -- ============================================
--- SECTION 8: INFINITE JUMP
+-- INFINITE JUMP
 -- ============================================
 UserInputService.JumpRequest:Connect(function()
     if infiniteJump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
@@ -196,7 +206,7 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 -- ============================================
--- SECTION 9: TELEPORT TO TARGET
+-- TELEPORT TO TARGET
 -- ============================================
 local function runTeleportTarget()
     if teleportRunning then return end
@@ -215,7 +225,7 @@ local function runTeleportTarget()
 end
 
 -- ============================================
--- SECTION 10: CHAMS (X-RAY)
+-- CHAMS
 -- ============================================
 local function runChams()
     if chamsRunning then return end
@@ -239,7 +249,7 @@ local function runChams()
 end
 
 -- ============================================
--- SECTION 11: SOLO MODE
+-- SOLO MODE
 -- ============================================
 local function startSolo()
     if soloRunning then return end
@@ -264,7 +274,7 @@ local function startSolo()
 end
 
 -- ============================================
--- SECTION 12: ORBIT MODE
+-- ORBIT MODE
 -- ============================================
 local function startOrbit()
     if orbitRunning then return end
@@ -288,7 +298,7 @@ local function startOrbit()
 end
 
 -- ============================================
--- SECTION 13: FEET MODE
+-- FEET MODE
 -- ============================================
 local function startFeet()
     if feetRunning then return end
@@ -309,7 +319,7 @@ local function startFeet()
 end
 
 -- ============================================
--- SECTION 14: GODMODE
+-- GODMODE
 -- ============================================
 local function toggleGodMode()
     godMode = not godMode
@@ -331,7 +341,7 @@ local function toggleGodMode()
 end
 
 -- ============================================
--- SECTION 15: ESP SYSTEM
+-- ESP SYSTEM
 -- ============================================
 local function getHealthColor(p)
     if p >= 75 then return Color3.fromRGB(0, 255, 0)
@@ -443,7 +453,7 @@ local function toggleESP()
 end
 
 -- ============================================
--- SECTION 16: ACTIVATE / DEACTIVATE
+-- ACTIVATE / DEACTIVATE
 -- ============================================
 local function deactivate()
     isActive = false
@@ -497,7 +507,7 @@ local function activate()
 end
 
 -- ============================================
--- SECTION 17: UPDATE TARGET LIST
+-- UPDATE TARGET LIST
 -- ============================================
 local function updateTargetList()
     if not targetListFrame then return end
@@ -536,10 +546,9 @@ local function updateTargetList()
 end
 
 -- ============================================
--- SECTION 18: SLIDER BULAT (CIRCULAR KNOB)
+-- SLIDER BULAT (TIDAK KEDRAG GUI)
 -- ============================================
 local function createCircularSlider(parent, x, y, width, minVal, maxVal, defaultVal, callback, labelText, color)
-    -- Label
     local label = Instance.new("TextLabel", parent)
     label.Size = UDim2.new(0, 200, 0, 22)
     label.Position = UDim2.new(0, x, 0, y)
@@ -548,37 +557,25 @@ local function createCircularSlider(parent, x, y, width, minVal, maxVal, default
     label.TextSize = 12
     label.BackgroundTransparency = 1
     label.Font = Enum.Font.Gotham
-    label.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Background bar
     local bg = Instance.new("Frame", parent)
     bg.Size = UDim2.new(0, width, 0, 6)
     bg.Position = UDim2.new(0, x, 0, y + 25)
     bg.BackgroundColor3 = Color3.fromRGB(60, 40, 100)
     Instance.new("UICorner", bg).CornerRadius = UDim.new(1, 0)
     
-    -- Fill bar
     local fill = Instance.new("Frame", bg)
     fill.Size = UDim2.new((defaultVal - minVal) / (maxVal - minVal), 0, 1, 0)
     fill.BackgroundColor3 = color or Color3.fromRGB(150, 100, 255)
     Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
     
-    -- Bulatan (Circular knob)
     local knob = Instance.new("Frame", bg)
     knob.Size = UDim2.new(0, 16, 0, 16)
     knob.Position = UDim2.new((defaultVal - minVal) / (maxVal - minVal), -8, 0.5, -8)
-    knob.BackgroundColor3 = color or Color3.fromRGB(255, 255, 255)
+    knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
     knob.BorderSizePixel = 2
     knob.BorderColor3 = color or Color3.fromRGB(150, 100, 255)
-    
-    -- Shadow effect
-    local shadow = Instance.new("Frame", knob)
-    shadow.Size = UDim2.new(1, -4, 1, -4)
-    shadow.Position = UDim2.new(0.5, -6, 0.5, -6)
-    shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    shadow.BackgroundTransparency = 0.7
-    Instance.new("UICorner", shadow).CornerRadius = UDim.new(1, 0)
     
     local dragging = false
     
@@ -591,44 +588,38 @@ local function createCircularSlider(parent, x, y, width, minVal, maxVal, default
         callback(val)
     end
     
-    bg.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 then
+    -- PAKAI MOUSEBUTTON1 DOWN
+    local function onInputBegan(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
-            updateFromPosition(i.Position.X)
+            updateFromPosition(input.Position.X)
         end
-    end)
+    end
     
-    knob.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            updateFromPosition(i.Position.X)
-        end
-    end)
+    bg.InputBegan:Connect(onInputBegan)
+    knob.InputBegan:Connect(onInputBegan)
     
-    UserInputService.InputEnded:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 then
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
         end
     end)
     
-    UserInputService.InputChanged:Connect(function(i)
-        if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
-            updateFromPosition(i.Position.X)
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            updateFromPosition(input.Position.X)
         end
     end)
-    
-    return {fill = fill, knob = knob, label = label}
 end
 
 -- ============================================
--- SECTION 19: GUI CREATION (FULL TABS)
+-- GUI CREATION
 -- ============================================
 screenGui = Instance.new("ScreenGui", CoreGui)
 screenGui.Name = "RedzBrocoli"
 screenGui.ResetOnSpawn = false
 screenGui.IgnoreGuiInset = true
 
--- Main Frame
 mainFrame = Instance.new("Frame", screenGui)
 mainFrame.Size = UDim2.new(0, 1100, 0, 700)
 mainFrame.Position = UDim2.new(0.5, -550, 0.5, -350)
@@ -636,9 +627,40 @@ mainFrame.BackgroundColor3 = Color3.fromRGB(15, 12, 35)
 mainFrame.BackgroundTransparency = 0.08
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
-mainFrame.Active = true
-mainFrame.Draggable = true
+-- DRAG HANYA DI HEADER (tidak di slider)
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 24)
+
+-- DRAG HANDLE (hanya header yang bisa drag)
+dragHandle = Instance.new("Frame", mainFrame)
+dragHandle.Size = UDim2.new(1, 0, 0, 70)
+dragHandle.Position = UDim2.new(0, 0, 0, 0)
+dragHandle.BackgroundTransparency = 1
+
+local draggingGUI = false
+local dragStartPos = nil
+local dragStartMouse = nil
+
+dragHandle.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingGUI = true
+        dragStartPos = mainFrame.Position
+        dragStartMouse = input.Position
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingGUI = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if draggingGUI and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStartMouse
+        local newPos = UDim2.new(dragStartPos.X.Scale, dragStartPos.X.Offset + delta.X, dragStartPos.Y.Scale, dragStartPos.Y.Offset + delta.Y)
+        mainFrame.Position = newPos
+    end
+end)
 
 -- Border pelangi
 local border = Instance.new("Frame", mainFrame)
@@ -679,15 +701,15 @@ minBtn.BackgroundColor3 = Color3.fromRGB(80, 50, 150)
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 10)
 
 -- Header
-local header = Instance.new("Frame", mainFrame)
-header.Size = UDim2.new(1, 0, 0, 70)
+local header = Instance.new("Frame", dragHandle)
+header.Size = UDim2.new(1, 0, 1, 0)
 header.BackgroundColor3 = Color3.fromRGB(35, 22, 70)
 header.BackgroundTransparency = 0.2
 Instance.new("UICorner", header).CornerRadius = UDim.new(0, 24)
 
 local title = Instance.new("TextLabel", header)
 title.Size = UDim2.new(1, 0, 1, 0)
-title.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v18.0 ⚡"
+title.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v20.0 ⚡"
 title.TextColor3 = Color3.fromRGB(255, 200, 100)
 title.TextScaled = true
 title.Font = Enum.Font.GothamBlack
@@ -702,21 +724,22 @@ infoBar.BackgroundTransparency = 0.3
 
 local infoText = Instance.new("TextLabel", infoBar)
 infoText.Size = UDim2.new(1, 0, 1, 0)
-infoText.Text = "👤 " .. LocalPlayer.Name .. " | 🌐 ID-JKT | 👥 0/20 | 📶 0ms"
+infoText.Text = "👤 " .. LocalPlayer.Name .. " | 🌐 LOADING... | 👥 0/20 | 📶 0ms"
 infoText.TextColor3 = Color3.fromRGB(180, 180, 220)
 infoText.TextSize = 12
 infoText.BackgroundTransparency = 1
 
+-- Update info periodically
 task.spawn(function()
     while screenGui and screenGui.Parent do
-        infoText.Text = "👤 " .. LocalPlayer.Name .. " | 🌐 ID-JKT | 👥 " .. #Players:GetPlayers() .. "/20 | 📶 " .. getPing() .. "ms"
-        task.wait(1)
+        local serverId = getServerId()
+        local ping = getRealPing()
+        infoText.Text = "👤 " .. LocalPlayer.Name .. " | 🌐 SERVER: " .. serverId .. " | 👥 " .. #Players:GetPlayers() .. "/20 | 📶 " .. ping .. "ms"
+        task.wait(2)
     end
 end)
 
--- ============================================
--- SECTION 20: LEFT PANEL (TABS)
--- ============================================
+-- Left Panel (Tabs)
 local leftPanel = Instance.new("Frame", mainFrame)
 leftPanel.Size = UDim2.new(0, 180, 1, -115)
 leftPanel.Position = UDim2.new(0, 15, 0, 115)
@@ -746,7 +769,7 @@ for _, tab in ipairs(tabs) do
         end
         btn.BackgroundColor3 = Color3.fromRGB(120, 70, 200)
         for name, content in pairs(rightContents) do
-            content.Visible = (name == tab)
+            if content then content.Visible = (name == tab) end
         end
     end)
     table.insert(tabButtons, btn)
@@ -765,7 +788,7 @@ rightPanel.ClipsDescendants = true
 Instance.new("UICorner", rightPanel).CornerRadius = UDim.new(0, 16)
 
 -- ============================================
--- SECTION 21: TAB COMBAT
+-- TAB COMBAT
 -- ============================================
 local combatContent = Instance.new("Frame", rightPanel)
 combatContent.Size = UDim2.new(1, -30, 1, -20)
@@ -773,7 +796,6 @@ combatContent.Position = UDim2.new(0, 15, 0, 10)
 combatContent.BackgroundTransparency = 1
 rightContents["COMBAT"] = combatContent
 
--- Status label
 statusLabel = Instance.new("TextLabel", combatContent)
 statusLabel.Size = UDim2.new(1, 0, 0, 35)
 statusLabel.Position = UDim2.new(0, 0, 0, 0)
@@ -783,7 +805,6 @@ statusLabel.TextSize = 14
 statusLabel.Font = Enum.Font.GothamBold
 statusLabel.BackgroundTransparency = 1
 
--- Target list
 local targetLabel = Instance.new("TextLabel", combatContent)
 targetLabel.Size = UDim2.new(0, 200, 0, 25)
 targetLabel.Position = UDim2.new(0, 0, 0, 45)
@@ -802,7 +823,6 @@ targetListFrame.BorderSizePixel = 0
 targetListFrame.ScrollBarThickness = 6
 Instance.new("UICorner", targetListFrame).CornerRadius = UDim.new(0, 12)
 
--- Mode selection
 local modeLabel = Instance.new("TextLabel", combatContent)
 modeLabel.Size = UDim2.new(0, 200, 0, 25)
 modeLabel.Position = UDim2.new(0, 320, 0, 45)
@@ -817,7 +837,6 @@ modeFrame.Size = UDim2.new(0, 250, 0, 150)
 modeFrame.Position = UDim2.new(0, 320, 0, 75)
 modeFrame.BackgroundTransparency = 1
 
--- Mode buttons
 local modesList = {"SOLO", "ORBIT", "FEET"}
 local modeY = 0
 for i, m in ipairs(modesList) do
@@ -842,7 +861,6 @@ for i, m in ipairs(modesList) do
     modeY = modeY + 50
 end
 
--- Action buttons
 local actBtn = Instance.new("TextButton", combatContent)
 actBtn.Size = UDim2.new(0, 200, 0, 48)
 actBtn.Position = UDim2.new(0, 320, 0, 250)
@@ -863,14 +881,14 @@ deactBtn.Font = Enum.Font.GothamBold
 deactBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
 Instance.new("UICorner", deactBtn).CornerRadius = UDim.new(0, 12)
 
--- Sliders di Combat
+-- Sliders
 createCircularSlider(combatContent, 0, 400, 220, 2, 12, soloRadius, function(v) soloRadius = v end, "📍 TELEPORT RADIUS", Color3.fromRGB(255, 100, 200))
 createCircularSlider(combatContent, 0, 460, 220, 3, 12, orbitRadius, function(v) orbitRadius = v end, "🔄 ORBIT RADIUS", Color3.fromRGB(150, 100, 255))
 createCircularSlider(combatContent, 0, 520, 220, 0.3, 3, orbitSpeed, function(v) orbitSpeed = v end, "⚡ ORBIT SPEED", Color3.fromRGB(100, 255, 100))
 createCircularSlider(combatContent, 0, 580, 220, 1, 10, feetDist, function(v) feetDist = v end, "🦶 FEET DISTANCE", Color3.fromRGB(100, 200, 150))
 
 -- ============================================
--- SECTION 22: TAB VISUALS
+-- TAB VISUALS
 -- ============================================
 local visualsContent = Instance.new("Frame", rightPanel)
 visualsContent.Size = UDim2.new(1, -30, 1, -20)
@@ -887,12 +905,10 @@ visTitle.TextSize = 16
 visTitle.Font = Enum.Font.GothamBold
 visTitle.BackgroundTransparency = 1
 
--- Visual features
 local visFeatures = {
     {name = "PLAYER ESP", var = "espOn", default = true, y = 50, color = Color3.fromRGB(0, 180, 80)},
     {name = "CHAMS X-RAY", var = "chams", default = false, y = 110, color = Color3.fromRGB(200, 100, 0)},
 }
-
 for _, f in ipairs(visFeatures) do
     local btn = Instance.new("TextButton", visualsContent)
     btn.Size = UDim2.new(0, 280, 0, 48)
@@ -903,10 +919,8 @@ for _, f in ipairs(visFeatures) do
     btn.Font = Enum.Font.Gotham
     btn.BackgroundColor3 = f.default and f.color or Color3.fromRGB(45, 35, 85)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 12)
-    
     local varName = f.var
     local state = (varName == "espOn" and espOn) or (varName == "chams" and chams)
-    
     btn.MouseButton1Click:Connect(function()
         state = not state
         if varName == "espOn" then toggleESP()
@@ -922,7 +936,7 @@ for _, f in ipairs(visFeatures) do
 end
 
 -- ============================================
--- SECTION 23: TAB MOVEMENT
+-- TAB MOVEMENT
 -- ============================================
 local movementContent = Instance.new("Frame", rightPanel)
 movementContent.Size = UDim2.new(1, -30, 1, -20)
@@ -939,7 +953,6 @@ moveTitle.TextSize = 16
 moveTitle.Font = Enum.Font.GothamBold
 moveTitle.BackgroundTransparency = 1
 
--- Speed slider dengan bulatan
 createCircularSlider(movementContent, 0, 50, 280, 1, 5, speedMultiplier, function(v) 
     speedMultiplier = v
     if speedHack then
@@ -950,14 +963,12 @@ createCircularSlider(movementContent, 0, 50, 280, 1, 5, speedMultiplier, functio
     end
 end, "⚡ SPEED MULTIPLIER", Color3.fromRGB(100, 255, 100))
 
--- Movement features
 local moveFeatures = {
     {name = "SPEED HACK", var = "speedHack", default = false, y = 120, color = Color3.fromRGB(0, 180, 80)},
     {name = "NO CLIP", var = "noClip", default = false, y = 180, color = Color3.fromRGB(0, 150, 200)},
     {name = "INFINITE JUMP", var = "infiniteJump", default = false, y = 240, color = Color3.fromRGB(0, 180, 80)},
     {name = "TELEPORT TO TARGET", var = "teleportTarget", default = false, y = 300, color = Color3.fromRGB(200, 100, 0)},
 }
-
 for _, f in ipairs(moveFeatures) do
     local btn = Instance.new("TextButton", movementContent)
     btn.Size = UDim2.new(0, 280, 0, 48)
@@ -968,10 +979,8 @@ for _, f in ipairs(moveFeatures) do
     btn.Font = Enum.Font.Gotham
     btn.BackgroundColor3 = f.default and f.color or Color3.fromRGB(45, 35, 85)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 12)
-    
     local varName = f.var
     local state = (varName == "speedHack" and speedHack) or (varName == "noClip" and noClip) or (varName == "infiniteJump" and infiniteJump) or (varName == "teleportTarget" and teleportTarget)
-    
     btn.MouseButton1Click:Connect(function()
         state = not state
         if varName == "speedHack" then 
@@ -993,7 +1002,7 @@ for _, f in ipairs(moveFeatures) do
 end
 
 -- ============================================
--- SECTION 24: TAB DEFENSE
+-- TAB DEFENSE
 -- ============================================
 local defenseContent = Instance.new("Frame", rightPanel)
 defenseContent.Size = UDim2.new(1, -30, 1, -20)
@@ -1010,7 +1019,6 @@ defTitle.TextSize = 16
 defTitle.Font = Enum.Font.GothamBold
 defTitle.BackgroundTransparency = 1
 
--- Godmode button
 local godBtn = Instance.new("TextButton", defenseContent)
 godBtn.Size = UDim2.new(0, 280, 0, 48)
 godBtn.Position = UDim2.new(0, 0, 0, 50)
@@ -1027,7 +1035,6 @@ godBtn.MouseButton1Click:Connect(function()
     godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
 end)
 
--- Emergency button
 local emergBtn = Instance.new("TextButton", defenseContent)
 emergBtn.Size = UDim2.new(0, 280, 0, 48)
 emergBtn.Position = UDim2.new(0, 0, 0, 110)
@@ -1045,7 +1052,7 @@ emergBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ============================================
--- SECTION 25: TAB SETTINGS
+-- TAB SETTINGS
 -- ============================================
 local settingsContent = Instance.new("Frame", rightPanel)
 settingsContent.Size = UDim2.new(1, -30, 1, -20)
@@ -1062,7 +1069,6 @@ setTitle.TextSize = 16
 setTitle.Font = Enum.Font.GothamBold
 setTitle.BackgroundTransparency = 1
 
--- Refresh ESP button
 local refreshEspBtn = Instance.new("TextButton", settingsContent)
 refreshEspBtn.Size = UDim2.new(0, 200, 0, 48)
 refreshEspBtn.Position = UDim2.new(0, 0, 0, 50)
@@ -1081,7 +1087,6 @@ refreshEspBtn.MouseButton1Click:Connect(function()
     updateTargetList()
 end)
 
--- Panic button
 local panicBtn = Instance.new("TextButton", settingsContent)
 panicBtn.Size = UDim2.new(0, 200, 0, 48)
 panicBtn.Position = UDim2.new(0, 0, 0, 110)
@@ -1101,7 +1106,6 @@ panicBtn.MouseButton1Click:Connect(function()
     teleportTarget = false
     chams = false
     emergency = true
-    -- Update semua tombol
     for _, btn in pairs(moveFeatureBtns) do
         if btn.Text:find("SPEED HACK") then btn.Text, btn.BackgroundColor3 = "⬜ SPEED HACK", Color3.fromRGB(45, 35, 85) end
         if btn.Text:find("NO CLIP") then btn.Text, btn.BackgroundColor3 = "⬜ NO CLIP", Color3.fromRGB(45, 35, 85) end
@@ -1122,7 +1126,7 @@ panicBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ============================================
--- SECTION 26: INITIALIZE & KEYBINDS
+-- INITIALIZE
 -- ============================================
 actBtn.MouseButton1Click:Connect(activate)
 deactBtn.MouseButton1Click:Connect(deactivate)
@@ -1131,7 +1135,6 @@ updateTargetList()
 for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
 runSpeedHack()
 
--- Minimize function
 local function toggleMinimize()
     isMinimized = not isMinimized
     if isMinimized then
@@ -1154,7 +1157,6 @@ local function toggleMinimize()
 end
 minBtn.MouseButton1Click:Connect(toggleMinimize)
 
--- Keybinds
 UserInputService.InputBegan:Connect(function(i, p)
     if p then return end
     if i.KeyCode == Enum.KeyCode.Insert then
@@ -1190,15 +1192,12 @@ LocalPlayer.CharacterAdded:Connect(function()
     if noClip then runNoClip() end
 end)
 
--- ============================================
--- SECTION 27: CONSOLE OUTPUT
--- ============================================
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("⚡ REDZBROCOLI // TSB ULTIMATE v18.0 - FULL TABS + SLIDER BULAT ⚡")
-print("✅ 5 TABS: COMBAT | VISUALS | MOVEMENT | DEFENSE | SETTINGS")
-print("✅ SLIDER DENGAN BULATAN (Circular knob) - lebih mudah digerakkan")
-print("✅ UKURAN GUI: 1100x700")
-print("✅ SEMUA FITUR WORKING")
+print("⚡ REDZBROCOLI // TSB ULTIMATE v20.0 - FIX SLIDER + PING REAL + SERVER DINAMIS ⚡")
+print("✅ SLIDER TIDAK KEDRAG GUI - hanya header yang bisa drag")
+print("✅ PING REAL - menggunakan Stats Network")
+print("✅ SERVER ID DINAMIS - dari game.JobId")
+print("✅ 5 TABS LENGKAP")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS: INSERT=Activate | DELETE=Deactivate | V=Godmode | E=ESP | M=Minimize")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
