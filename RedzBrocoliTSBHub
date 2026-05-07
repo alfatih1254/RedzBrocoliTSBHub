@@ -49,8 +49,22 @@ local function findHighestGroundPosition()
     
     for x = -searchRadius, searchRadius, step do
         for z = -searchRadius, searchRadius, step do
-            local origin = Vector3.new(startPos.X + x, startPos.Y + 500, startPos.Z + z)
-            local raycast = Workspace:Raycast(origin, Vector3.new(0, -1000, 0), raycastParams)
+            local origin = Vector3.new(startPos.X + x, startPos.Y + 1000, startPos.Z + z)
+            local raycast = Workspace:Raycast(origin, Vector3.new(0, -2000, 0), raycastParams)
+            if raycast then
+                local hitPoint = raycast.Position
+                if hitPoint.Y > maxHeight then
+                    maxHeight = hitPoint.Y
+                    highestPos = hitPoint
+                end
+            end
+        end
+    end
+    
+    for x = -searchRadius/2, searchRadius/2, step/2 do
+        for z = -searchRadius/2, searchRadius/2, step/2 do
+            local origin = Vector3.new(startPos.X + x, startPos.Y + 1000, startPos.Z + z)
+            local raycast = Workspace:Raycast(origin, Vector3.new(0, -2000, 0), raycastParams)
             if raycast then
                 local hitPoint = raycast.Position
                 if hitPoint.Y > maxHeight then
@@ -62,102 +76,32 @@ local function findHighestGroundPosition()
     end
     
     if maxHeight > -500 then
-        return CFrame.new(highestPos.X, highestPos.Y + 5, highestPos.Z)
+        local finalPos = Vector3.new(highestPos.X, highestPos.Y + 8, highestPos.Z)
+        return CFrame.new(finalPos)
     end
-    return nil
-end
-
-local mountainLocationsInGame = {}
-
-local function scanMapForMountains()
-    mountainLocationsInGame = {}
     
-    local terrain = Workspace:FindFirstChild("Terrain")
-    local parts = Workspace:GetDescendants()
-    
-    for _, part in ipairs(parts) do
-        if part:IsA("BasePart") and part.Size.Y > 30 and part.Position.Y > 50 then
-            local name = part.Name
-            local pos = part.Position
-            local size = part.Size
-            local topPos = CFrame.new(pos.X, pos.Y + part.Size.Y/2 + 5, pos.Z)
-            
-            table.insert(mountainLocationsInGame, {
-                name = name .. " Peak",
-                cframe = topPos,
-                height = math.floor(pos.Y + size.Y/2),
-                description = "Puncak " .. name,
-                color = Color3.fromRGB(200, 200, 255)
-            })
+    local terrainParts = Workspace:GetDescendants()
+    local terrainMaxY = -1000
+    local terrainPos = startPos
+    for _, part in ipairs(terrainParts) do
+        if part:IsA("BasePart") and part.Position.Y > terrainMaxY and part.Position.Y < 10000 then
+            terrainMaxY = part.Position.Y + part.Size.Y/2
+            terrainPos = part.Position
         end
     end
-    
-    if #mountainLocationsInGame < 3 then
-        local platformHeights = {150, 250, 350, 450, 550, 650}
-        for i, height in ipairs(platformHeights) do
-            if i <= 5 then
-                table.insert(mountainLocationsInGame, {
-                    name = "High Peak " .. i,
-                    cframe = CFrame.new(0 + (i-2)*200, height, 500 + (i-2)*150),
-                    height = height,
-                    description = "Dataran tinggi " .. height .. " meter",
-                    color = Color3.fromRGB(100, 200, 255)
-                })
-            end
-        end
+    if terrainMaxY > -500 then
+        return CFrame.new(terrainPos.X, terrainMaxY + 5, terrainPos.Z)
     end
     
-    if #mountainLocationsInGame < 3 then
-        table.insert(mountainLocationsInGame, {
-            name = "Sky Platform",
-            cframe = CFrame.new(0, 500, 0),
-            height = 500,
-            description = "Platform udara 500 meter",
-            color = Color3.fromRGB(150, 150, 255)
-        })
-        table.insert(mountainLocationsInGame, {
-            name = "Cloud Peak",
-            cframe = CFrame.new(300, 600, 300),
-            height = 600,
-            description = "Puncak awan 600 meter",
-            color = Color3.fromRGB(180, 180, 255)
-        })
-        table.insert(mountainLocationsInGame, {
-            name = "Heaven's Gate",
-            cframe = CFrame.new(-300, 700, -300),
-            height = 700,
-            description = "Gerbang surga 700 meter",
-            color = Color3.fromRGB(220, 220, 255)
-        })
-    end
-    
-    return mountainLocationsInGame
+    return CFrame.new(0, 500, 0)
 end
 
-local function teleportToMountainInGame(mountainIndex)
-    if not mountainLocationsInGame or #mountainLocationsInGame == 0 then
-        scanMapForMountains()
-    end
-    
-    if mountainIndex <= #mountainLocationsInGame then
-        local mountain = mountainLocationsInGame[mountainIndex]
-        local character = LocalPlayer.Character
-        if character and character:FindFirstChild("HumanoidRootPart") then
-            character.HumanoidRootPart.CFrame = mountain.cframe
-            showNotification("Teleported to: " .. mountain.name .. " (" .. mountain.height .. "m)", 2)
-            return true
-        end
-    end
-    return false
-end
-
-local function teleportToHighestPoint()
-    local highest = findHighestGroundPosition()
-    if highest then
-        local character = LocalPlayer.Character
-        if character and character:FindFirstChild("HumanoidRootPart") then
-            character.HumanoidRootPart.CFrame = highest
-            showNotification("Teleported to highest ground detected!", 2)
+local function emergencyTeleportToHighGround()
+    local character = LocalPlayer.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local highestPoint = findHighestGroundPosition()
+        if highestPoint then
+            character.HumanoidRootPart.CFrame = highestPoint
             return true
         end
     end
@@ -207,7 +151,7 @@ local speedMultiplier = 2
 local noClip = false
 local infiniteJump = false
 local teleportTarget = false
-local emergency = true
+local emergencyEnabled = true
 local chamsOn = false
 local orbitAngle = 0
 local soloRadius = 5
@@ -256,53 +200,83 @@ local function createEmergencyPopup()
     end
     
     emergencyPopup = Instance.new("Frame", CoreGui)
-    emergencyPopup.Size = UDim2.new(0, 500, 0, 250)
-    emergencyPopup.Position = UDim2.new(0.5, -250, 0.5, -125)
-    emergencyPopup.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
+    emergencyPopup.Size = UDim2.new(0, 550, 0, 300)
+    emergencyPopup.Position = UDim2.new(0.5, -275, 0.5, -150)
+    emergencyPopup.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
     emergencyPopup.BackgroundTransparency = 0.05
-    emergencyPopup.BorderSizePixel = 3
+    emergencyPopup.BorderSizePixel = 4
     emergencyPopup.BorderColor3 = Color3.fromRGB(255, 0, 0)
     emergencyPopup.ZIndex = 1000
-    Instance.new("UICorner", emergencyPopup).CornerRadius = UDim.new(0, 20)
+    Instance.new("UICorner", emergencyPopup).CornerRadius = UDim.new(0, 24)
     
     local warningIcon = Instance.new("TextLabel", emergencyPopup)
-    warningIcon.Size = UDim2.new(0, 80, 0, 80)
-    warningIcon.Position = UDim2.new(0.5, -40, 0, 20)
+    warningIcon.Size = UDim2.new(0, 100, 0, 100)
+    warningIcon.Position = UDim2.new(0.5, -50, 0, 15)
     warningIcon.Text = "⚠️"
-    warningIcon.TextColor3 = Color3.fromRGB(255, 50, 50)
-    warningIcon.TextSize = 60
+    warningIcon.TextColor3 = Color3.fromRGB(255, 30, 30)
+    warningIcon.TextSize = 70
     warningIcon.Font = Enum.Font.GothamBlack
     warningIcon.BackgroundTransparency = 1
     
     local emergencyText = Instance.new("TextLabel", emergencyPopup)
-    emergencyText.Size = UDim2.new(1, -40, 0, 50)
-    emergencyText.Position = UDim2.new(0, 20, 0, 110)
+    emergencyText.Size = UDim2.new(1, -40, 0, 60)
+    emergencyText.Position = UDim2.new(0, 20, 0, 125)
     emergencyText.Text = "🔥 DARAH ANDA SEKARAT! 🔥"
     emergencyText.TextColor3 = Color3.fromRGB(255, 0, 0)
-    emergencyText.TextSize = 28
+    emergencyText.TextSize = 32
     emergencyText.TextScaled = true
     emergencyText.Font = Enum.Font.GothamBlack
     emergencyText.BackgroundTransparency = 1
     
     local subText = Instance.new("TextLabel", emergencyPopup)
-    subText.Size = UDim2.new(1, -40, 0, 30)
-    subText.Position = UDim2.new(0, 20, 0, 165)
-    subText.Text = "TELEPORTING TO HIGHEST POINT..."
+    subText.Size = UDim2.new(1, -40, 0, 35)
+    subText.Position = UDim2.new(0, 20, 0, 195)
+    subText.Text = "TELEPORTING TO HIGHEST GROUND..."
     subText.TextColor3 = Color3.fromRGB(255, 200, 100)
     subText.TextSize = 14
     subText.Font = Enum.Font.GothamBold
     subText.BackgroundTransparency = 1
     
-    return emergencyPopup
+    local countdownLabel = Instance.new("TextLabel", emergencyPopup)
+    countdownLabel.Size = UDim2.new(0, 80, 0, 50)
+    countdownLabel.Position = UDim2.new(0.5, -40, 0, 240)
+    countdownLabel.Text = "3"
+    countdownLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    countdownLabel.TextSize = 40
+    countdownLabel.Font = Enum.Font.GothamBold
+    countdownLabel.BackgroundTransparency = 1
+    
+    task.spawn(function()
+        local tickAnim = 0
+        while emergencyPopup and emergencyPopup.Parent do
+            tickAnim = tickAnim + 1
+            local alpha = 0.3 + math.sin(tickAnim * 0.3) * 0.3
+            emergencyPopup.BackgroundColor3 = Color3.fromRGB(40 + alpha * 30, 0, 0)
+            emergencyText.TextColor3 = Color3.fromRGB(255, alpha * 255, alpha * 255)
+            task.wait(0.05)
+        end
+    end)
+    
+    return emergencyPopup, countdownLabel
 end
 
 local function createEmergencyBlur()
     local blur = Instance.new("Frame", CoreGui)
     blur.Size = UDim2.new(1, 0, 1, 0)
     blur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    blur.BackgroundTransparency = 0.4
+    blur.BackgroundTransparency = 0.5
     blur.ZIndex = 999
+    blur.Name = "EmergencyBlur"
     return blur
+end
+
+local function playEmergencyBeep()
+    local beep = Instance.new("Sound", CoreGui)
+    beep.SoundId = "rbxassetid://138753464"
+    beep.Volume = 0.6
+    beep:Play()
+    task.wait(0.1)
+    beep:Destroy()
 end
 
 local function emergencyProtocol()
@@ -325,35 +299,28 @@ local function emergencyProtocol()
         end
     end
     
-    local popup = createEmergencyPopup()
+    local popup, countdownLabel = createEmergencyPopup()
     local blur = createEmergencyBlur()
     
     for i = 3, 1, -1 do
-        if popup and popup.Parent then
-            local countdownLabel = Instance.new("TextLabel", popup)
-            countdownLabel.Size = UDim2.new(0, 100, 0, 40)
-            countdownLabel.Position = UDim2.new(0.5, -50, 0, 200)
+        if countdownLabel then
             countdownLabel.Text = tostring(i)
             countdownLabel.TextColor3 = Color3.fromRGB(255, 255 - (3-i)*80, 0)
-            countdownLabel.TextSize = 32
-            countdownLabel.Font = Enum.Font.GothamBold
-            countdownLabel.BackgroundTransparency = 1
-            
-            local beep = Instance.new("Sound", CoreGui)
-            beep.SoundId = "rbxassetid://138753464"
-            beep.Volume = 0.5
-            beep:Play()
-            task.wait(0.05)
-            beep:Destroy()
-            
-            task.wait(0.95)
-            countdownLabel:Destroy()
-        else
-            break
+            countdownLabel.TextSize = 40 + (3-i)*5
         end
+        playEmergencyBeep()
+        task.wait(0.05)
+        playEmergencyBeep()
+        task.wait(0.45)
     end
     
-    teleportToHighestPoint()
+    if countdownLabel then
+        countdownLabel.Text = "GO!"
+        countdownLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+        countdownLabel.TextSize = 45
+    end
+    
+    emergencyTeleportToHighGround()
     
     task.wait(0.5)
     
@@ -361,8 +328,8 @@ local function emergencyProtocol()
     if blur then blur:Destroy() end
     
     local successPopup = Instance.new("Frame", CoreGui)
-    successPopup.Size = UDim2.new(0, 400, 0, 120)
-    successPopup.Position = UDim2.new(0.5, -200, 0.5, -60)
+    successPopup.Size = UDim2.new(0, 400, 0, 130)
+    successPopup.Position = UDim2.new(0.5, -200, 0.5, -65)
     successPopup.BackgroundColor3 = Color3.fromRGB(0, 30, 0)
     successPopup.BackgroundTransparency = 0.1
     successPopup.BorderSizePixel = 2
@@ -372,15 +339,21 @@ local function emergencyProtocol()
     local successText = Instance.new("TextLabel", successPopup)
     successText.Size = UDim2.new(1, -40, 1, -20)
     successText.Position = UDim2.new(0, 20, 0, 10)
-    successText.Text = "✅ TELEPORTED TO HIGHEST POINT\n🚑 YOU ARE SAFE NOW"
+    successText.Text = "✅ TELEPORTED TO HIGHEST GROUND\n🚑 YOU ARE SAFE NOW"
     successText.TextColor3 = Color3.fromRGB(0, 255, 0)
     successText.TextSize = 18
     successText.Font = Enum.Font.GothamBold
     successText.TextWrapped = true
     successText.BackgroundTransparency = 1
     
+    local completeSound = Instance.new("Sound", CoreGui)
+    completeSound.SoundId = "rbxassetid://9120386437"
+    completeSound.Volume = 0.5
+    completeSound:Play()
+    
     task.wait(2)
     successPopup:Destroy()
+    completeSound:Destroy()
     
     isEmergencyActive = false
 end
@@ -861,12 +834,12 @@ local function activate()
     elseif currentMode == "FEET" then startFeetMode() end
     
     task.spawn(function()
-        while isActive and emergency do
+        while isActive and emergencyEnabled do
             local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
             if humanoid and (humanoid.Health / humanoid.MaxHealth) * 100 < 25 then
                 emergencyProtocol()
             end
-            task.wait(1)
+            task.wait(0.5)
         end
     end)
 end
@@ -1086,7 +1059,7 @@ Instance.new("UICorner", headerFrame).CornerRadius = UDim.new(0, 28)
 
 local titleLabel = Instance.new("TextLabel", headerFrame)
 titleLabel.Size = UDim2.new(1, 0, 1, 0)
-titleLabel.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v26.0 • MOUNTAIN TP EDITION ⚡"
+titleLabel.Text = "⚡ REDZBROCOLI // EMERGENCY HIGH GROUND TP EDITION ⚡"
 titleLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
 titleLabel.TextScaled = true
 titleLabel.Font = Enum.Font.GothamBlack
@@ -1109,34 +1082,25 @@ infoText.TextXAlignment = Enum.TextXAlignment.Left
 infoText.BackgroundTransparency = 1
 infoText.Font = Enum.Font.Gotham
 
-local scanMountainBtn = Instance.new("TextButton", infoBar)
-scanMountainBtn.Size = UDim2.new(0, 140, 0, 32)
-scanMountainBtn.Position = UDim2.new(1, -290, 0.5, -16)
-scanMountainBtn.Text = "🗻 SCAN MOUNTAINS"
-scanMountainBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-scanMountainBtn.TextSize = 11
-scanMountainBtn.Font = Enum.Font.GothamBold
-scanMountainBtn.BackgroundColor3 = Color3.fromRGB(70, 180, 100)
-Instance.new("UICorner", scanMountainBtn).CornerRadius = UDim.new(0, 10)
-scanMountainBtn.MouseButton1Click:Connect(function()
-    scanMapForMountains()
-    showNotification("Scanned " .. #mountainLocationsInGame .. " mountain locations found!", 2)
-end)
-
 local tpHighestBtn = Instance.new("TextButton", infoBar)
-tpHighestBtn.Size = UDim2.new(0, 140, 0, 32)
-tpHighestBtn.Position = UDim2.new(1, -140, 0.5, -16)
-tpHighestBtn.Text = "🏔️ TP HIGHEST"
+tpHighestBtn.Size = UDim2.new(0, 150, 0, 32)
+tpHighestBtn.Position = UDim2.new(1, -160, 0.5, -16)
+tpHighestBtn.Text = "🏔️ TP HIGHEST GROUND"
 tpHighestBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 tpHighestBtn.TextSize = 11
 tpHighestBtn.Font = Enum.Font.GothamBold
 tpHighestBtn.BackgroundColor3 = Color3.fromRGB(100, 70, 200)
 Instance.new("UICorner", tpHighestBtn).CornerRadius = UDim.new(0, 10)
 tpHighestBtn.MouseButton1Click:Connect(function()
-    teleportToHighestPoint()
+    local highest = findHighestGroundPosition()
+    if highest then
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            char.HumanoidRootPart.CFrame = highest
+            showNotification("Teleported to highest ground!", 2)
+        end
+    end
 end)
-
-scanMapForMountains()
 
 local leftPanel = Instance.new("Frame", mainFrame)
 leftPanel.Size = UDim2.new(0, 220, 1, -150)
@@ -1147,7 +1111,7 @@ leftPanel.BorderSizePixel = 1
 leftPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
 Instance.new("UICorner", leftPanel).CornerRadius = UDim.new(0, 18)
 
-local tabNames = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS", "MOUNTAINS"}
+local tabNames = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS"}
 local tabY = 15
 for _, tab in ipairs(tabNames) do
     local btn = Instance.new("TextButton", leftPanel)
@@ -1324,41 +1288,36 @@ for _, f in ipairs(visFeatures) do
         if f.var == "esp" then
             currentEsp = not currentEsp
             toggleESP()
+            btn.Text = (currentEsp and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentEsp and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentEsp and f.color or Color3.fromRGB(45, 35, 85)
         elseif f.var == "chams" then
             currentChams = not currentChams
             toggleChams()
+            btn.Text = (currentChams and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentChams and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentChams and f.color or Color3.fromRGB(45, 35, 85)
         elseif f.var == "glow" then
             currentGlow = not currentGlow
             isGlowEnabled = currentGlow
             if not currentChams then
                 currentChams = true
                 toggleChams()
-                for _, b in pairs(visualFeatureButtonList) do
-                    if b and b.Text and b.Text:find("CHAMS") then
-                        b.Text = "✅ CHAMS X-RAY"
-                        b.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
-                        b.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    end
-                end
             end
+            btn.Text = (currentGlow and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentGlow and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentGlow and f.color or Color3.fromRGB(45, 35, 85)
         elseif f.var == "rainbow" then
             currentRainbow = not currentRainbow
             isRainbowMode = currentRainbow
             if not currentChams then
                 currentChams = true
                 toggleChams()
-                for _, b in pairs(visualFeatureButtonList) do
-                    if b and b.Text and b.Text:find("CHAMS") then
-                        b.Text = "✅ CHAMS X-RAY"
-                        b.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
-                        b.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    end
-                end
             end
+            btn.Text = (currentRainbow and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentRainbow and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentRainbow and f.color or Color3.fromRGB(45, 35, 85)
         end
-        btn.Text = (state and "✅ " or "⬜ ") .. f.name
-        btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-        btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
     end)
     table.insert(visualFeatureButtonList, btn)
 end
@@ -1420,21 +1379,30 @@ for _, f in ipairs(moveFeatures) do
             currentSpeed = not currentSpeed
             speedHack = currentSpeed
             if speedHack then startSpeedBoost() end
+            btn.Text = (currentSpeed and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentSpeed and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentSpeed and f.color or Color3.fromRGB(45, 35, 85)
         elseif f.var == "noclip" then
             currentNoclip = not currentNoclip
             noClip = currentNoclip
             if noClip then runNoclipLoop() else deactivateNoclip() end
+            btn.Text = (currentNoclip and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentNoclip and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentNoclip and f.color or Color3.fromRGB(45, 35, 85)
         elseif f.var == "jump" then
             currentJump = not currentJump
             infiniteJump = currentJump
+            btn.Text = (currentJump and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentJump and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentJump and f.color or Color3.fromRGB(45, 35, 85)
         elseif f.var == "teleport" then
             currentTeleport = not currentTeleport
             teleportTarget = currentTeleport
             if teleportTarget then runTeleportToTargetLoop() end
+            btn.Text = (currentTeleport and "✅ " or "⬜ ") .. f.name
+            btn.TextColor3 = currentTeleport and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+            btn.BackgroundColor3 = currentTeleport and f.color or Color3.fromRGB(45, 35, 85)
         end
-        btn.Text = (state and "✅ " or "⬜ ") .. f.name
-        btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-        btn.BackgroundColor3 = state and f.color or Color3.fromRGB(45, 35, 85)
     end)
     table.insert(movementFeatureButtonList, btn)
 end
@@ -1470,21 +1438,34 @@ godBtn.MouseButton1Click:Connect(function()
     godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
 end)
 
-local emergencyBtn = Instance.new("TextButton", defenseContent)
-emergencyBtn.Size = UDim2.new(0, 340, 0, 55)
-emergencyBtn.Position = UDim2.new(0, 0, 0, 130)
-emergencyBtn.Text = emergency and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
-emergencyBtn.TextColor3 = emergency and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-emergencyBtn.TextSize = 14
-emergencyBtn.Font = Enum.Font.Gotham
-emergencyBtn.BackgroundColor3 = emergency and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(45, 35, 85)
-Instance.new("UICorner", emergencyBtn).CornerRadius = UDim.new(0, 14)
-emergencyBtn.MouseButton1Click:Connect(function()
-    emergency = not emergency
-    emergencyBtn.Text = emergency and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
-    emergencyBtn.TextColor3 = emergency and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
-    emergencyBtn.BackgroundColor3 = emergency and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(45, 35, 85)
-    showNotification("Emergency teleport " .. (emergency and "ENABLED" or "DISABLED"), 1.5)
+local emergencyToggleBtn = Instance.new("TextButton", defenseContent)
+emergencyToggleBtn.Size = UDim2.new(0, 340, 0, 55)
+emergencyToggleBtn.Position = UDim2.new(0, 0, 0, 130)
+emergencyToggleBtn.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
+emergencyToggleBtn.TextColor3 = emergencyEnabled and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+emergencyToggleBtn.TextSize = 14
+emergencyToggleBtn.Font = Enum.Font.Gotham
+emergencyToggleBtn.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(45, 35, 85)
+Instance.new("UICorner", emergencyToggleBtn).CornerRadius = UDim.new(0, 14)
+emergencyToggleBtn.MouseButton1Click:Connect(function()
+    emergencyEnabled = not emergencyEnabled
+    emergencyToggleBtn.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
+    emergencyToggleBtn.TextColor3 = emergencyEnabled and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
+    emergencyToggleBtn.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(45, 35, 85)
+    showNotification("Emergency teleport " .. (emergencyEnabled and "ENABLED" or "DISABLED"), 1.5)
+end)
+
+local testEmergencyBtn = Instance.new("TextButton", defenseContent)
+testEmergencyBtn.Size = UDim2.new(0, 340, 0, 45)
+testEmergencyBtn.Position = UDim2.new(0, 0, 0, 200)
+testEmergencyBtn.Text = "🧪 TEST EMERGENCY"
+testEmergencyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+testEmergencyBtn.TextSize = 13
+testEmergencyBtn.Font = Enum.Font.GothamBold
+testEmergencyBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+Instance.new("UICorner", testEmergencyBtn).CornerRadius = UDim.new(0, 14)
+testEmergencyBtn.MouseButton1Click:Connect(function()
+    emergencyProtocol()
 end)
 
 local settingsContent = Instance.new("Frame", rightPanel)
@@ -1548,7 +1529,7 @@ panicBtn.MouseButton1Click:Connect(function()
     chamsOn = false
     isGlowEnabled = true
     isRainbowMode = false
-    emergency = true
+    emergencyEnabled = true
     stopChams()
     for _, btn in pairs(movementFeatureButtonList) do
         if btn and btn.Text then
@@ -1575,142 +1556,11 @@ panicBtn.MouseButton1Click:Connect(function()
     end
     godBtn.Text = "⬜ GODMODE (V) - INACTIVE"
     godBtn.BackgroundColor3 = Color3.fromRGB(45, 35, 85)
-    emergencyBtn.Text = "🚨 EMERGENCY TP - ACTIVE"
-    emergencyBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+    emergencyToggleBtn.Text = "🚨 EMERGENCY TP - ACTIVE"
+    emergencyToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
     statusLabel.Text = "⚡ PANIC RESET - ALL OFF"
     showNotification("PANIC RESET - All features disabled", 2)
 end)
-
-local mountainsContent = Instance.new("Frame", rightPanel)
-mountainsContent.Size = UDim2.new(1, -40, 1, -30)
-mountainsContent.Position = UDim2.new(0, 20, 0, 15)
-mountainsContent.BackgroundTransparency = 1
-mountainsContent.Visible = false
-tabContentContainers["MOUNTAINS"] = mountainsContent
-
-local mountainTitle = Instance.new("TextLabel", mountainsContent)
-mountainTitle.Size = UDim2.new(1, 0, 0, 40)
-mountainTitle.Text = "🏔️ MOUNTAIN & HIGH GROUND TP"
-mountainTitle.TextColor3 = Color3.fromRGB(0, 220, 255)
-mountainTitle.TextSize = 18
-mountainTitle.Font = Enum.Font.GothamBold
-mountainTitle.BackgroundTransparency = 1
-
-local mountainDesc = Instance.new("TextLabel", mountainsContent)
-mountainDesc.Size = UDim2.new(1, 0, 0, 30)
-mountainDesc.Position = UDim2.new(0, 0, 0, 50)
-mountainDesc.Text = "Teleport ke titik tertinggi yang terdeteksi di map"
-mountainDesc.TextColor3 = Color3.fromRGB(180, 180, 220)
-mountainDesc.TextSize = 12
-mountainDesc.Font = Enum.Font.Gotham
-mountainDesc.BackgroundTransparency = 1
-
-local scanBtn2 = Instance.new("TextButton", mountainsContent)
-scanBtn2.Size = UDim2.new(0, 250, 0, 45)
-scanBtn2.Position = UDim2.new(0, 0, 0, 95)
-scanBtn2.Text = "🗺️ SCAN MAP FOR HIGHEST POINT"
-scanBtn2.TextColor3 = Color3.fromRGB(255, 255, 255)
-scanBtn2.TextSize = 14
-scanBtn2.Font = Enum.Font.GothamBold
-scanBtn2.BackgroundColor3 = Color3.fromRGB(70, 180, 100)
-Instance.new("UICorner", scanBtn2).CornerRadius = UDim.new(0, 12)
-scanBtn2.MouseButton1Click:Connect(function()
-    local found = findHighestGroundPosition()
-    if found then
-        showNotification("Highest point detected at Y=" .. math.floor(found.Y), 2)
-    else
-        showNotification("Could not detect highest point", 2)
-    end
-end)
-
-local tpHighBtn = Instance.new("TextButton", mountainsContent)
-tpHighBtn.Size = UDim2.new(0, 250, 0, 45)
-tpHighBtn.Position = UDim2.new(0, 0, 0, 155)
-tpHighBtn.Text = "🏔️ TELEPORT TO HIGHEST POINT"
-tpHighBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-tpHighBtn.TextSize = 14
-tpHighBtn.Font = Enum.Font.GothamBold
-tpHighBtn.BackgroundColor3 = Color3.fromRGB(100, 70, 200)
-Instance.new("UICorner", tpHighBtn).CornerRadius = UDim.new(0, 12)
-tpHighBtn.MouseButton1Click:Connect(function()
-    teleportToHighestPoint()
-end)
-
-local detectedMountainsLabel = Instance.new("TextLabel", mountainsContent)
-detectedMountainsLabel.Size = UDim2.new(1, 0, 0, 30)
-detectedMountainsLabel.Position = UDim2.new(0, 0, 0, 220)
-detectedMountainsLabel.Text = "📍 DETECTED MOUNTAINS IN MAP:"
-detectedMountainsLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
-detectedMountainsLabel.TextSize = 13
-detectedMountainsLabel.Font = Enum.Font.GothamBold
-detectedMountainsLabel.BackgroundTransparency = 1
-
-local mountainListFrame = Instance.new("ScrollingFrame", mountainsContent)
-mountainListFrame.Size = UDim2.new(1, -20, 0, 250)
-mountainListFrame.Position = UDim2.new(0, 10, 0, 255)
-mountainListFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 40)
-mountainListFrame.BackgroundTransparency = 0.4
-mountainListFrame.BorderSizePixel = 0
-mountainListFrame.ScrollBarThickness = 6
-Instance.new("UICorner", mountainListFrame).CornerRadius = UDim.new(0, 12)
-
-local mountainButtonsList = {}
-
-local function refreshMountainList()
-    for _, btn in pairs(mountainButtonsList) do
-        pcall(function() btn:Destroy() end)
-    end
-    mountainButtonsList = {}
-    
-    local y = 0
-    for i, mountain in ipairs(mountainLocationsInGame) do
-        local container = Instance.new("Frame", mountainListFrame)
-        container.Size = UDim2.new(1, -10, 0, 65)
-        container.Position = UDim2.new(0, 5, 0, y)
-        container.BackgroundColor3 = mountain.color
-        container.BackgroundTransparency = 0.85
-        Instance.new("UICorner", container).CornerRadius = UDim.new(0, 12)
-        
-        local nameLabel = Instance.new("TextLabel", container)
-        nameLabel.Size = UDim2.new(1, -90, 0, 25)
-        nameLabel.Position = UDim2.new(0, 10, 0, 5)
-        nameLabel.Text = mountain.name
-        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        nameLabel.TextSize = 13
-        nameLabel.Font = Enum.Font.GothamBold
-        nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-        nameLabel.BackgroundTransparency = 1
-        
-        local descLabel = Instance.new("TextLabel", container)
-        descLabel.Size = UDim2.new(1, -90, 0, 20)
-        descLabel.Position = UDim2.new(0, 10, 0, 32)
-        descLabel.Text = mountain.description .. " | Height: " .. mountain.height .. "m"
-        descLabel.TextColor3 = Color3.fromRGB(200, 200, 230)
-        descLabel.TextSize = 10
-        descLabel.Font = Enum.Font.Gotham
-        descLabel.TextXAlignment = Enum.TextXAlignment.Left
-        descLabel.BackgroundTransparency = 1
-        
-        local tpBtn = Instance.new("TextButton", container)
-        tpBtn.Size = UDim2.new(0, 70, 0, 35)
-        tpBtn.Position = UDim2.new(1, -80, 0, 15)
-        tpBtn.Text = "TP"
-        tpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tpBtn.TextSize = 13
-        tpBtn.Font = Enum.Font.GothamBold
-        tpBtn.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-        Instance.new("UICorner", tpBtn).CornerRadius = UDim.new(0, 10)
-        tpBtn.MouseButton1Click:Connect(function()
-            teleportToMountainInGame(i)
-        end)
-        
-        table.insert(mountainButtonsList, container)
-        y = y + 72
-    end
-    mountainListFrame.CanvasSize = UDim2.new(0, 0, 0, y + 10)
-end
-
-refreshMountainList()
 
 activateBtn.MouseButton1Click:Connect(activate)
 deactivateBtn.MouseButton1Click:Connect(stopAllActions)
@@ -1745,7 +1595,7 @@ minimizeBtn.MouseButton1Click:Connect(toggleMinimize)
 local infoLoop = task.spawn(function()
     while screenGui and screenGui.Parent do
         local ping = getRealPing()
-        infoText.Text = "👤 " .. LocalPlayer.Name .. " | 📶 " .. ping .. "ms | 👥 " .. #Players:GetPlayers() .. " Players | 🏔️ " .. #mountainLocationsInGame .. " Mountains"
+        infoText.Text = "👤 " .. LocalPlayer.Name .. " | 📶 " .. ping .. "ms | 👥 " .. #Players:GetPlayers() .. " Players | 🚨 EMERGENCY: " .. (emergencyEnabled and "ON" or "OFF")
         task.wait(1.5)
     end
 end)
@@ -1772,7 +1622,14 @@ UserInputService.InputBegan:Connect(function(input, gp)
     elseif input.KeyCode == Enum.KeyCode.M then
         toggleMinimize()
     elseif input.KeyCode == Enum.KeyCode.T then
-        teleportToHighestPoint()
+        local highest = findHighestGroundPosition()
+        if highest then
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                char.HumanoidRootPart.CFrame = highest
+                showNotification("Teleported to highest ground!", 2)
+            end
+        end
     end
 end)
 
@@ -1803,17 +1660,14 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("⚡ REDZBROCOLI // TSB ULTIMATE v26.0 - MOUNTAIN TELEPORT EDITION ⚡")
+print("🚨 REDZBROCOLI // EMERGENCY HIGH GROUND TELEPORT EDITION 🚨")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("✅ FITUR MOUNTAIN TELEPORT:")
-print("   • SCAN MAP - Mendeteksi semua gunung/dataran tinggi dalam game secara otomatis")
-print("   • TP HIGHEST - Teleport ke titik tertinggi yang terdeteksi di map")
-print("   • Daftar gunung yang terdeteksi muncul di tab MOUNTAINS")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🚨 EMERGENCY PROTOCOL:")
-print("   • Ketika darah < 25%, sistem menghentikan semua aktivitas menyerang")
-print("   • Popup merah dengan countdown 3 detik")
-print("   • Teleport otomatis ke HIGHEST POINT yang terdeteksi")
+print("✅ EMERGENCY PROTOCOL:")
+print("   • Ketika darah < 25%, sistem akan menghentikan SEMUA aktivitas menyerang")
+print("   • Popup merah dengan tulisan 'DARAH ANDA SEKARAT' muncul dengan countdown")
+print("   • Suara beep emergency 3x")
+print("   • TELEPORT OTOMATIS KE DATARAN TERTINGGI DALAM GAME")
+print("   • Bukan ke void, bukan ke koordinat fake - scan map realtime")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS:")
 print("   • INSERT → ACTIVATE SYSTEM")
@@ -1821,7 +1675,7 @@ print("   • DELETE → DEACTIVATE SYSTEM")
 print("   • V → TOGGLE GODMODE")
 print("   • E → TOGGLE ESP")
 print("   • M → MINIMIZE GUI")
-print("   • T → TELEPORT TO HIGHEST POINT")
+print("   • T → MANUAL TELEPORT TO HIGHEST GROUND")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🎨 PRECISION HEALTH COLOR GRADIENT: 100%→0% (HIJAU→KUNING→OREN→MERAH→GELAP)")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
