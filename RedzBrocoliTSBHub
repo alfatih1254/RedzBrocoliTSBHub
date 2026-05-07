@@ -1,74 +1,32 @@
---[[
-╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  🌈 ⚡ OSKAC REX ENTERPRISE // REDZBROCOLI ULTIMATE GUI v12.0 ⚡ 🌈                                                                                             ║
-║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━║
-║  👤 USER: RedzBrocoli | 🌐 SERVER: ID-JKT | 👥 PLAYERS: 12/20 | 📶 PING: 42ms | ⏱️ FPS: 60                                                                     ║
-║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━║
-║  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ ║
-║  │  ┌──────────────┐ ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ ║
-║  │  │ ≡ MENU       │ │  [ 🟢 SYSTEM STATUS: FULLY INJECTED & OPERATIONAL ]                                                                              │ │ ║
-║  │  │ ──────────── │ │                                                                                                                                   │ │ ║
-║  │  │ ⚔️ COMBAT    │ │  ▶ MODE: [🔴 SOLO] [🔄 ORBIT] [🦶 FEET]                                                                                            │ │ ║
-║  │  │ 👁️ VISUALS   │ │  ▶ TARGET: [SELECT FROM LIST BELOW]                                                                                               │ │ ║
-║  │  │ 🚀 MOVEMENT  │ │  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ │ ║
-║  │  │ 🛡️ DEFENSE   │ │  │ 🎯 TARGET LIST:                                                                                                               │ │ │ ║
-║  │  │ ⚙️ SETTINGS  │ │  │  👤 Player1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────▶ │ │ │ ║
-║  │  └──────────────┘ │  │  👤 Player2 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────▶ │ │ │ ║
-║  │                   │  │  👤 Player3 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────▶ │ │ │ ║
-║  │                   │  └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │ │ ║
-║  │                   │                                                                                                                                   │ │ ║
-║  │                   │  ┌─────────────────────────┐ ┌─────────────────────────┐                                                                         │ │ ║
-║  │                   │  │     ✅ ACTIVATE         │ │     ❌ DEACTIVATE       │                                                                         │ │ ║
-║  │                   │  └─────────────────────────┘ └─────────────────────────┘                                                                         │ │ ║
-║  │                   │                                                                                                                                   │ │ ║
-║  │                   │  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ │ ║
-║  │                   │  │ ⚙️ ACTIVE FEATURES:                                                                                                          │ │ │ ║
-║  │                   │  │  [🔘] AUTO-COMBO    [⚪] INSTANT KILL    [🔘] AUTO-BLOCK                                                                    │ │ │ ║
-║  │                   │  └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │ │ ║
-║  │                   │                                                                                                                                   │ │ ║
-║  │                   │  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ │ ║
-║  │                   │  │ 🎚️ SETTINGS:                                                                                                                 │ │ │ ║
-║  │                   │  │  TELEPORT RADIUS: [████████░░░░░░░░░░] 5.0                                                                                   │ │ │ ║
-║  │                   │  │  ORBIT RADIUS:    [████████░░░░░░░░░░] 5.0                                                                                   │ │ │ ║
-║  │                   │  │  ORBIT SPEED:     [████████░░░░░░░░░░] 1.0                                                                                   │ │ │ ║
-║  │                   │  │  FEET DISTANCE:   [████████░░░░░░░░░░] 3.0                                                                                   │ │ │ ║
-║  │                   │  └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │ │ ║
-║  │                   │                                                                                                                                   │ │ ║
-║  │                   │  ┌─────────────────────────┐ ┌─────────────────────────┐                                                                         │ │ ║
-║  │                   │  │     🔄 REFRESH ESP      │ │     🛑 PANIC / RESET    │                                                                         │ │ ║
-║  │                   │  └─────────────────────────┘ └─────────────────────────┘                                                                         │ │ ║
-║  └───────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │ ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
---]]
+-- REDZBROCOLI // TSB ULTIMATE v14.0 - DENGAN SAVE CONFIGURATION
+-- FITUR BARU: SAVE CONFIG | LOAD CONFIG | SET DEFAULT
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+local VirtualUser = game:GetService("VirtualUser")
 local Lighting = game:GetService("Lighting")
 local CoreGui = game:GetService("CoreGui")
-local VirtualUser = game:GetService("VirtualUser")
 local Stats = game:GetService("Stats")
+local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
 -- ============================================
--- PENGATURAN LAYAR (TIDAK GELAP)
+-- LIGHTING
 -- ============================================
 Lighting.Brightness = 2
-Lighting.Ambient = Color3.fromRGB(128, 128, 128)
+Lighting.Ambient = Color3.fromRGB(128,128,128)
 Lighting.ClockTime = 14
-Lighting.FogEnd = 100000
-Lighting.GlobalShadows = true
 for _, e in ipairs(Lighting:GetChildren()) do
-    if e:IsA("BloomEffect") or e:IsA("BlurEffect") or e:IsA("SunRaysEffect") then e:Destroy() end
+    if e:IsA("BloomEffect") or e:IsA("BlurEffect") then e:Destroy() end
 end
 
 -- ============================================
--- EFEK BINTANG & PETIR
+-- STARS & THUNDER
 -- ============================================
 local starContainer = Instance.new("Folder", CoreGui)
-starContainer.Name = "RedzStars"
-for i = 1, 150 do
+for i = 1, 120 do
     local s = Instance.new("Frame", starContainer)
     s.Size = UDim2.new(0, math.random(1,2), 0, math.random(1,2))
     s.Position = UDim2.new(math.random(), 0, math.random(), 0)
@@ -94,6 +52,185 @@ task.spawn(function()
 end)
 
 -- ============================================
+-- CONFIGURATION SYSTEM (SAVE/LOAD)
+-- ============================================
+local configKey = "RedzBrocoli_Config"
+
+-- DEFAULT CONFIGURATION
+local defaultConfig = {
+    autoCombo = false,
+    instantKill = false,
+    autoBlock = false,
+    speedHack = false,
+    noClip = false,
+    infiniteJump = false,
+    teleportTarget = false,
+    espOn = true,
+    chams = false,
+    godMode = false,
+    emergency = true,
+    soloRadius = 5,
+    orbitRadius = 5,
+    orbitSpeed = 1,
+    feetDist = 3,
+    currentMode = "SOLO"
+}
+
+-- Load config dari storage
+local function loadConfig()
+    local success, data = pcall(function()
+        return HttpService:JSONDecode(readfile(configKey))
+    end)
+    if success and data then
+        for k, v in pairs(data) do
+            if defaultConfig[k] ~= nil then
+                defaultConfig[k] = v
+            end
+        end
+        return true
+    end
+    return false
+end
+
+-- Save config ke storage
+local function saveConfig()
+    local data = {
+        autoCombo = autoCombo,
+        instantKill = instantKill,
+        autoBlock = autoBlock,
+        speedHack = speedHack,
+        noClip = noClip,
+        infiniteJump = infiniteJump,
+        teleportTarget = teleportTarget,
+        espOn = espOn,
+        chams = chams,
+        godMode = godMode,
+        emergency = emergency,
+        soloRadius = soloRadius,
+        orbitRadius = orbitRadius,
+        orbitSpeed = orbitSpeed,
+        feetDist = feetDist,
+        currentMode = currentMode
+    }
+    local success, err = pcall(function()
+        writefile(configKey, HttpService:JSONEncode(data))
+    end)
+    return success
+end
+
+-- Apply config ke variabel
+local function applyConfig(config)
+    autoCombo = config.autoCombo
+    instantKill = config.instantKill
+    autoBlock = config.autoBlock
+    speedHack = config.speedHack
+    noClip = config.noClip
+    infiniteJump = config.infiniteJump
+    teleportTarget = config.teleportTarget
+    espOn = config.espOn
+    chams = config.chams
+    godMode = config.godMode
+    emergency = config.emergency
+    soloRadius = config.soloRadius
+    orbitRadius = config.orbitRadius
+    orbitSpeed = config.orbitSpeed
+    feetDist = config.feetDist
+    currentMode = config.currentMode
+    
+    -- Terapkan efek
+    if espOn then
+        for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
+    end
+    if godMode then toggleGodMode() end
+    if speedHack then runSpeedHack() end
+    if noClip then runNoClip() end
+    if chams then runChams() end
+    if teleportTarget then runTeleportTarget() end
+end
+
+-- Reset ke default
+local function resetToDefault()
+    applyConfig(defaultConfig)
+    saveConfig()
+    -- Update UI buttons
+    updateAllUIButtons()
+    if statusLabel then statusLabel.Text = "📌 CONFIG RESET TO DEFAULT" end
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "✅ CONFIG RESET",
+            Text = "All settings have been reset to default",
+            Duration = 2
+        })
+    end)
+end
+
+-- Update UI buttons (fungsi untuk refresh tampilan tombol)
+local function updateAllUIButtons()
+    -- Update combat buttons
+    for _, btn in pairs(combatFeatureBtns or {}) do
+        if btn and btn:IsA("TextButton") then
+            if btn.Text:find("AUTO-COMBO") then
+                btn.Text = autoCombo and "[🔘] AUTO-COMBO" or "[⚪] AUTO-COMBO"
+                btn.BackgroundColor3 = autoCombo and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            elseif btn.Text:find("INSTANT KILL") then
+                btn.Text = instantKill and "[🔘] INSTANT KILL" or "[⚪] INSTANT KILL"
+                btn.BackgroundColor3 = instantKill and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            elseif btn.Text:find("AUTO-BLOCK") then
+                btn.Text = autoBlock and "[🔘] AUTO-BLOCK" or "[⚪] AUTO-BLOCK"
+                btn.BackgroundColor3 = autoBlock and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            end
+        end
+    end
+    -- Update visual buttons
+    for _, btn in pairs(visualFeatureBtns or {}) do
+        if btn and btn:IsA("TextButton") then
+            if btn.Text:find("PLAYER ESP") then
+                btn.Text = espOn and "[🔘] PLAYER ESP" or "[⚪] PLAYER ESP"
+                btn.BackgroundColor3 = espOn and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            elseif btn.Text:find("CHAMS") then
+                btn.Text = chams and "[🔘] CHAMS X-RAY" or "[⚪] CHAMS X-RAY"
+                btn.BackgroundColor3 = chams and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            end
+        end
+    end
+    -- Update movement buttons
+    for _, btn in pairs(moveFeatureBtns or {}) do
+        if btn and btn:IsA("TextButton") then
+            if btn.Text:find("SPEED HACK") then
+                btn.Text = speedHack and "[🔘] SPEED HACK (x2)" or "[⚪] SPEED HACK (x2)"
+                btn.BackgroundColor3 = speedHack and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            elseif btn.Text:find("NO CLIP") then
+                btn.Text = noClip and "[🔘] NO CLIP" or "[⚪] NO CLIP"
+                btn.BackgroundColor3 = noClip and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            elseif btn.Text:find("INFINITE JUMP") then
+                btn.Text = infiniteJump and "[🔘] INFINITE JUMP" or "[⚪] INFINITE JUMP"
+                btn.BackgroundColor3 = infiniteJump and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            elseif btn.Text:find("TELEPORT") then
+                btn.Text = teleportTarget and "[🔘] TELEPORT TO TARGET" or "[⚪] TELEPORT TO TARGET"
+                btn.BackgroundColor3 = teleportTarget and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+            end
+        end
+    end
+    -- Update defense buttons
+    if godBtn2 then
+        godBtn2.Text = godMode and "[🔘] GODMODE (Tekan V)" or "[⚪] GODMODE (Tekan V)"
+        godBtn2.BackgroundColor3 = godMode and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    end
+    if emergBtn2 then
+        emergBtn2.Text = emergency and "[🔘] EMERGENCY ESCAPE (HP<25%)" or "[⚪] EMERGENCY ESCAPE (HP<25%)"
+        emergBtn2.BackgroundColor3 = emergency and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    end
+    -- Update mode button
+    for _, btn in pairs(modeBtns or {}) do
+        if btn and btn.Text == currentMode then
+            btn.BackgroundColor3 = Color3.fromRGB(200,50,100)
+        else
+            btn.BackgroundColor3 = Color3.fromRGB(80,50,150)
+        end
+    end
+end
+
+-- ============================================
 -- VARIABLES
 -- ============================================
 local selectedTarget = nil
@@ -101,9 +238,9 @@ local isActive = false
 local currentMode = "SOLO"
 local godMode = false
 local espOn = true
-local autoCombo = true
+local autoCombo = false
 local instantKill = false
-local autoBlock = true
+local autoBlock = false
 local speedHack = false
 local noClip = false
 local infiniteJump = false
@@ -121,8 +258,24 @@ local espList = {}
 local currentTab = "COMBAT"
 local isMinimized = false
 
+-- Button storage untuk update UI
+local combatFeatureBtns = {}
+local visualFeatureBtns = {}
+local moveFeatureBtns = {}
+local modeBtns = {}
+local godBtn2 = nil
+local emergBtn2 = nil
+
+-- LOOP FLAGS
+local comboLoopRunning = false
+local killLoopRunning = false
+local blockLoopRunning = false
+local soloLoopRunning = false
+local orbitLoopRunning = false
+local feetLoopRunning = false
+
 -- ============================================
--- FUNGSI UTILITY
+-- UTILITY
 -- ============================================
 local function getPing()
     local stats = Stats:FindFirstChild("Network")
@@ -132,17 +285,6 @@ local function getPing()
     return 0
 end
 
-local function updateInfo()
-    local playerCount = #Players:GetPlayers()
-    local ping = getPing()
-    if infoLabel then
-        infoLabel.Text = "👤 "..LocalPlayer.Name.." | 🌐 ID-JKT | 👥 "..playerCount.."/20 | 📶 "..ping.."ms | ⏱️ 60 FPS"
-    end
-end
-
--- ============================================
--- TELEPORT SAFE
--- ============================================
 local safePos = {Vector3.new(0,500,0), Vector3.new(100,450,100), Vector3.new(-100,480,-100), Vector3.new(200,520,-150), Vector3.new(0,600,0)}
 local function teleportSafe()
     local c = LocalPlayer.Character
@@ -152,97 +294,137 @@ local function teleportSafe()
 end
 
 -- ============================================
--- SOLO MODE
+-- AUTO-COMBO
 -- ============================================
-local function startSolo()
-    task.spawn(function()
-        while isActive and currentMode == "SOLO" and selectedTarget and selectedTarget.Character do
-            local c, t = LocalPlayer.Character, selectedTarget.Character
-            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
-                local tp = t.HumanoidRootPart.Position
-                local a = math.random() * 2 * math.pi
-                local np = Vector3.new(tp.X + math.cos(a)*soloRadius, tp.Y + math.random(1,4), tp.Z + math.sin(a)*soloRadius)
-                c.HumanoidRootPart.CFrame = CFrame.new(np, tp)
-                if autoCombo then pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end) end
-                if instantKill then local h = t:FindFirstChild("Humanoid") if h and h.Health>0 then h.Health=0 end end
-            end
-            task.wait(0.05)
-        end
-    end)
-end
-
--- ============================================
--- ORBIT MODE
--- ============================================
-local function startOrbit()
-    task.spawn(function()
-        while isActive and currentMode == "ORBIT" and selectedTarget and selectedTarget.Character do
-            local c, t = LocalPlayer.Character, selectedTarget.Character
-            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
-                orbitAngle = orbitAngle + orbitSpeed * 0.05
-                local tp = t.HumanoidRootPart.Position
-                local np = Vector3.new(tp.X + math.cos(orbitAngle)*orbitRadius, tp.Y + 2, tp.Z + math.sin(orbitAngle)*orbitRadius)
-                c.HumanoidRootPart.CFrame = CFrame.new(np, tp)
-                if autoCombo then pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end) end
-                if instantKill then local h = t:FindFirstChild("Humanoid") if h and h.Health>0 then h.Health=0 end end
-            end
-            task.wait()
-        end
-    end)
-end
-
--- ============================================
--- FEET MODE
--- ============================================
-local function startFeet()
-    task.spawn(function()
-        while isActive and currentMode == "FEET" and selectedTarget and selectedTarget.Character do
-            local c, t = LocalPlayer.Character, selectedTarget.Character
-            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
-                local tp = t.HumanoidRootPart.Position
-                c.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(tp.X, tp.Y - feetDist, tp.Z), tp)
-                if autoCombo then pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end) end
-                if instantKill then local h = t:FindFirstChild("Humanoid") if h and h.Health>0 then h.Health=0 end end
-            end
-            task.wait()
-        end
-    end)
-end
-
--- ============================================
--- AUTO COMBO
--- ============================================
-local function runAutoCombo()
+local function startAutoCombo()
+    if comboLoopRunning then return end
+    comboLoopRunning = true
     task.spawn(function()
         while autoCombo and isActive and selectedTarget and selectedTarget.Character do
-            pcall(function() VirtualUser:ClickButton1(Vector2.new(500,500),1) end)
-            task.wait(0.08)
+            pcall(function()
+                VirtualUser:Button1Down(Vector2.new(500, 500))
+                task.wait(0.05)
+                VirtualUser:Button1Up(Vector2.new(500, 500))
+            end)
+            task.wait(0.1)
         end
+        comboLoopRunning = false
     end)
 end
 
 -- ============================================
 -- INSTANT KILL
 -- ============================================
-local function runInstantKill()
+local function startInstantKill()
+    if killLoopRunning then return end
+    killLoopRunning = true
     task.spawn(function()
         while instantKill and isActive and selectedTarget and selectedTarget.Character do
-            local h = selectedTarget.Character:FindFirstChild("Humanoid")
-            if h and h.Health > 0 then h.Health = 0 end
+            local hum = selectedTarget.Character:FindFirstChild("Humanoid")
+            if hum and hum.Health > 0 then
+                hum.Health = 0
+            end
             task.wait(0.05)
         end
+        killLoopRunning = false
     end)
 end
 
 -- ============================================
--- AUTO BLOCK
+-- AUTO-BLOCK
 -- ============================================
-local function runAutoBlock()
+local function startAutoBlock()
+    if blockLoopRunning then return end
+    blockLoopRunning = true
     task.spawn(function()
         while autoBlock and isActive do
-            pcall(function() VirtualUser:Button1Down(Vector2.new(500,500)) task.wait(0.05) VirtualUser:Button1Up(Vector2.new(500,500)) end)
+            pcall(function()
+                VirtualUser:Button2Down(Vector2.new(500, 500))
+                task.wait(0.05)
+                VirtualUser:Button2Up(Vector2.new(500, 500))
+            end)
             task.wait(0.1)
         end
+        blockLoopRunning = false
+    end)
+end
+
+-- ============================================
+-- SOLO MODE
+-- ============================================
+local function startSoloMode()
+    if soloLoopRunning then return end
+    soloLoopRunning = true
+    task.spawn(function()
+        while isActive and currentMode == "SOLO" and selectedTarget and selectedTarget.Character do
+            local c = LocalPlayer.Character
+            local t = selectedTarget.Character
+            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
+                local tp = t.HumanoidRootPart.Position
+                local ang = math.random() * 2 * math.pi
+                local np = Vector3.new(tp.X + math.cos(ang)*soloRadius, tp.Y + math.random(1,4), tp.Z + math.sin(ang)*soloRadius)
+                c.HumanoidRootPart.CFrame = CFrame.new(np, tp)
+                pcall(function()
+                    VirtualUser:Button1Down(Vector2.new(500,500))
+                    task.wait(0.05)
+                    VirtualUser:Button1Up(Vector2.new(500,500))
+                end)
+            end
+            task.wait(0.05)
+        end
+        soloLoopRunning = false
+    end)
+end
+
+-- ============================================
+-- ORBIT MODE
+-- ============================================
+local function startOrbitMode()
+    if orbitLoopRunning then return end
+    orbitLoopRunning = true
+    task.spawn(function()
+        while isActive and currentMode == "ORBIT" and selectedTarget and selectedTarget.Character do
+            local c = LocalPlayer.Character
+            local t = selectedTarget.Character
+            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
+                orbitAngle = orbitAngle + orbitSpeed * 0.05
+                local tp = t.HumanoidRootPart.Position
+                local np = Vector3.new(tp.X + math.cos(orbitAngle)*orbitRadius, tp.Y + 2, tp.Z + math.sin(orbitAngle)*orbitRadius)
+                c.HumanoidRootPart.CFrame = CFrame.new(np, tp)
+                pcall(function()
+                    VirtualUser:Button1Down(Vector2.new(500,500))
+                    task.wait(0.05)
+                    VirtualUser:Button1Up(Vector2.new(500,500))
+                end)
+            end
+            task.wait()
+        end
+        orbitLoopRunning = false
+    end)
+end
+
+-- ============================================
+-- FEET MODE
+-- ============================================
+local function startFeetMode()
+    if feetLoopRunning then return end
+    feetLoopRunning = true
+    task.spawn(function()
+        while isActive and currentMode == "FEET" and selectedTarget and selectedTarget.Character do
+            local c = LocalPlayer.Character
+            local t = selectedTarget.Character
+            if c and c:FindFirstChild("HumanoidRootPart") and t and t:FindFirstChild("HumanoidRootPart") then
+                local tp = t.HumanoidRootPart.Position
+                c.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(tp.X, tp.Y - feetDist, tp.Z), tp)
+                pcall(function()
+                    VirtualUser:Button1Down(Vector2.new(500,500))
+                    task.wait(0.05)
+                    VirtualUser:Button1Up(Vector2.new(500,500))
+                end)
+            end
+            task.wait()
+        end
+        feetLoopRunning = false
     end)
 end
 
@@ -253,7 +435,29 @@ local function runSpeedHack()
     task.spawn(function()
         while speedHack do
             local c = LocalPlayer.Character
-            if c and c:FindFirstChild("Humanoid") then c.Humanoid.WalkSpeed, c.Humanoid.JumpPower = 40, 100 end
+            if c and c:FindFirstChild("Humanoid") then
+                c.Humanoid.WalkSpeed = 40
+                c.Humanoid.JumpPower = 100
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+
+-- ============================================
+-- NO CLIP
+-- ============================================
+local function runNoClip()
+    task.spawn(function()
+        while noClip do
+            local c = LocalPlayer.Character
+            if c then
+                for _, p in ipairs(c:GetDescendants()) do
+                    if p:IsA("BasePart") then
+                        p.CanCollide = false
+                    end
+                end
+            end
             task.wait(0.1)
         end
     end)
@@ -267,19 +471,6 @@ UserInputService.JumpRequest:Connect(function()
         LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     end
 end)
-
--- ============================================
--- NO CLIP
--- ============================================
-local function runNoClip()
-    task.spawn(function()
-        while noClip do
-            local c = LocalPlayer.Character
-            if c then for _, p in ipairs(c:GetDescendants()) do if p:IsA("BasePart") then p.CanCollide = false end end end
-            task.wait(0.1)
-        end
-    end)
-end
 
 -- ============================================
 -- TELEPORT TO TARGET
@@ -340,7 +531,7 @@ local function toggleGodMode()
 end
 
 -- ============================================
--- ESP (DISPLAY NAME + HEALTH BAR)
+-- ESP SYSTEM
 -- ============================================
 local function getHealthColor(p)
     if p >= 75 then return Color3.fromRGB(0,255,0)
@@ -414,6 +605,83 @@ local function toggleESP()
 end
 
 -- ============================================
+-- EMERGENCY CHECK
+-- ============================================
+local function emergencyCheck()
+    if not emergency then return end
+    local c = LocalPlayer.Character
+    if c then
+        local h = c:FindFirstChild("Humanoid")
+        if h and (h.Health/h.MaxHealth)*100 < 25 then
+            teleportSafe()
+        end
+    end
+end
+
+-- ============================================
+-- ACTIVATE / DEACTIVATE
+-- ============================================
+local function stopAllLoops()
+    comboLoopRunning = false
+    killLoopRunning = false
+    blockLoopRunning = false
+    soloLoopRunning = false
+    orbitLoopRunning = false
+    feetLoopRunning = false
+end
+
+local function deactivate()
+    isActive = false
+    stopAllLoops()
+    for _, c in pairs(activeConns) do pcall(function() c:Disconnect() end) end
+    activeConns = {}
+    local c = LocalPlayer.Character
+    if c and c:FindFirstChild("Humanoid") then
+        c.Humanoid.WalkSpeed = 16
+        c.Humanoid.JumpPower = 50
+    end
+    if statusLabel then
+        statusLabel.Text = "📌 STATUS: INACTIVE"
+        statusLabel.TextColor3 = Color3.fromRGB(255,100,100)
+    end
+end
+
+local function activate()
+    if not selectedTarget then
+        if statusLabel then statusLabel.Text = "⚠️ SELECT TARGET FIRST!" end
+        return
+    end
+    deactivate()
+    task.wait(0.1)
+    isActive = true
+    orbitAngle = 0
+    local c = LocalPlayer.Character
+    if c and c:FindFirstChild("Humanoid") then
+        c.Humanoid.WalkSpeed = 180
+        c.Humanoid.JumpPower = 120
+    end
+    if statusLabel then
+        statusLabel.Text = "📌 STATUS: ACTIVE - MODE: "..currentMode.." - TARGET: "..selectedTarget.Name
+        statusLabel.TextColor3 = Color3.fromRGB(0,255,100)
+    end
+    
+    if currentMode == "SOLO" then startSoloMode()
+    elseif currentMode == "ORBIT" then startOrbitMode()
+    elseif currentMode == "FEET" then startFeetMode() end
+    
+    if autoCombo then startAutoCombo() end
+    if instantKill then startInstantKill() end
+    if autoBlock then startAutoBlock() end
+    
+    task.spawn(function()
+        while isActive do
+            emergencyCheck()
+            task.wait(1)
+        end
+    end)
+end
+
+-- ============================================
 -- UPDATE TARGET LIST
 -- ============================================
 local targetListFrame = nil
@@ -427,7 +695,7 @@ local function updateTargetList()
     for _, p in ipairs(Players:GetPlayers()) do
         if p ~= LocalPlayer then
             local btn = Instance.new("TextButton", targetListFrame)
-            btn.Size, btn.Position, btn.Text = UDim2.new(1,-10,0,35), UDim2.new(0,5,0,y), "👤 "..p.DisplayName.."  ▶  CLICK TO TARGET"
+            btn.Size, btn.Position, btn.Text = UDim2.new(1,-10,0,35), UDim2.new(0,5,0,y), "👤 "..p.DisplayName.."  ▶  CLICK"
             btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
             btn.BackgroundColor3 = Color3.fromRGB(40,30,80)
             btn.BackgroundTransparency = 0.3
@@ -446,47 +714,6 @@ local function updateTargetList()
 end
 
 -- ============================================
--- ACTIVATE/DEACTIVATE
--- ============================================
-local function deactivate()
-    isActive = false
-    for _, c in pairs(activeConns) do pcall(function() c:Disconnect() end) end
-    activeConns = {}
-    local c = LocalPlayer.Character
-    if c and c:FindFirstChild("Humanoid") then c.Humanoid.WalkSpeed, c.Humanoid.JumpPower = 16, 50 end
-    if statusLabel then statusLabel.Text, statusLabel.TextColor3 = "📌 STATUS: INACTIVE", Color3.fromRGB(255,100,100) end
-end
-
-local function activate()
-    if not selectedTarget then
-        if statusLabel then statusLabel.Text = "⚠️ SELECT TARGET FIRST!" end
-        return
-    end
-    deactivate()
-    task.wait(0.1)
-    isActive = true
-    orbitAngle = 0
-    local c = LocalPlayer.Character
-    if c and c:FindFirstChild("Humanoid") then c.Humanoid.WalkSpeed, c.Humanoid.JumpPower = 180, 120 end
-    if statusLabel then statusLabel.Text, statusLabel.TextColor3 = "📌 STATUS: ACTIVE - MODE: "..currentMode.." - TARGET: "..selectedTarget.Name, Color3.fromRGB(0,255,100) end
-    
-    if currentMode == "SOLO" then startSolo()
-    elseif currentMode == "ORBIT" then startOrbit()
-    elseif currentMode == "FEET" then startFeet() end
-    if autoCombo then runAutoCombo() end
-    if instantKill then runInstantKill() end
-    if autoBlock then runAutoBlock() end
-    
-    task.spawn(function()
-        while isActive and emergency do
-            local c, h = LocalPlayer.Character, LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
-            if c and h and (h.Health/h.MaxHealth)*100 < 25 then teleportSafe() end
-            task.wait(1)
-        end
-    end)
-end
-
--- ============================================
 -- UI COMPONENTS
 -- ============================================
 local screenGui = Instance.new("ScreenGui", CoreGui)
@@ -494,24 +721,22 @@ screenGui.Name = "RedzBrocoli_Ultimate"
 screenGui.ResetOnSpawn = false
 
 local main = Instance.new("Frame", screenGui)
-main.Size = UDim2.new(0, 950, 0, 620)
-main.Position = UDim2.new(0.5, -475, 0.5, -310)
+main.Size = UDim2.new(0, 950, 0, 650)
+main.Position = UDim2.new(0.5, -475, 0.5, -325)
 main.BackgroundColor3 = Color3.fromRGB(12, 10, 28)
 main.BackgroundTransparency = 0.08
 main.BorderSizePixel = 0
-main.ClipsDescendants = true
 main.Active = true
 main.Draggable = true
 Instance.new("UICorner", main).CornerRadius = UDim.new(0, 18)
 
--- Border pelangi neon berputar
+-- Border pelangi
 local border = Instance.new("Frame", main)
 border.Size = UDim2.new(1, 10, 1, 10)
 border.Position = UDim2.new(0, -5, 0, -5)
 border.BackgroundTransparency = 0.85
 border.BorderSizePixel = 3
-local borderCorner = Instance.new("UICorner", border)
-borderCorner.CornerRadius = UDim.new(0, 22)
+Instance.new("UICorner", border).CornerRadius = UDim.new(0, 22)
 local borderGrad = Instance.new("UIGradient", border)
 borderGrad.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,0)),
@@ -544,7 +769,7 @@ header.Size, header.BackgroundColor3, header.BackgroundTransparency = UDim2.new(
 Instance.new("UICorner", header).CornerRadius = UDim.new(0, 18)
 
 local headerText = Instance.new("TextLabel", header)
-headerText.Size, headerText.Text, headerText.TextColor3, headerText.Font = UDim2.new(1,0,1,0), "🌈 ⚡ OSKAC REX ENTERPRISE // REDZBROCOLI ULTIMATE GUI v12.0 ⚡ 🌈", Color3.fromRGB(255, 200, 100), Enum.Font.GothamBold
+headerText.Size, headerText.Text, headerText.TextColor3, headerText.Font = UDim2.new(1,0,1,0), "🌈 ⚡ REDZBROCOLI ULTIMATE v14.0 ⚡ 🌈", Color3.fromRGB(255, 200, 100), Enum.Font.GothamBold
 headerText.BackgroundTransparency = 1
 
 -- Info bar
@@ -559,12 +784,14 @@ infoLabel.BackgroundTransparency = 1
 
 task.spawn(function()
     while screenGui and screenGui.Parent do
-        updateInfo()
+        local playerCount = #Players:GetPlayers()
+        local ping = getPing()
+        infoLabel.Text = "👤 "..LocalPlayer.Name.." | 🌐 ID-JKT | 👥 "..playerCount.."/20 | 📶 "..ping.."ms | ⏱️ 60 FPS"
         task.wait(1)
     end
 end)
 
--- Left panel (menu tabs)
+-- Left panel
 local leftPanel = Instance.new("Frame", main)
 leftPanel.Size, leftPanel.Position = UDim2.new(0, 180, 1, -95), UDim2.new(0, 0, 0, 95)
 leftPanel.BackgroundColor3 = Color3.fromRGB(20, 15, 45)
@@ -573,10 +800,12 @@ leftPanel.BorderSizePixel = 1
 leftPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
 Instance.new("UICorner", leftPanel).CornerRadius = UDim.new(0, 12)
 
--- Tab buttons
+-- Tabs
 local tabs = {"COMBAT", "VISUALS", "MOVEMENT", "DEFENSE", "SETTINGS"}
 local tabButtons = {}
 local tabY = 15
+local rightContents = {}
+
 for _, tab in ipairs(tabs) do
     local btn = Instance.new("TextButton", leftPanel)
     btn.Size, btn.Position, btn.Text, btn.BackgroundColor3 = UDim2.new(0.9, 0, 0, 38), UDim2.new(0.05, 0, 0, tabY), tab, Color3.fromRGB(45, 35, 85)
@@ -587,7 +816,7 @@ for _, tab in ipairs(tabs) do
         for _, b in pairs(tabButtons) do b.BackgroundColor3 = Color3.fromRGB(45, 35, 85) end
         btn.BackgroundColor3 = Color3.fromRGB(120, 70, 200)
         for name, content in pairs(rightContents) do
-            if name == tab then content.Visible = true else content.Visible = false end
+            content.Visible = (name == tab)
         end
     end)
     table.insert(tabButtons, btn)
@@ -605,94 +834,82 @@ rightPanel.BorderColor3 = Color3.fromRGB(80, 60, 150)
 rightPanel.ClipsDescendants = true
 Instance.new("UICorner", rightPanel).CornerRadius = UDim.new(0, 12)
 
--- Content containers
-local rightContents = {}
-
 -- ============================================
--- TAB COMBAT CONTENT
+-- TAB COMBAT
 -- ============================================
 local combatContent = Instance.new("Frame", rightPanel)
 combatContent.Size, combatContent.Position, combatContent.BackgroundTransparency = UDim2.new(1, -20, 1, -20), UDim2.new(0, 10, 0, 10), 1
-combatContent.Visible = true
 rightContents["COMBAT"] = combatContent
 
 local statusLabel = Instance.new("TextLabel", combatContent)
-statusLabel.Size, statusLabel.Position, statusLabel.Text, statusLabel.TextColor3 = UDim2.new(1, -20, 0, 25), UDim2.new(0, 0, 0, 0), "📌 SYSTEM STATUS: FULLY INJECTED & OPERATIONAL", Color3.fromRGB(0, 255, 100)
+statusLabel.Size, statusLabel.Position, statusLabel.Text, statusLabel.TextColor3 = UDim2.new(1, -20, 0, 25), UDim2.new(0, 0, 0, 0), "📌 SYSTEM STATUS: FULLY INJECTED", Color3.fromRGB(0, 255, 100)
 statusLabel.BackgroundTransparency = 1
 statusLabel.TextSize = 12
 statusLabel.Font = Enum.Font.GothamBold
 
 -- Mode buttons
 local modeFrame = Instance.new("Frame", combatContent)
-modeFrame.Size, modeFrame.Position, modeFrame.BackgroundTransparency = UDim2.new(0, 350, 0, 45), UDim2.new(0, 0, 0, 35), 1
+modeFrame.Size, modeFrame.Position = UDim2.new(0, 350, 0, 45), UDim2.new(0, 0, 0, 35)
 
-local modeBtns = {}
-local modesList = {"SOLO", "ORBIT", "FEET"}
-for i, m in ipairs(modesList) do
+for i, m in ipairs({"SOLO", "ORBIT", "FEET"}) do
     local btn = Instance.new("TextButton", modeFrame)
-    btn.Size, btn.Position, btn.Text, btn.BackgroundColor3 = UDim2.new(0, 105, 0, 35), UDim2.new(0, (i-1)*115, 0, 5), m, Color3.fromRGB(80, 50, 150)
-    btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(255,255,255), 12, Enum.Font.GothamBold
+    btn.Size, btn.Position, btn.Text = UDim2.new(0, 105, 0, 35), UDim2.new(0, (i-1)*115, 0, 5), m
+    btn.TextColor3, btn.TextSize, btn.Font, btn.BackgroundColor3 = Color3.fromRGB(255,255,255), 12, Enum.Font.GothamBold, Color3.fromRGB(80,50,150)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
     btn.MouseButton1Click:Connect(function()
         currentMode = m
-        for _, b in pairs(modeBtns) do b.BackgroundColor3 = Color3.fromRGB(80, 50, 150) end
-        btn.BackgroundColor3 = Color3.fromRGB(200, 50, 100)
+        for _, b in pairs(modeBtns) do b.BackgroundColor3 = Color3.fromRGB(80,50,150) end
+        btn.BackgroundColor3 = Color3.fromRGB(200,50,100)
         statusLabel.Text = "📌 MODE: "..m
+        saveConfig()
     end)
     table.insert(modeBtns, btn)
 end
-modeBtns[1].BackgroundColor3 = Color3.fromRGB(200, 50, 100)
+modeBtns[1].BackgroundColor3 = Color3.fromRGB(200,50,100)
 
 -- Target list
 local targetLabel = Instance.new("TextLabel", combatContent)
-targetLabel.Size, targetLabel.Position, targetLabel.Text, targetLabel.TextColor3 = UDim2.new(0, 150, 0, 25), UDim2.new(0, 0, 0, 90), "🎯 TARGET LIST:", Color3.fromRGB(0, 220, 255)
-targetLabel.BackgroundTransparency = 1
-targetLabel.TextSize = 12
-targetLabel.Font = Enum.Font.GothamBold
+targetLabel.Size, targetLabel.Position, targetLabel.Text = UDim2.new(0, 150, 0, 25), UDim2.new(0, 0, 0, 90), "🎯 TARGET LIST:"
+targetLabel.TextColor3, targetLabel.BackgroundTransparency = Color3.fromRGB(0,220,255), 1
 
 targetListFrame = Instance.new("ScrollingFrame", combatContent)
 targetListFrame.Size, targetListFrame.Position = UDim2.new(0, 220, 0, 130), UDim2.new(0, 0, 0, 115)
-targetListFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 35)
-targetListFrame.BackgroundTransparency = 0.5
-targetListFrame.BorderSizePixel = 0
-targetListFrame.ScrollBarThickness = 5
+targetListFrame.BackgroundColor3, targetListFrame.BackgroundTransparency = Color3.fromRGB(15,10,35), 0.5
+targetListFrame.BorderSizePixel, targetListFrame.ScrollBarThickness = 0, 5
 Instance.new("UICorner", targetListFrame).CornerRadius = UDim.new(0, 10)
 
--- Activate/Deactivate buttons
+-- Activate/Deactivate
 local actBtn = Instance.new("TextButton", combatContent)
-actBtn.Size, actBtn.Position, actBtn.Text, actBtn.BackgroundColor3 = UDim2.new(0, 130, 0, 40), UDim2.new(0, 240, 0, 115), "✅ ACTIVATE", Color3.fromRGB(0, 150, 0)
-actBtn.TextColor3, actBtn.TextSize, actBtn.Font = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold
+actBtn.Size, actBtn.Position, actBtn.Text = UDim2.new(0, 130, 0, 40), UDim2.new(0, 240, 0, 115), "✅ ACTIVATE"
+actBtn.TextColor3, actBtn.TextSize, actBtn.Font, actBtn.BackgroundColor3 = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold, Color3.fromRGB(0,150,0)
 Instance.new("UICorner", actBtn).CornerRadius = UDim.new(0, 10)
 
 local deactBtn = Instance.new("TextButton", combatContent)
-deactBtn.Size, deactBtn.Position, deactBtn.Text, deactBtn.BackgroundColor3 = UDim2.new(0, 130, 0, 40), UDim2.new(0, 240, 0, 165), "❌ DEACTIVATE", Color3.fromRGB(150, 0, 0)
-deactBtn.TextColor3, deactBtn.TextSize, deactBtn.Font = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold
+deactBtn.Size, deactBtn.Position, deactBtn.Text = UDim2.new(0, 130, 0, 40), UDim2.new(0, 240, 0, 165), "❌ DEACTIVATE"
+deactBtn.TextColor3, deactBtn.TextSize, deactBtn.Font, deactBtn.BackgroundColor3 = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold, Color3.fromRGB(150,0,0)
 Instance.new("UICorner", deactBtn).CornerRadius = UDim.new(0, 10)
 
--- Combat features (AUTO-COMBO, INSTANT KILL, AUTO-BLOCK)
-local combatFeaturesLabel = Instance.new("TextLabel", combatContent)
-combatFeaturesLabel.Size, combatFeaturesLabel.Position, combatFeaturesLabel.Text, combatFeaturesLabel.TextColor3 = UDim2.new(0, 300, 0, 25), UDim2.new(0, 0, 0, 260), "⚙️ COMBAT FEATURES:", Color3.fromRGB(255, 150, 100)
-combatFeaturesLabel.BackgroundTransparency = 1
-combatFeaturesLabel.TextSize = 12
-combatFeaturesLabel.Font = Enum.Font.GothamBold
-
+-- Combat features
 local combatFeaturesFrame = Instance.new("Frame", combatContent)
-combatFeaturesFrame.Size, combatFeaturesFrame.Position, combatFeaturesFrame.BackgroundTransparency = UDim2.new(0, 350, 0, 100), UDim2.new(0, 0, 0, 285), 1
+combatFeaturesFrame.Size, combatFeaturesFrame.Position = UDim2.new(0, 350, 0, 120), UDim2.new(0, 0, 0, 260)
 
-local combatFeatures = {
-    {name="AUTO-COMBO", var="autoCombo", default=true, x=0, y=0},
-    {name="INSTANT KILL", var="instantKill", default=false, x=0, y=35},
-    {name="AUTO-BLOCK", var="autoBlock", default=true, x=0, y=70},
+local combatFeaturesList = {
+    {name="AUTO-COMBO", var="autoCombo", default=false, y=0},
+    {name="INSTANT KILL", var="instantKill", default=false, y=40},
+    {name="AUTO-BLOCK", var="autoBlock", default=false, y=80},
 }
-
-for _, f in ipairs(combatFeatures) do
+for _, f in ipairs(combatFeaturesList) do
     local btn = Instance.new("TextButton", combatFeaturesFrame)
-    btn.Size, btn.Position, btn.Text = UDim2.new(0, 145, 0, 30), UDim2.new(0, f.x, 0, f.y), (f.default and "[🔘] " or "[⚪] ")..f.name
+    btn.Size, btn.Position, btn.Text = UDim2.new(0, 180, 0, 35), UDim2.new(0, 0, 0, f.y), (f.default and "[🔘] " or "[⚪] ")..f.name
     btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(220,220,255), 11, Enum.Font.Gotham
     btn.BackgroundColor3 = f.default and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
     local varName = f.var
-    local state = f.default
+    local state = (f.var == "autoCombo" and autoCombo) or (f.var == "instantKill" and instantKill) or (f.var == "autoBlock" and autoBlock)
+    if state then
+        btn.Text = "[🔘] "..f.name
+        btn.BackgroundColor3 = Color3.fromRGB(0,120,0)
+    end
     btn.MouseButton1Click:Connect(function()
         state = not state
         if varName == "autoCombo" then autoCombo = state
@@ -701,11 +918,18 @@ for _, f in ipairs(combatFeatures) do
         end
         btn.Text = (state and "[🔘] " or "[⚪] ")..f.name
         btn.BackgroundColor3 = state and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+        if isActive then
+            if varName == "autoCombo" and autoCombo then startAutoCombo() end
+            if varName == "instantKill" and instantKill then startInstantKill() end
+            if varName == "autoBlock" and autoBlock then startAutoBlock() end
+        end
+        saveConfig()
     end)
+    table.insert(combatFeatureBtns, btn)
 end
 
 -- ============================================
--- TAB VISUALS CONTENT (ESP DI SINI)
+-- TAB VISUALS
 -- ============================================
 local visualsContent = Instance.new("Frame", rightPanel)
 visualsContent.Size, visualsContent.Position, visualsContent.BackgroundTransparency = UDim2.new(1, -20, 1, -20), UDim2.new(0, 10, 0, 10), 1
@@ -713,24 +937,25 @@ visualsContent.Visible = false
 rightContents["VISUALS"] = visualsContent
 
 local visLabel = Instance.new("TextLabel", visualsContent)
-visLabel.Size, visLabel.Position, visLabel.Text, visLabel.TextColor3 = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "👁️ VISUAL SETTINGS", Color3.fromRGB(0, 220, 255)
-visLabel.BackgroundTransparency = 1
-visLabel.TextSize = 14
-visLabel.Font = Enum.Font.GothamBold
+visLabel.Size, visLabel.Position, visLabel.Text = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "👁️ VISUAL SETTINGS"
+visLabel.TextColor3, visLabel.BackgroundTransparency, visLabel.Font = Color3.fromRGB(0,220,255), 1, Enum.Font.GothamBold
 
-local visFeatures = {
-    {name="PLAYER ESP", var="espOn", default=true, desc="Show player highlight + health bar"},
-    {name="CHAMS X-RAY", var="chams", default=false, desc="Make enemies glow red through walls"},
+local visFeaturesList = {
+    {name="PLAYER ESP", var="espOn", default=true, y=45},
+    {name="CHAMS X-RAY", var="chams", default=false, y=100},
 }
-local visY = 45
-for _, f in ipairs(visFeatures) do
+for _, f in ipairs(visFeaturesList) do
     local btn = Instance.new("TextButton", visualsContent)
-    btn.Size, btn.Position, btn.Text = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, visY), (f.default and "[🔘] " or "[⚪] ")..f.name
+    btn.Size, btn.Position, btn.Text = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, f.y), (f.default and "[🔘] " or "[⚪] ")..f.name
     btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(220,220,255), 12, Enum.Font.Gotham
     btn.BackgroundColor3 = f.default and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
     local varName = f.var
-    local state = f.default
+    local state = (f.var == "espOn" and espOn) or (f.var == "chams" and chams)
+    if state then
+        btn.Text = "[🔘] "..f.name
+        btn.BackgroundColor3 = Color3.fromRGB(0,120,0)
+    end
     btn.MouseButton1Click:Connect(function()
         state = not state
         if varName == "espOn" then toggleESP()
@@ -738,12 +963,13 @@ for _, f in ipairs(visFeatures) do
         end
         btn.Text = (state and "[🔘] " or "[⚪] ")..f.name
         btn.BackgroundColor3 = state and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+        saveConfig()
     end)
-    visY = visY + 55
+    table.insert(visualFeatureBtns, btn)
 end
 
 -- ============================================
--- TAB MOVEMENT CONTENT (SPEED HACK, NO CLIP, INFINITE JUMP, TELEPORT DI SINI)
+-- TAB MOVEMENT
 -- ============================================
 local movementContent = Instance.new("Frame", rightPanel)
 movementContent.Size, movementContent.Position, movementContent.BackgroundTransparency = UDim2.new(1, -20, 1, -20), UDim2.new(0, 10, 0, 10), 1
@@ -751,26 +977,27 @@ movementContent.Visible = false
 rightContents["MOVEMENT"] = movementContent
 
 local moveLabel = Instance.new("TextLabel", movementContent)
-moveLabel.Size, moveLabel.Position, moveLabel.Text, moveLabel.TextColor3 = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "🚀 MOVEMENT SETTINGS", Color3.fromRGB(0, 220, 255)
-moveLabel.BackgroundTransparency = 1
-moveLabel.TextSize = 14
-moveLabel.Font = Enum.Font.GothamBold
+moveLabel.Size, moveLabel.Position, moveLabel.Text = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "🚀 MOVEMENT SETTINGS"
+moveLabel.TextColor3, moveLabel.BackgroundTransparency, moveLabel.Font = Color3.fromRGB(0,220,255), 1, Enum.Font.GothamBold
 
-local moveFeatures = {
-    {name="SPEED HACK (x2)", var="speedHack", default=false},
-    {name="NO CLIP", var="noClip", default=false},
-    {name="INFINITE JUMP", var="infiniteJump", default=false},
-    {name="TELEPORT TO TARGET", var="teleportTarget", default=false},
+local moveFeaturesList = {
+    {name="SPEED HACK (x2)", var="speedHack", default=false, y=45},
+    {name="NO CLIP", var="noClip", default=false, y=95},
+    {name="INFINITE JUMP", var="infiniteJump", default=false, y=145},
+    {name="TELEPORT TO TARGET", var="teleportTarget", default=false, y=195},
 }
-local moveY = 45
-for _, f in ipairs(moveFeatures) do
+for _, f in ipairs(moveFeaturesList) do
     local btn = Instance.new("TextButton", movementContent)
-    btn.Size, btn.Position, btn.Text = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, moveY), (f.default and "[🔘] " or "[⚪] ")..f.name
+    btn.Size, btn.Position, btn.Text = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, f.y), (f.default and "[🔘] " or "[⚪] ")..f.name
     btn.TextColor3, btn.TextSize, btn.Font = Color3.fromRGB(220,220,255), 12, Enum.Font.Gotham
     btn.BackgroundColor3 = f.default and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
     local varName = f.var
-    local state = f.default
+    local state = (f.var == "speedHack" and speedHack) or (f.var == "noClip" and noClip) or (f.var == "infiniteJump" and infiniteJump) or (f.var == "teleportTarget" and teleportTarget)
+    if state then
+        btn.Text = "[🔘] "..f.name
+        btn.BackgroundColor3 = Color3.fromRGB(0,120,0)
+    end
     btn.MouseButton1Click:Connect(function()
         state = not state
         if varName == "speedHack" then speedHack = state; if speedHack then runSpeedHack() end
@@ -780,12 +1007,13 @@ for _, f in ipairs(moveFeatures) do
         end
         btn.Text = (state and "[🔘] " or "[⚪] ")..f.name
         btn.BackgroundColor3 = state and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+        saveConfig()
     end)
-    moveY = moveY + 55
+    table.insert(moveFeatureBtns, btn)
 end
 
 -- ============================================
--- TAB DEFENSE CONTENT
+-- TAB DEFENSE
 -- ============================================
 local defenseContent = Instance.new("Frame", rightPanel)
 defenseContent.Size, defenseContent.Position, defenseContent.BackgroundTransparency = UDim2.new(1, -20, 1, -20), UDim2.new(0, 10, 0, 10), 1
@@ -793,33 +1021,33 @@ defenseContent.Visible = false
 rightContents["DEFENSE"] = defenseContent
 
 local defLabel = Instance.new("TextLabel", defenseContent)
-defLabel.Size, defLabel.Position, defLabel.Text, defLabel.TextColor3 = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "🛡️ DEFENSE SETTINGS", Color3.fromRGB(0, 220, 255)
-defLabel.BackgroundTransparency = 1
-defLabel.TextSize = 14
-defLabel.Font = Enum.Font.GothamBold
+defLabel.Size, defLabel.Position, defLabel.Text = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "🛡️ DEFENSE SETTINGS"
+defLabel.TextColor3, defLabel.BackgroundTransparency, defLabel.Font = Color3.fromRGB(0,220,255), 1, Enum.Font.GothamBold
 
-local godBtn2 = Instance.new("TextButton", defenseContent)
-godBtn2.Size, godBtn2.Position, godBtn2.Text, godBtn2.BackgroundColor3 = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, 45), "[⚪] GODMODE (Tekan V)", Color3.fromRGB(60,40,100)
-godBtn2.TextColor3, godBtn2.TextSize, godBtn2.Font = Color3.fromRGB(220,220,255), 12, Enum.Font.GothamBold
+godBtn2 = Instance.new("TextButton", defenseContent)
+godBtn2.Size, godBtn2.Position, godBtn2.Text = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, 45), godMode and "[🔘] GODMODE (Tekan V)" or "[⚪] GODMODE (Tekan V)"
+godBtn2.TextColor3, godBtn2.TextSize, godBtn2.Font, godBtn2.BackgroundColor3 = Color3.fromRGB(220,220,255), 12, Enum.Font.Gotham, godMode and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
 Instance.new("UICorner", godBtn2).CornerRadius = UDim.new(0, 8)
 godBtn2.MouseButton1Click:Connect(function()
     toggleGodMode()
     godBtn2.Text = godMode and "[🔘] GODMODE (Tekan V)" or "[⚪] GODMODE (Tekan V)"
     godBtn2.BackgroundColor3 = godMode and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    saveConfig()
 end)
 
-local emergBtn2 = Instance.new("TextButton", defenseContent)
-emergBtn2.Size, emergBtn2.Position, emergBtn2.Text, emergBtn2.BackgroundColor3 = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, 100), "[🔘] EMERGENCY ESCAPE (HP<25%)", Color3.fromRGB(0,120,0)
-emergBtn2.TextColor3, emergBtn2.TextSize, emergBtn2.Font = Color3.fromRGB(220,220,255), 12, Enum.Font.GothamBold
+emergBtn2 = Instance.new("TextButton", defenseContent)
+emergBtn2.Size, emergBtn2.Position, emergBtn2.Text = UDim2.new(0, 250, 0, 40), UDim2.new(0, 0, 0, 100), emergency and "[🔘] EMERGENCY ESCAPE (HP<25%)" or "[⚪] EMERGENCY ESCAPE (HP<25%)"
+emergBtn2.TextColor3, emergBtn2.TextSize, emergBtn2.Font, emergBtn2.BackgroundColor3 = Color3.fromRGB(220,220,255), 12, Enum.Font.Gotham, emergency and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
 Instance.new("UICorner", emergBtn2).CornerRadius = UDim.new(0, 8)
 emergBtn2.MouseButton1Click:Connect(function()
     emergency = not emergency
     emergBtn2.Text = emergency and "[🔘] EMERGENCY ESCAPE (HP<25%)" or "[⚪] EMERGENCY ESCAPE (HP<25%)"
     emergBtn2.BackgroundColor3 = emergency and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+    saveConfig()
 end)
 
 -- ============================================
--- TAB SETTINGS CONTENT
+-- TAB SETTINGS (DENGAN SAVE/LOAD CONFIG)
 -- ============================================
 local settingsContent = Instance.new("Frame", rightPanel)
 settingsContent.Size, settingsContent.Position, settingsContent.BackgroundTransparency = UDim2.new(1, -20, 1, -20), UDim2.new(0, 10, 0, 10), 1
@@ -827,101 +1055,131 @@ settingsContent.Visible = false
 rightContents["SETTINGS"] = settingsContent
 
 local setLabel = Instance.new("TextLabel", settingsContent)
-setLabel.Size, setLabel.Position, setLabel.Text, setLabel.TextColor3 = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "⚙️ SETTINGS", Color3.fromRGB(0, 220, 255)
-setLabel.BackgroundTransparency = 1
-setLabel.TextSize = 14
-setLabel.Font = Enum.Font.GothamBold
+setLabel.Size, setLabel.Position, setLabel.Text = UDim2.new(1,0,0,30), UDim2.new(0,0,0,0), "⚙️ SETTINGS"
+setLabel.TextColor3, setLabel.BackgroundTransparency, setLabel.Font = Color3.fromRGB(0,220,255), 1, Enum.Font.GothamBold
 
--- Slider: Teleport Radius
-local radiusLabel = Instance.new("TextLabel", settingsContent)
-radiusLabel.Size, radiusLabel.Position, radiusLabel.Text, radiusLabel.TextColor3 = UDim2.new(0, 200, 0, 25), UDim2.new(0, 0, 0, 45), "📍 TELEPORT RADIUS: 5.0", Color3.fromRGB(255, 150, 200)
-radiusLabel.BackgroundTransparency = 1
+-- Sliders
+local sliders = {
+    {label="📍 TELEPORT RADIUS", var="soloRadius", min=2, max=12, default=5, y=45, labelY=65, color=Color3.fromRGB(255,100,200)},
+    {label="🔄 ORBIT RADIUS", var="orbitRadius", min=3, max=12, default=5, y=95, labelY=115, color=Color3.fromRGB(150,100,255)},
+    {label="⚡ ORBIT SPEED", var="orbitSpeed", min=0.3, max=3, default=1, y=145, labelY=165, color=Color3.fromRGB(100,255,100)},
+    {label="🦶 FEET DISTANCE", var="feetDist", min=1, max=10, default=3, y=195, labelY=215, color=Color3.fromRGB(100,200,150)},
+}
 
-local radiusSliderBg = Instance.new("Frame", settingsContent)
-radiusSliderBg.Size, radiusSliderBg.Position = UDim2.new(0, 250, 0, 5), UDim2.new(0, 0, 0, 75)
-radiusSliderBg.BackgroundColor3 = Color3.fromRGB(60, 40, 100)
-
-local radiusSliderFill = Instance.new("Frame", radiusSliderBg)
-radiusSliderFill.Size, radiusSliderFill.BackgroundColor3 = UDim2.new(0.3, 0, 1, 0), Color3.fromRGB(255, 100, 200)
-
--- Slider: Orbit Radius
-local orbitRadiusLabel = Instance.new("TextLabel", settingsContent)
-orbitRadiusLabel.Size, orbitRadiusLabel.Position, orbitRadiusLabel.Text, orbitRadiusLabel.TextColor3 = UDim2.new(0, 200, 0, 25), UDim2.new(0, 0, 0, 95), "🔄 ORBIT RADIUS: 5.0", Color3.fromRGB(150, 150, 255)
-orbitRadiusLabel.BackgroundTransparency = 1
-
-local orbitRadiusSliderBg = Instance.new("Frame", settingsContent)
-orbitRadiusSliderBg.Size, orbitRadiusSliderBg.Position = UDim2.new(0, 250, 0, 5), UDim2.new(0, 0, 0, 125)
-orbitRadiusSliderBg.BackgroundColor3 = Color3.fromRGB(60, 40, 100)
-
-local orbitRadiusSliderFill = Instance.new("Frame", orbitRadiusSliderBg)
-orbitRadiusSliderFill.Size, orbitRadiusSliderFill.BackgroundColor3 = UDim2.new(0.3, 0, 1, 0), Color3.fromRGB(150, 100, 255)
-
--- Slider: Orbit Speed
-local speedLabel = Instance.new("TextLabel", settingsContent)
-speedLabel.Size, speedLabel.Position, speedLabel.Text, speedLabel.TextColor3 = UDim2.new(0, 200, 0, 25), UDim2.new(0, 0, 0, 145), "⚡ ORBIT SPEED: 1.0", Color3.fromRGB(150, 255, 150)
-speedLabel.BackgroundTransparency = 1
-
-local speedSliderBg = Instance.new("Frame", settingsContent)
-speedSliderBg.Size, speedSliderBg.Position = UDim2.new(0, 250, 0, 5), UDim2.new(0, 0, 0, 175)
-speedSliderBg.BackgroundColor3 = Color3.fromRGB(60, 40, 100)
-
-local speedSliderFill = Instance.new("Frame", speedSliderBg)
-speedSliderFill.Size, speedSliderFill.BackgroundColor3 = UDim2.new(0.3, 0, 1, 0), Color3.fromRGB(100, 255, 100)
-
--- Slider: Feet Distance
-local feetLabel = Instance.new("TextLabel", settingsContent)
-feetLabel.Size, feetLabel.Position, feetLabel.Text, feetLabel.TextColor3 = UDim2.new(0, 200, 0, 25), UDim2.new(0, 0, 0, 195), "🦶 FEET DISTANCE: 3.0", Color3.fromRGB(150, 255, 200)
-feetLabel.BackgroundTransparency = 1
-
-local feetSliderBg = Instance.new("Frame", settingsContent)
-feetSliderBg.Size, feetSliderBg.Position = UDim2.new(0, 250, 0, 5), UDim2.new(0, 0, 0, 225)
-feetSliderBg.BackgroundColor3 = Color3.fromRGB(60, 40, 100)
-
-local feetSliderFill = Instance.new("Frame", feetSliderBg)
-feetSliderFill.Size, feetSliderFill.BackgroundColor3 = UDim2.new(0.3, 0, 1, 0), Color3.fromRGB(100, 200, 150)
-
--- Slider setup function
-local function setupSlider(sliderBg, sliderFill, label, minV, maxV, varName, currentVal)
-    local dragging = false
-    sliderBg.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            local pos = math.clamp((i.Position.X - sliderBg.AbsolutePosition.X)/sliderBg.AbsoluteSize.X, 0, 1)
-            local val = minV + pos * (maxV - minV)
-            sliderFill.Size = UDim2.new(pos, 0, 1, 0)
-            label.Text = varName..": "..string.format("%.1f", val)
-            if varName == "📍 TELEPORT RADIUS" then soloRadius = val
-            elseif varName == "🔄 ORBIT RADIUS" then orbitRadius = val
-            elseif varName == "⚡ ORBIT SPEED" then orbitSpeed = val
-            elseif varName == "🦶 FEET DISTANCE" then feetDist = val end
-        end
-    end)
-    UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
-    UserInputService.InputChanged:Connect(function(i)
-        if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
-            local pos = math.clamp((i.Position.X - sliderBg.AbsolutePosition.X)/sliderBg.AbsoluteSize.X, 0, 1)
-            local val = minV + pos * (maxV - minV)
-            sliderFill.Size = UDim2.new(pos, 0, 1, 0)
-            label.Text = varName..": "..string.format("%.1f", val)
-            if varName == "📍 TELEPORT RADIUS" then soloRadius = val
-            elseif varName == "🔄 ORBIT RADIUS" then orbitRadius = val
-            elseif varName == "⚡ ORBIT SPEED" then orbitSpeed = val
-            elseif varName == "🦶 FEET DISTANCE" then feetDist = val end
-        end
-    end)
-    local initPos = (currentVal - minV) / (maxV - minV)
-    sliderFill.Size = UDim2.new(initPos, 0, 1, 0)
+for _, s in ipairs(sliders) do
+    local label = Instance.new("TextLabel", settingsContent)
+    label.Size, label.Position, label.Text = UDim2.new(0, 200, 0, 25), UDim2.new(0, 0, 0, s.labelY), s.label..": "..s.default
+    label.TextColor3, label.BackgroundTransparency = s.color, 1
+    
+    local bg = Instance.new("Frame", settingsContent)
+    bg.Size, bg.Position = UDim2.new(0, 250, 0, 5), UDim2.new(0, 0, 0, s.y)
+    bg.BackgroundColor3 = Color3.fromRGB(60,40,100)
+    
+    local fill = Instance.new("Frame", bg)
+    fill.Size, fill.BackgroundColor3 = UDim2.new(0.3, 0, 1, 0), s.color
+    
+    local function setupSlider()
+        local dragging = false
+        bg.InputBegan:Connect(function(i)
+            if i.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+                local pos = math.clamp((i.Position.X - bg.AbsolutePosition.X)/bg.AbsoluteSize.X, 0, 1)
+                local val = s.min + pos * (s.max - s.min)
+                fill.Size = UDim2.new(pos, 0, 1, 0)
+                label.Text = s.label..": "..string.format("%.1f", val)
+                if s.var == "soloRadius" then soloRadius = val
+                elseif s.var == "orbitRadius" then orbitRadius = val
+                elseif s.var == "orbitSpeed" then orbitSpeed = val
+                elseif s.var == "feetDist" then feetDist = val end
+                saveConfig()
+            end
+        end)
+        UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
+        UserInputService.InputChanged:Connect(function(i)
+            if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
+                local pos = math.clamp((i.Position.X - bg.AbsolutePosition.X)/bg.AbsoluteSize.X, 0, 1)
+                local val = s.min + pos * (s.max - s.min)
+                fill.Size = UDim2.new(pos, 0, 1, 0)
+                label.Text = s.label..": "..string.format("%.1f", val)
+                if s.var == "soloRadius" then soloRadius = val
+                elseif s.var == "orbitRadius" then orbitRadius = val
+                elseif s.var == "orbitSpeed" then orbitSpeed = val
+                elseif s.var == "feetDist" then feetDist = val end
+                saveConfig()
+            end
+        end)
+        local initPos = (s.default - s.min) / (s.max - s.min)
+        fill.Size = UDim2.new(initPos, 0, 1, 0)
+        label.Text = s.label..": "..string.format("%.1f", s.default)
+        if s.var == "soloRadius" then soloRadius = s.default
+        elseif s.var == "orbitRadius" then orbitRadius = s.default
+        elseif s.var == "orbitSpeed" then orbitSpeed = s.default
+        elseif s.var == "feetDist" then feetDist = s.default end
+    end
+    setupSlider()
 end
 
-setupSlider(radiusSliderBg, radiusSliderFill, radiusLabel, 2, 12, "📍 TELEPORT RADIUS", soloRadius)
-setupSlider(orbitRadiusSliderBg, orbitRadiusSliderFill, orbitRadiusLabel, 3, 12, "🔄 ORBIT RADIUS", orbitRadius)
-setupSlider(speedSliderBg, speedSliderFill, speedLabel, 0.3, 3, "⚡ ORBIT SPEED", orbitSpeed)
-setupSlider(feetSliderBg, feetSliderFill, feetLabel, 1, 10, "🦶 FEET DISTANCE", feetDist)
+-- BUTTON SAVE CONFIGURATION
+local saveConfigBtn = Instance.new("TextButton", settingsContent)
+saveConfigBtn.Size, saveConfigBtn.Position, saveConfigBtn.Text = UDim2.new(0, 180, 0, 40), UDim2.new(0, 0, 0, 260), "💾 SAVE CONFIGURATION"
+saveConfigBtn.TextColor3, saveConfigBtn.TextSize, saveConfigBtn.Font, saveConfigBtn.BackgroundColor3 = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold, Color3.fromRGB(0, 120, 100)
+Instance.new("UICorner", saveConfigBtn).CornerRadius = UDim.new(0, 10)
+saveConfigBtn.MouseButton1Click:Connect(function()
+    saveConfig()
+    if statusLabel then statusLabel.Text = "💾 CONFIGURATION SAVED!" end
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "💾 CONFIG SAVED",
+            Text = "All settings have been saved!",
+            Duration = 2
+        })
+    end)
+end)
+
+-- BUTTON LOAD CONFIGURATION
+local loadConfigBtn = Instance.new("TextButton", settingsContent)
+loadConfigBtn.Size, loadConfigBtn.Position, loadConfigBtn.Text = UDim2.new(0, 180, 0, 40), UDim2.new(0, 200, 0, 260), "📂 LOAD CONFIGURATION"
+loadConfigBtn.TextColor3, loadConfigBtn.TextSize, loadConfigBtn.Font, loadConfigBtn.BackgroundColor3 = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold, Color3.fromRGB(100, 100, 200)
+Instance.new("UICorner", loadConfigBtn).CornerRadius = UDim.new(0, 10)
+loadConfigBtn.MouseButton1Click:Connect(function()
+    local success = loadConfig()
+    if success then
+        applyConfig(defaultConfig)
+        updateAllUIButtons()
+        if statusLabel then statusLabel.Text = "📂 CONFIGURATION LOADED!" end
+        pcall(function()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "📂 CONFIG LOADED",
+                Text = "Your saved settings have been loaded!",
+                Duration = 2
+            })
+        end)
+    else
+        if statusLabel then statusLabel.Text = "⚠️ NO SAVED CONFIG FOUND!" end
+        pcall(function()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "⚠️ NO CONFIG",
+                Text = "No saved configuration found. Save first!",
+                Duration = 2
+            })
+        end)
+    end
+end)
+
+-- BUTTON RESET TO DEFAULT
+local resetDefaultBtn = Instance.new("TextButton", settingsContent)
+resetDefaultBtn.Size, resetDefaultBtn.Position, resetDefaultBtn.Text = UDim2.new(0, 180, 0, 40), UDim2.new(0, 0, 0, 320), "🔄 RESET TO DEFAULT"
+resetDefaultBtn.TextColor3, resetDefaultBtn.TextSize, resetDefaultBtn.Font, resetDefaultBtn.BackgroundColor3 = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold, Color3.fromRGB(200, 100, 0)
+Instance.new("UICorner", resetDefaultBtn).CornerRadius = UDim.new(0, 10)
+resetDefaultBtn.MouseButton1Click:Connect(function()
+    resetToDefault()
+    if statusLabel then statusLabel.Text = "🔄 RESET TO DEFAULT!" end
+end)
 
 -- Refresh ESP button
 local refreshEspBtn = Instance.new("TextButton", settingsContent)
-refreshEspBtn.Size, refreshEspBtn.Position, refreshEspBtn.Text, refreshEspBtn.BackgroundColor3 = UDim2.new(0, 150, 0, 40), UDim2.new(0, 0, 0, 250), "🔄 REFRESH ESP", Color3.fromRGB(100, 50, 200)
-refreshEspBtn.TextColor3, refreshEspBtn.TextSize, refreshEspBtn.Font = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold
+refreshEspBtn.Size, refreshEspBtn.Position, refreshEspBtn.Text = UDim2.new(0, 150, 0, 40), UDim2.new(0, 200, 0, 320), "🔄 REFRESH ESP"
+refreshEspBtn.TextColor3, refreshEspBtn.TextSize, refreshEspBtn.Font, refreshEspBtn.BackgroundColor3 = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold, Color3.fromRGB(100,50,200)
 Instance.new("UICorner", refreshEspBtn).CornerRadius = UDim.new(0, 10)
 refreshEspBtn.MouseButton1Click:Connect(function()
     if espOn then
@@ -934,15 +1192,16 @@ end)
 
 -- Panic button
 local panicBtn = Instance.new("TextButton", settingsContent)
-panicBtn.Size, panicBtn.Position, panicBtn.Text, panicBtn.BackgroundColor3 = UDim2.new(0, 150, 0, 40), UDim2.new(0, 170, 0, 250), "🛑 PANIC / RESET", Color3.fromRGB(150, 0, 0)
-panicBtn.TextColor3, panicBtn.TextSize, panicBtn.Font = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold
+panicBtn.Size, panicBtn.Position, panicBtn.Text = UDim2.new(0, 150, 0, 40), UDim2.new(0, 370, 0, 320), "🛑 PANIC / RESET"
+panicBtn.TextColor3, panicBtn.TextSize, panicBtn.Font, panicBtn.BackgroundColor3 = Color3.fromRGB(255,255,255), 13, Enum.Font.GothamBold, Color3.fromRGB(150,0,0)
 Instance.new("UICorner", panicBtn).CornerRadius = UDim.new(0, 10)
 panicBtn.MouseButton1Click:Connect(function()
     deactivate()
     if godMode then toggleGodMode() end
     removeESP()
     speedHack, noClip, infiniteJump, teleportTarget = false, false, false, false
-    autoCombo, instantKill, autoBlock, emergency = true, false, true, true
+    autoCombo, instantKill, autoBlock = false, false, false
+    emergency = true
     chams = false
     screenGui:Destroy()
 end)
@@ -953,6 +1212,16 @@ end)
 actBtn.MouseButton1Click:Connect(activate)
 deactBtn.MouseButton1Click:Connect(deactivate)
 
+-- Load saved config
+local configLoaded = loadConfig()
+if configLoaded then
+    applyConfig(defaultConfig)
+    updateAllUIButtons()
+    print("[REDZBROCOLI] Configuration loaded successfully!")
+else
+    print("[REDZBROCOLI] No saved config, using defaults")
+end
+
 updateTargetList()
 for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then createESP(p) end end
 runSpeedHack()
@@ -960,7 +1229,7 @@ runNoClip()
 runTeleportTarget()
 runChams()
 
--- Minimize function
+-- Minimize
 local function toggleMinimize()
     isMinimized = not isMinimized
     if isMinimized then
@@ -968,7 +1237,7 @@ local function toggleMinimize()
         header.Visible, infoBar.Visible, leftPanel.Visible, rightPanel.Visible = false, false, false, false
         minBtn.Text = "➕ MAXIMIZE"
     else
-        main.Size, main.Position = UDim2.new(0, 950, 0, 620), UDim2.new(0.5, -475, 0.5, -310)
+        main.Size, main.Position = UDim2.new(0, 950, 0, 650), UDim2.new(0.5, -475, 0.5, -325)
         header.Visible, infoBar.Visible, leftPanel.Visible, rightPanel.Visible = true, true, true, true
         minBtn.Text = "➖ MINIMIZE"
     end
@@ -982,29 +1251,33 @@ UserInputService.InputBegan:Connect(function(i, p)
         toggleGodMode()
         godBtn2.Text = godMode and "[🔘] GODMODE (Tekan V)" or "[⚪] GODMODE (Tekan V)"
         godBtn2.BackgroundColor3 = godMode and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
+        saveConfig()
     elseif i.KeyCode == Enum.KeyCode.E then
         toggleESP()
-        for _, btn in pairs(visualsContent:GetDescendants()) do
-            if btn:IsA("TextButton") and btn.Text:find("PLAYER ESP") then
+        for _, btn in pairs(visualFeatureBtns) do
+            if btn and btn.Text:find("PLAYER ESP") then
                 btn.Text = espOn and "[🔘] PLAYER ESP" or "[⚪] PLAYER ESP"
                 btn.BackgroundColor3 = espOn and Color3.fromRGB(0,120,0) or Color3.fromRGB(60,40,100)
             end
         end
+        saveConfig()
     elseif i.KeyCode == Enum.KeyCode.M then
         toggleMinimize()
     end
 end)
 
-Players.PlayerAdded:Connect(function(p) task.wait(0.5) if espOn then createESP(p) end updateTargetList() updateInfo() end)
-Players.PlayerRemoving:Connect(function() updateTargetList() updateInfo() end)
-LocalPlayer.CharacterAdded:Connect(function() updateInfo() end)
+Players.PlayerAdded:Connect(function(p)
+    task.wait(0.5)
+    if espOn then createESP(p) end
+    updateTargetList()
+end)
+Players.PlayerRemoving:Connect(updateTargetList)
 
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🌈 ⚡ OSKAC REX // REDZBROCOLI ULTIMATE GUI v12.0 - FULLY WORKING ⚡ 🌈")
-print("✅ TAB COMBAT: SOLO/ORBIT/FEET | AUTO-COMBO | INSTANT KILL | AUTO-BLOCK")
-print("✅ TAB VISUALS: PLAYER ESP | CHAMS X-RAY")
-print("✅ TAB MOVEMENT: SPEED HACK | NO CLIP | INFINITE JUMP | TELEPORT TO TARGET")
-print("✅ TAB DEFENSE: GODMODE (V) | EMERGENCY ESCAPE")
-print("✅ TAB SETTINGS: RADIUS SLIDERS | REFRESH ESP | PANIC BUTTON")
-print("📌 KEYBINDS: V=GODMODE | E=ESP | M=MINIMIZE")
+print("⚡ REDZBROCOLI ULTIMATE v14.0 - DENGAN SAVE CONFIGURATION ⚡")
+print("✅ FITUR BARU: SAVE CONFIG | LOAD CONFIG | RESET TO DEFAULT")
+print("✅ Semua pengaturan akan tersimpan otomatis saat diubah")
+print("✅ Klik 'SAVE CONFIGURATION' untuk menyimpan ke file")
+print("✅ Klik 'LOAD CONFIGURATION' untuk memuat simpanan sebelumnya")
+print("✅ Klik 'RESET TO DEFAULT' untuk kembali ke pengaturan awal")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
