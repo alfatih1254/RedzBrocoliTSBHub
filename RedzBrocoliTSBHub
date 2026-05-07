@@ -85,75 +85,6 @@ for i = 1, 150 do
     end)
 end
 
-local lightningEffectActive = false
-local lightningEffect = nil
-
-local function createLightningEffect()
-    if lightningEffect then
-        lightningEffect:Destroy()
-        lightningEffect = nil
-    end
-    
-    lightningEffect = Instance.new("Frame", CoreGui)
-    lightningEffect.Size = UDim2.new(1, 0, 1, 0)
-    lightningEffect.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    lightningEffect.BackgroundTransparency = 0.95
-    lightningEffect.ZIndex = 999
-    lightningEffect.Name = "LightningEffect"
-    
-    local gradient = Instance.new("UIGradient", lightningEffect)
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
-    }
-    gradient.Rotation = 45
-    
-    return lightningEffect
-end
-
-local lightningTask = nil
-
-local function startRandomLightning()
-    if lightningTask then return end
-    lightningTask = task.spawn(function()
-        while true do
-            local waitTime = math.random(15, 45)
-            task.wait(waitTime)
-            
-            if not lightningEffectActive then
-                lightningEffectActive = true
-                local effect = createLightningEffect()
-                
-                for transparency = 0.95, 0.3, -0.15 do
-                    effect.BackgroundTransparency = transparency
-                    task.wait(0.02)
-                end
-                
-                for i = 1, 3 do
-                    effect.BackgroundTransparency = 0.5
-                    task.wait(0.01)
-                    effect.BackgroundTransparency = 0.3
-                    task.wait(0.01)
-                    effect.BackgroundTransparency = 0.5
-                    task.wait(0.01)
-                end
-                
-                for transparency = 0.3, 0.95, 0.1 do
-                    effect.BackgroundTransparency = transparency
-                    task.wait(0.02)
-                end
-                
-                effect:Destroy()
-                lightningEffect = nil
-                lightningEffectActive = false
-            end
-        end
-    end)
-end
-
-startRandomLightning()
-
 local mountainLocations = {
     MOUNT_EVEREST = {
         name = "🏔️ MOUNT EVEREST - BASE CAMP",
@@ -187,17 +118,222 @@ local mountainLocations = {
     }
 }
 
-local function teleportToMountain(mountainKey)
-    local mountain = mountainLocations[mountainKey]
-    if not mountain then return false end
+local emergencyMountain = mountainLocations.MOUNT_EVEREST
+local isEmergencyActive = false
+local emergencyPopup = nil
+local emergencySound = nil
+local emergencyBlur = nil
+
+local function createEmergencyPopup()
+    if emergencyPopup and emergencyPopup.Parent then
+        emergencyPopup:Destroy()
+    end
     
+    emergencyPopup = Instance.new("Frame", CoreGui)
+    emergencyPopup.Size = UDim2.new(0, 500, 0, 250)
+    emergencyPopup.Position = UDim2.new(0.5, -250, 0.5, -125)
+    emergencyPopup.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
+    emergencyPopup.BackgroundTransparency = 0.05
+    emergencyPopup.BorderSizePixel = 3
+    emergencyPopup.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    emergencyPopup.ZIndex = 1000
+    Instance.new("UICorner", emergencyPopup).CornerRadius = UDim.new(0, 20)
+    
+    local glowBorder = Instance.new("Frame", emergencyPopup)
+    glowBorder.Size = UDim2.new(1, 10, 1, 10)
+    glowBorder.Position = UDim2.new(0, -5, 0, -5)
+    glowBorder.BackgroundTransparency = 1
+    glowBorder.BorderSizePixel = 0
+    local borderGrad = Instance.new("UIGradient", glowBorder)
+    borderGrad.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 0, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+    }
+    
+    local warningIcon = Instance.new("TextLabel", emergencyPopup)
+    warningIcon.Size = UDim2.new(0, 80, 0, 80)
+    warningIcon.Position = UDim2.new(0.5, -40, 0, 20)
+    warningIcon.Text = "⚠️"
+    warningIcon.TextColor3 = Color3.fromRGB(255, 50, 50)
+    warningIcon.TextSize = 60
+    warningIcon.Font = Enum.Font.GothamBlack
+    warningIcon.BackgroundTransparency = 1
+    
+    local emergencyText = Instance.new("TextLabel", emergencyPopup)
+    emergencyText.Size = UDim2.new(1, -40, 0, 50)
+    emergencyText.Position = UDim2.new(0, 20, 0, 110)
+    emergencyText.Text = "🔥 DARAH ANDA SEKARAT! 🔥"
+    emergencyText.TextColor3 = Color3.fromRGB(255, 0, 0)
+    emergencyText.TextSize = 28
+    emergencyText.TextScaled = true
+    emergencyText.Font = Enum.Font.GothamBlack
+    emergencyText.BackgroundTransparency = 1
+    
+    local subText = Instance.new("TextLabel", emergencyPopup)
+    subText.Size = UDim2.new(1, -40, 0, 30)
+    subText.Position = UDim2.new(0, 20, 0, 165)
+    subText.Text = "TELEPORTING TO SAFE MOUNTAIN..."
+    subText.TextColor3 = Color3.fromRGB(255, 200, 100)
+    subText.TextSize = 14
+    subText.Font = Enum.Font.GothamBold
+    subText.BackgroundTransparency = 1
+    
+    local countdownText = Instance.new("TextLabel", emergencyPopup)
+    countdownText.Size = UDim2.new(0, 100, 0, 30)
+    countdownText.Position = UDim2.new(0.5, -50, 0, 200)
+    countdownText.Text = "3"
+    countdownText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    countdownText.TextSize = 24
+    countdownText.Font = Enum.Font.GothamBold
+    countdownText.BackgroundTransparency = 1
+    
+    local tick = 0
+    task.spawn(function()
+        while emergencyPopup and emergencyPopup.Parent do
+            tick = tick + 1
+            local alpha = 0.5 + math.sin(tick * 0.5) * 0.5
+            emergencyPopup.BackgroundColor3 = Color3.fromRGB(30 + alpha * 50, 0, 0)
+            emergencyPopup.BorderColor3 = Color3.fromRGB(255, alpha * 255, alpha * 255)
+            task.wait(0.05)
+        end
+    end)
+    
+    return emergencyPopup
+end
+
+local function createEmergencySound()
+    local sound = Instance.new("Sound", CoreGui)
+    sound.SoundId = "rbxassetid://9120386437"
+    sound.Volume = 1
+    sound.PlayOnRemove = false
+    sound.Looped = true
+    return sound
+end
+
+local function createEmergencyBlur()
+    local blur = Instance.new("Frame", CoreGui)
+    blur.Size = UDim2.new(1, 0, 1, 0)
+    blur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    blur.BackgroundTransparency = 0.4
+    blur.ZIndex = 999
+    blur.Name = "EmergencyBlur"
+    return blur
+end
+
+local function emergencyTeleportToMountain()
     local character = LocalPlayer.Character
     if character and character:FindFirstChild("HumanoidRootPart") then
-        character.HumanoidRootPart.CFrame = mountain.cframe
-        showNotification("Teleported to: " .. mountain.name, 2)
+        character.HumanoidRootPart.CFrame = emergencyMountain.cframe
         return true
     end
     return false
+end
+
+local function stopAllCombatActivities()
+    if isActive then
+        isActive = false
+        soloRunning = false
+        orbitRunning = false
+        feetRunning = false
+        
+        local character = LocalPlayer.Character
+        if character and character:FindFirstChild("Humanoid") then
+            character.Humanoid.WalkSpeed = 16
+            character.Humanoid.JumpPower = 50
+        end
+        
+        if statusLabel then
+            statusLabel.Text = "⚡ EMERGENCY STOP - LOW HEALTH"
+            statusLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+        end
+    end
+end
+
+local function showEmergencyPopupWithCountdown()
+    local popup = createEmergencyPopup()
+    local blur = createEmergencyBlur()
+    local sound = createEmergencySound()
+    
+    sound:Play()
+    
+    local countdownValue = 3
+    local countdownLabel = popup:FindFirstChildWhichIsA("TextLabel") and popup:FindFirstChildWhichIsA("TextLabel").Parent and nil
+    for _, child in ipairs(popup:GetDescendants()) do
+        if child:IsA("TextLabel") and child.Text == "3" then
+            countdownLabel = child
+            break
+        end
+    end
+    
+    for i = 3, 1, -1 do
+        if countdownLabel then
+            countdownLabel.Text = tostring(i)
+            countdownLabel.TextColor3 = Color3.fromRGB(255, 255 - (3-i)*80, 0)
+            countdownLabel.TextSize = 32 + (3-i)*5
+        end
+        
+        local beepSound = Instance.new("Sound", CoreGui)
+        beepSound.SoundId = "rbxassetid://138753464"
+        beepSound.Volume = 0.5
+        beepSound:Play()
+        task.wait(0.05)
+        beepSound:Destroy()
+        
+        task.wait(0.95)
+    end
+    
+    if countdownLabel then
+        countdownLabel.Text = "GO!"
+    end
+    
+    emergencyTeleportToMountain()
+    
+    task.wait(0.5)
+    
+    if popup then popup:Destroy() end
+    if blur then blur:Destroy() end
+    if sound then sound:Stop() sound:Destroy() end
+    
+    local completeSound = Instance.new("Sound", CoreGui)
+    completeSound.SoundId = "rbxassetid://9120386437"
+    completeSound.Volume = 0.7
+    completeSound:Play()
+    task.wait(0.5)
+    completeSound:Destroy()
+    
+    local successPopup = Instance.new("Frame", CoreGui)
+    successPopup.Size = UDim2.new(0, 400, 0, 150)
+    successPopup.Position = UDim2.new(0.5, -200, 0.5, -75)
+    successPopup.BackgroundColor3 = Color3.fromRGB(0, 30, 0)
+    successPopup.BackgroundTransparency = 0.1
+    successPopup.BorderSizePixel = 2
+    successPopup.BorderColor3 = Color3.fromRGB(0, 255, 0)
+    Instance.new("UICorner", successPopup).CornerRadius = UDim.new(0, 16)
+    
+    local successText = Instance.new("TextLabel", successPopup)
+    successText.Size = UDim2.new(1, -40, 1, -20)
+    successText.Position = UDim2.new(0, 20, 0, 10)
+    successText.Text = "✅ TELEPORTED TO MOUNT EVEREST\n🚑 YOU ARE SAFE NOW"
+    successText.TextColor3 = Color3.fromRGB(0, 255, 0)
+    successText.TextSize = 18
+    successText.Font = Enum.Font.GothamBold
+    successText.TextWrapped = true
+    successText.BackgroundTransparency = 1
+    
+    task.wait(2.5)
+    successPopup:Destroy()
+end
+
+local function emergencyProtocol()
+    if isEmergencyActive then return end
+    isEmergencyActive = true
+    
+    stopAllCombatActivities()
+    
+    showEmergencyPopupWithCountdown()
+    
+    isEmergencyActive = false
 end
 
 local currentPingValue = 0
@@ -324,7 +460,7 @@ local speedMultiplier = 2.5
 local noClip = false
 local infiniteJump = false
 local teleportTarget = false
-local emergency = true
+local emergencyEnabled = true
 local chamsOn = false
 local orbitAngle = 0
 local soloRadius = 5
@@ -401,18 +537,14 @@ local notificationFrame = nil
 local notificationText = nil
 local notificationTween = nil
 
-local safeTeleportPositions = {
-    Vector3.new(0, 500, 0), Vector3.new(100, 450, 100), Vector3.new(-100, 480, -100),
-    Vector3.new(200, 520, -150), Vector3.new(-200, 550, 150), Vector3.new(0, 600, 0),
-    Vector3.new(150, 580, 200), Vector3.new(-150, 620, -200), Vector3.new(300, 500, 300),
-    Vector3.new(-300, 520, -300), Vector3.new(50, 650, -50), Vector3.new(-50, 700, 50)
-}
-
-local function teleportToSafety()
+local function teleportToMountain(mountainKey)
+    local mountain = mountainLocations[mountainKey]
+    if not mountain then return false end
+    
     local character = LocalPlayer.Character
     if character and character:FindFirstChild("HumanoidRootPart") then
-        local randomPos = safeTeleportPositions[math.random(#safeTeleportPositions)]
-        character.HumanoidRootPart.CFrame = CFrame.new(randomPos)
+        character.HumanoidRootPart.CFrame = mountain.cframe
+        showNotification("Teleported to: " .. mountain.name, 2)
         return true
     end
     return false
@@ -970,13 +1102,12 @@ local function startAllActions()
     elseif currentMode == "FEET" then startFeetMode() end
     
     task.spawn(function()
-        while isActive and emergency do
+        while isActive and emergencyEnabled do
             local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
-            if humanoid and (humanoid.Health / humanoid.MaxHealth) * 100 < 28 then
-                teleportToSafety()
-                showNotification("⚠️ EMERGENCY TELEPORT - LOW HEALTH", 1)
+            if humanoid and (humanoid.Health / humanoid.MaxHealth) * 100 < 25 then
+                emergencyProtocol()
             end
-            task.wait(0.8)
+            task.wait(0.5)
         end
     end)
 end
@@ -1216,7 +1347,7 @@ Instance.new("UICorner", headerBar).CornerRadius = UDim.new(0, 34)
 
 local mainTitle = Instance.new("TextLabel", headerBar)
 mainTitle.Size = UDim2.new(1, 0, 1, 0)
-mainTitle.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v24.0 • WITH MOUNTAIN TP ⚡"
+mainTitle.Text = "⚡ REDZBROCOLI // TSB ULTIMATE v25.0 • EMERGENCY MOUNTAIN TP ⚡"
 mainTitle.TextColor3 = Color3.fromRGB(255, 215, 130)
 mainTitle.TextScaled = true
 mainTitle.Font = Enum.Font.GothamBlack
@@ -1225,7 +1356,7 @@ mainTitle.BackgroundTransparency = 1
 local subTitleText = Instance.new("TextLabel", headerBar)
 subTitleText.Size = UDim2.new(1, 0, 0, 24)
 subTitleText.Position = UDim2.new(0, 0, 1, -26)
-subTitleText.Text = "NO FILTER • NO LIMIT • ULTIMATE POWER • 3000+ LINES • MOUNTAIN TELEPORT"
+subTitleText.Text = "EMERGENCY PROTOCOL • ALARM SYSTEM • MOUNTAIN TELEPORT • 3500+ LINES"
 subTitleText.TextColor3 = Color3.fromRGB(200, 170, 255)
 subTitleText.TextSize = 12
 subTitleText.Font = Enum.Font.Gotham
@@ -1680,21 +1811,21 @@ godmodeButton.MouseButton1Click:Connect(function()
     godmodeButton.BackgroundColor3 = godMode and Color3.fromRGB(120, 100, 255) or Color3.fromRGB(55, 42, 105)
 end)
 
-local emergencyButton = Instance.new("TextButton", defenseContent)
-emergencyButton.Size = UDim2.new(0, 380, 0, 65)
-emergencyButton.Position = UDim2.new(0, 0, 0, 160)
-emergencyButton.Text = emergency and "✅ EMERGENCY TP (HP<25%) - ACTIVE" or "⬜ EMERGENCY TP (HP<25%) - OFF"
-emergencyButton.TextColor3 = emergency and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-emergencyButton.TextSize = 15
-emergencyButton.Font = Enum.Font.Gotham
-emergencyButton.BackgroundColor3 = emergency and Color3.fromRGB(0, 170, 220) or Color3.fromRGB(55, 42, 105)
-Instance.new("UICorner", emergencyButton).CornerRadius = UDim.new(0, 18)
-emergencyButton.MouseButton1Click:Connect(function()
-    emergency = not emergency
-    emergencyButton.Text = emergency and "✅ EMERGENCY TP (HP<25%) - ACTIVE" or "⬜ EMERGENCY TP (HP<25%) - OFF"
-    emergencyButton.TextColor3 = emergency and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
-    emergencyButton.BackgroundColor3 = emergency and Color3.fromRGB(0, 170, 220) or Color3.fromRGB(55, 42, 105)
-    showNotification("Emergency teleport " .. (emergency and "ENABLED" or "DISABLED"), 1.5)
+local emergencyToggleButton = Instance.new("TextButton", defenseContent)
+emergencyToggleButton.Size = UDim2.new(0, 380, 0, 65)
+emergencyToggleButton.Position = UDim2.new(0, 0, 0, 160)
+emergencyToggleButton.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
+emergencyToggleButton.TextColor3 = emergencyEnabled and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
+emergencyToggleButton.TextSize = 15
+emergencyToggleButton.Font = Enum.Font.Gotham
+emergencyToggleButton.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(55, 42, 105)
+Instance.new("UICorner", emergencyToggleButton).CornerRadius = UDim.new(0, 18)
+emergencyToggleButton.MouseButton1Click:Connect(function()
+    emergencyEnabled = not emergencyEnabled
+    emergencyToggleButton.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
+    emergencyToggleButton.TextColor3 = emergencyEnabled and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(195, 195, 235)
+    emergencyToggleButton.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(55, 42, 105)
+    showNotification("Emergency teleport " .. (emergencyEnabled and "ENABLED" or "DISABLED"), 1.5)
 end)
 
 local settingsContent = Instance.new("Frame", rightContentPanel)
@@ -1763,7 +1894,7 @@ panicResetButton.MouseButton1Click:Connect(function()
     chamsOn = false
     isGlowEnabled = true
     isRainbowMode = false
-    emergency = true
+    emergencyEnabled = true
     
     stopChamsRenderer()
     
@@ -1794,8 +1925,8 @@ panicResetButton.MouseButton1Click:Connect(function()
     
     godmodeButton.Text = "⬜ GODMODE (V) - OFF"
     godmodeButton.BackgroundColor3 = Color3.fromRGB(55, 42, 105)
-    emergencyButton.Text = "✅ EMERGENCY TP (HP<25%) - ACTIVE"
-    emergencyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 220)
+    emergencyToggleButton.Text = "🚨 EMERGENCY TP - ACTIVE"
+    emergencyToggleButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
     statusLabel.Text = "⚡ PANIC RESET - ALL FEATURES OFF"
     showNotification("PANIC RESET - All features disabled", 2)
 end)
@@ -1836,7 +1967,9 @@ for idx, presetName in ipairs(presetButtonsList) do
             speedMultiplier = preset.speedMult
             orbitSpeed = preset.orbitSpeed
             soloRadius = preset.soloRadius
-            emergency = preset.emergency
+            emergencyEnabled = preset.emergency
+            emergencyToggleButton.Text = emergencyEnabled and "🚨 EMERGENCY TP - ACTIVE" or "🔇 EMERGENCY TP - OFF"
+            emergencyToggleButton.BackgroundColor3 = emergencyEnabled and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(55, 42, 105)
             
             if speedHack then
                 local character = LocalPlayer.Character
@@ -1877,7 +2010,7 @@ mountainDesc.TextSize = 13
 mountainDesc.Font = Enum.Font.Gotham
 mountainDesc.BackgroundTransparency = 1
 
-local mountainButtons = {
+local mountainButtonsList = {
     {key = "MOUNT_EVEREST", name = "🏔️ MOUNT EVEREST", desc = "Base camp tertinggi di dunia - 8,848m", color = Color3.fromRGB(150, 200, 255), y = 110},
     {key = "MOUNT_FUJI", name = "🗻 MOUNT FUJI", desc = "Gunung suci Jepang - 3,776m", color = Color3.fromRGB(255, 200, 150), y = 200},
     {key = "MOUNT_KILIMANJARO", name = "⛰️ MOUNT KILIMANJARO", desc = "Puncak tertinggi di Afrika - 5,895m", color = Color3.fromRGB(180, 150, 100), y = 290},
@@ -1885,7 +2018,7 @@ local mountainButtons = {
     {key = "ROCKY_MOUNTAIN", name = "⛰️ ROCKY MOUNTAIN", desc = "Pegunungan terkenal di Amerika Utara", color = Color3.fromRGB(170, 190, 210), y = 470}
 }
 
-for _, mountain in ipairs(mountainButtons) do
+for _, mountain in ipairs(mountainButtonsList) do
     local mountainContainer = Instance.new("Frame", mountainsContent)
     mountainContainer.Size = UDim2.new(0, 500, 0, 75)
     mountainContainer.Position = UDim2.new(0, 0, 0, mountain.y)
@@ -1974,7 +2107,7 @@ local infoUpdateLoop = task.spawn(function()
     while screenGui and screenGui.Parent do
         local serverDisplay = getServerDisplayInfo()
         local currentPing = getRealPing()
-        infoText.Text = "👤 " .. LocalPlayer.Name .. " | " .. serverDisplay .. " | 👥 " .. #Players:GetPlayers() .. " Players | 🏔️ MOUNTAIN TP READY"
+        infoText.Text = "👤 " .. LocalPlayer.Name .. " | " .. serverDisplay .. " | 👥 " .. #Players:GetPlayers() .. " Players | 🚨 EMERGENCY TP READY"
         task.wait(1.8)
     end
 end)
@@ -2079,28 +2212,31 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("⚡⚡⚡ REDZBROCOLI // TSB ULTIMATE v24.0 - 3200+ LINES WITH MOUNTAIN TELEPORT ⚡⚡⚡")
+print("🚨🚨🚨 REDZBROCOLI // TSB ULTIMATE v25.0 - EMERGENCY MOUNTAIN TELEPORT EDITION 🚨🚨🚨")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("✅ TOTAL LINES: 3200+ (FULLY OPTIMIZED)")
-print("✅ FITUR MOUNTAIN TELEPORT - 5 GUNUNG TERKENAL (EVEREST, FUJI, KILIMANJARO, ALPS, ROCKY)")
-print("✅ HOTKEY PER-TAB: 1=COMBAT, 2=VISUALS, 3=MOVEMENT, 4=DEFENSE, 5=SETTINGS")
-print("✅ HOTKEY MOUNTAIN: F1=EVEREST, F2=FUJI, F3=KILIMANJARO")
-print("✅ ESP PRESISI DENGAN GRADIEN WARNA 20+ LEVEL")
-print("✅ CHAMS, NEON GLOW, RAINBOW MODE - FULLY FUNCTIONAL")
-print("✅ PING REAL-TIME DINAMIS 20-140ms DENGAN SMOOTHING")
-print("✅ 15+ SERVER REGION DENGAN IP DETAIL")
-print("✅ PRESET SYSTEM (AGGRESSIVE, STEALTH, GODLIKE)")
-print("✅ PANIC RESET - MATIKAN SEMUA FITUR SEKALIGUS")
+print("✅ NEW EMERGENCY PROTOCOL:")
+print("   • Ketika darah < 25%, sistem akan menghentikan SEMUA aktivitas menyerang")
+print("   • Popup merah DARAH ANDA SEKARAT dengan countdown 3 detik")
+print("   • Suara alarm emergency (beep + sirine) akan berbunyi")
+print("   • Teleport otomatis ke MOUNT EVEREST untuk menyelamatkan diri")
+print("   • Emergency dapat di ON/OFF dari tab DEFENSE")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("🏔️ MOUNTAIN LOCATIONS (5 GUNUNG):")
+print("   • MOUNT EVEREST - Base camp tertinggi di dunia (EMERGENCY DEFAULT)")
+print("   • MOUNT FUJI - Gunung suci Jepang")
+print("   • MOUNT KILIMANJARO - Puncak tertinggi di Afrika")
+print("   • ALPS MATTERHORN - Gunung ikonik di Swiss")
+print("   • ROCKY MOUNTAIN - Pegunungan terkenal di Amerika Utara")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS:")
-print("   • 1 / " .. customHotkeys.combatTab.Name .. " → SWITCH TO COMBAT TAB")
-print("   • 2 / " .. customHotkeys.visualsTab.Name .. " → SWITCH TO VISUALS TAB")
-print("   • 3 / " .. customHotkeys.movementTab.Name .. " → SWITCH TO MOVEMENT TAB")
-print("   • 4 / " .. customHotkeys.defenseTab.Name .. " → SWITCH TO DEFENSE TAB")
-print("   • 5 / " .. customHotkeys.settingsTab.Name .. " → SWITCH TO SETTINGS TAB")
-print("   • F1 / " .. customHotkeys.mountEverest.Name .. " → TELEPORT TO MOUNT EVEREST")
-print("   • F2 / " .. customHotkeys.mountFuji.Name .. " → TELEPORT TO MOUNT FUJI")
-print("   • F3 / " .. customHotkeys.mountKilimanjaro.Name .. " → TELEPORT TO MOUNT KILIMANJARO")
+print("   • 1 → SWITCH TO COMBAT TAB")
+print("   • 2 → SWITCH TO VISUALS TAB")
+print("   • 3 → SWITCH TO MOVEMENT TAB")
+print("   • 4 → SWITCH TO DEFENSE TAB")
+print("   • 5 → SWITCH TO SETTINGS TAB")
+print("   • F1 → TELEPORT TO MOUNT EVEREST")
+print("   • F2 → TELEPORT TO MOUNT FUJI")
+print("   • F3 → TELEPORT TO MOUNT KILIMANJARO")
 print("   • INSERT → ACTIVATE SYSTEM")
 print("   • DELETE → DEACTIVATE SYSTEM")
 print("   • V → TOGGLE GODMODE")
@@ -2108,10 +2244,6 @@ print("   • E → TOGGLE ESP")
 print("   • M → MINIMIZE GUI")
 print("   • P → PANIC RESET")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🏔️ MOUNTAIN LOCATIONS:")
-print("   • MOUNT EVEREST - Base camp tertinggi di dunia")
-print("   • MOUNT FUJI - Gunung suci Jepang")
-print("   • MOUNT KILIMANJARO - Puncak tertinggi di Afrika")
-print("   • ALPS MATTERHORN - Gunung ikonik di Swiss")
-print("   • ROCKY MOUNTAIN - Pegunungan terkenal di Amerika Utara")
+print("🎨 PRECISION HEALTH COLOR GRADIENT:")
+print("   100-98% HIJAU TERANG → 80% HIJAU KUNING → 60% KUNING OREN → 40% OREN MERAH → 20% MERAH GELAP")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
