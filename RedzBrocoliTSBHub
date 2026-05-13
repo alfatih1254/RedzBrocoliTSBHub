@@ -1,5 +1,5 @@
--- ========== [ REDZBROCCOLI - COMPLETE ULTIMATE EDITION ] ==========
--- Author: raditt x indonet
+-- ========== [ REDZBROCCOLI - COMPLETE ULTIMATE EDITION - FIXED ] ==========
+-- Author: Alfatih
 -- Features: Combat | ESP | Chams | Speed | Noclip | Infinite Jump | Teleport to Target
 --           Godmode | Emergency High Ground TP (auto at 25% HP) | Anti-Ragdoll
 --           Modern GUI 3000x | Lightning Strike | Quick Action Panels | Auto Label Update
@@ -1159,7 +1159,7 @@ end
 
 -- ========== QUICK ACTION PANELS ==========
 local quickPanels = {}
-local quickPanelButtonsData = {} -- untuk update label otomatis
+local quickPanelButtonsData = {}
 
 local function createQuickPanel(tabName, x, y, buttonsData)
     local panel = Instance.new("Frame", screenGui)
@@ -1230,10 +1230,10 @@ local function createQuickPanel(tabName, x, y, buttonsData)
     content.Size = UDim2.new(1, 0, 0, btnY + 10)
     panel.Size = UDim2.new(0, 200, 0, 40 + btnY + 10)
     
-    local isMinimized = false
+    local isMinimizedPanel = false
     local function toggleMinimizePanel()
-        isMinimized = not isMinimized
-        if isMinimized then
+        isMinimizedPanel = not isMinimizedPanel
+        if isMinimizedPanel then
             TweenService:Create(panel, TweenInfo.new(0.2), {Size = UDim2.new(0, 200, 0, 40)}):Play()
             minimizeBtn.Text = "+"
             content.Visible = false
@@ -1245,7 +1245,6 @@ local function createQuickPanel(tabName, x, y, buttonsData)
     end
     minimizeBtn.MouseButton1Click:Connect(toggleMinimizePanel)
     
-    -- Draggable
     local dragStart, dragStartPos
     header.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -1295,13 +1294,13 @@ local combatQuickButtons = {
 }
 
 local visualQuickButtons = {
-    {label = "👁️ ESP " .. (espOn and "ON" or "OFF"), callback = function()
+    {label = "👁️ ESP ON", callback = function()
         toggleESP()
     end, color = Color3.fromRGB(0, 180, 80)},
-    {label = "✨ CHAMS " .. (chamsOn and "ON" or "OFF"), callback = function()
+    {label = "✨ CHAMS OFF", callback = function()
         toggleChams()
     end, color = Color3.fromRGB(200, 100, 0)},
-    {label = "🌈 RAINBOW " .. (isRainbowMode and "ON" or "OFF"), callback = function()
+    {label = "🌈 RAINBOW OFF", callback = function()
         isRainbowMode = not isRainbowMode
         if not chamsOn then toggleChams() end
         showModernToast("Rainbow mode " .. (isRainbowMode and "ON" or "OFF"), Color3.fromRGB(255, 0, 200), 1)
@@ -1309,21 +1308,21 @@ local visualQuickButtons = {
 }
 
 local movementQuickButtons = {
-    {label = "⚡ SPEED " .. (speedHack and "ON" or "OFF"), callback = function()
+    {label = "⚡ SPEED OFF", callback = function()
         speedHack = not speedHack
         if speedHack then startSpeedBoost() end
         showModernToast("Speed hack " .. (speedHack and "ON" or "OFF"), Color3.fromRGB(0, 180, 80), 1)
     end, color = Color3.fromRGB(0, 180, 80)},
-    {label = "🌀 NOCLIP " .. (noClip and "ON" or "OFF"), callback = function()
+    {label = "🌀 NOCLIP OFF", callback = function()
         noClip = not noClip
         if noClip then runNoclipLoop() else deactivateNoclip() end
         showModernToast("No clip " .. (noClip and "ON" or "OFF"), Color3.fromRGB(0, 150, 200), 1)
     end, color = Color3.fromRGB(0, 150, 200)},
-    {label = "🦘 INF JUMP " .. (infiniteJump and "ON" or "OFF"), callback = function()
+    {label = "🦘 INF JUMP OFF", callback = function()
         infiniteJump = not infiniteJump
         showModernToast("Infinite jump " .. (infiniteJump and "ON" or "OFF"), Color3.fromRGB(0, 180, 80), 1)
     end, color = Color3.fromRGB(0, 180, 80)},
-    {label = "🎯 TP TARGET " .. (teleportTarget and "ON" or "OFF"), callback = function()
+    {label = "🎯 TP TARGET OFF", callback = function()
         teleportTarget = not teleportTarget
         if teleportTarget then runTeleportToTargetLoop() end
         showModernToast("Teleport to target " .. (teleportTarget and "ON" or "OFF"), Color3.fromRGB(200, 100, 0), 1)
@@ -1331,14 +1330,14 @@ local movementQuickButtons = {
 }
 
 local defenseQuickButtons = {
-    {label = "🛡️ GODMODE " .. (godMode and "ON" or "OFF"), callback = function()
+    {label = "🛡️ GODMODE OFF", callback = function()
         toggleGodMode()
     end, color = Color3.fromRGB(100, 100, 255)},
-    {label = "🚑 EMERGENCY " .. (emergencyEnabled and "ON" or "OFF"), callback = function()
+    {label = "🚑 EMERGENCY ON", callback = function()
         emergencyEnabled = not emergencyEnabled
         showModernToast("Emergency teleport " .. (emergencyEnabled and "ENABLED" or "DISABLED"), emergencyEnabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0), 1.5)
     end, color = Color3.fromRGB(255, 50, 50)},
-    {label = "🦴 ANTI-RAGDOLL " .. (antiRagdollEnabled and "ON" or "OFF"), callback = function()
+    {label = "🦴 ANTI-RAGDOLL ON", callback = function()
         toggleAntiRagdoll()
     end, color = Color3.fromRGB(150, 80, 255)},
     {label = "🏔️ TP HIGHEST", callback = function()
@@ -1374,7 +1373,9 @@ local settingsQuickButtons = {
         stopChams()
         showModernToast("PANIC RESET - All features disabled", Color3.fromRGB(255, 0, 0), 2)
     end, color = Color3.fromRGB(180, 0, 0)},
-    {label = "🏠 MINIMIZE MAIN GUI", callback = function() toggleMinimize() end, color = Color3.fromRGB(80, 60, 150)},
+    {label = "🏠 MINIMIZE MAIN GUI", callback = function() 
+        if toggleMinimize then toggleMinimize() end
+    end, color = Color3.fromRGB(80, 60, 150)},
 }
 
 -- ========== GUI CONSTRUCTION ==========
@@ -1657,7 +1658,10 @@ deactivateBtn.Font = Enum.Font.GothamBold
 deactivateBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 Instance.new("UICorner", deactivateBtn).CornerRadius = UDim.new(0, 14)
 
-createAdvancedSlider(combatContent, 0, 420, 280, 2, 12, soloRadius, function(v) soloRadius = v end, "📍 TELEPORT RADIUS", Color3.fromRGB(255, 100, 200))
+activateBtn.MouseButton1Click:Connect(activate)
+deactivateBtn.MouseButton1Click:Connect(stopAllActions)
+
+createAdvancedSlider(combatContent, 0, 420, 280, 2, 12, soloRadius, function(v) soloRadius = v end, "📍 SOLO RADIUS", Color3.fromRGB(255, 100, 200))
 createAdvancedSlider(combatContent, 0, 490, 280, 3, 12, orbitRadius, function(v) orbitRadius = v end, "🔄 ORBIT RADIUS", Color3.fromRGB(150, 100, 255))
 createAdvancedSlider(combatContent, 0, 560, 280, 0.3, 3, orbitSpeed, function(v) orbitSpeed = v end, "⚡ ORBIT SPEED", Color3.fromRGB(100, 255, 100))
 createAdvancedSlider(combatContent, 0, 630, 280, 1, 10, feetDist, function(v) feetDist = v end, "🦶 FEET DISTANCE", Color3.fromRGB(100, 200, 150))
@@ -1680,8 +1684,6 @@ visTitle.BackgroundTransparency = 1
 
 local currentEsp = espOn
 local currentChams = chamsOn
-local currentGlow = isGlowEnabled
-local currentRainbow = isRainbowMode
 
 local espToggleContainer, espToggleBtn = createModernToggle(visualsContent, 0, 60, "PLAYER ESP", currentEsp, function(state)
     currentEsp = state
@@ -1707,28 +1709,6 @@ local chamsToggleContainer, chamsToggleBtn = createModernToggle(visualsContent, 
         showModernToast("CHAMS DEACTIVATED", Color3.fromRGB(180, 50, 50), 1.5)
     end
 end, Color3.fromRGB(200, 100, 0))
-
-local glowToggleContainer, glowToggleBtn = createModernToggle(visualsContent, 0, 180, "NEON GLOW", currentGlow, function(state)
-    currentGlow = state
-    isGlowEnabled = state
-    if not currentChams then
-        currentChams = true
-        chamsOn = true
-        startChams()
-    end
-    showModernToast("NEON GLOW " .. (state and "ON" or "OFF"), state and Color3.fromRGB(0, 150, 200) or Color3.fromRGB(180, 50, 50), 1)
-end, Color3.fromRGB(0, 150, 200))
-
-local rainbowToggleContainer, rainbowToggleBtn = createModernToggle(visualsContent, 0, 240, "RAINBOW MODE", currentRainbow, function(state)
-    currentRainbow = state
-    isRainbowMode = state
-    if not currentChams then
-        currentChams = true
-        chamsOn = true
-        startChams()
-    end
-    showModernToast("RAINBOW MODE " .. (state and "ON" or "OFF"), state and Color3.fromRGB(255, 0, 200) or Color3.fromRGB(180, 50, 50), 1)
-end, Color3.fromRGB(255, 0, 200))
 
 -- MOVEMENT TAB
 local movementContent = Instance.new("Frame", rightPanel)
@@ -1807,7 +1787,7 @@ defTitle.BackgroundTransparency = 1
 local godBtn = Instance.new("TextButton", defenseContent)
 godBtn.Size = UDim2.new(0, 340, 0, 55)
 godBtn.Position = UDim2.new(0, 0, 0, 60)
-godBtn.Text = godMode and "✅ GODMODE (V) - ACTIVE" or "⬜ GODMODE (V) - INACTIVE"
+godBtn.Text = godMode and "✅ GODMODE - ACTIVE" or "⬜ GODMODE - INACTIVE"
 godBtn.TextColor3 = godMode and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
 godBtn.TextSize = 14
 godBtn.Font = Enum.Font.Gotham
@@ -1815,7 +1795,7 @@ godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fr
 Instance.new("UICorner", godBtn).CornerRadius = UDim.new(0, 14)
 godBtn.MouseButton1Click:Connect(function()
     toggleGodMode()
-    godBtn.Text = godMode and "✅ GODMODE (V) - ACTIVE" or "⬜ GODMODE (V) - INACTIVE"
+    godBtn.Text = godMode and "✅ GODMODE - ACTIVE" or "⬜ GODMODE - INACTIVE"
     godBtn.TextColor3 = godMode and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 220)
     godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
 end)
@@ -1887,7 +1867,7 @@ refreshBtn.Font = Enum.Font.GothamBold
 refreshBtn.BackgroundColor3 = Color3.fromRGB(100, 50, 200)
 Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 14)
 refreshBtn.MouseButton1Click:Connect(function()
-    if currentEsp then
+    if espOn then
         destroyAllESP()
         task.wait(0.2)
         for _, p in ipairs(Players:GetPlayers()) do if p ~= LocalPlayer then buildESPForPlayer(p) end end
@@ -1908,14 +1888,7 @@ Instance.new("UICorner", panicBtn).CornerRadius = UDim.new(0, 14)
 panicBtn.MouseButton1Click:Connect(function()
     stopAllActions()
     if godMode then toggleGodMode() end
-    if currentEsp then destroyAllESP() end
-    currentSpeed = false
-    currentNoclip = false
-    currentJump = false
-    currentTeleport = false
-    currentChams = false
-    currentGlow = true
-    currentRainbow = false
+    if espOn then destroyAllESP() end
     speedHack = false
     noClip = false
     infiniteJump = false
@@ -1926,16 +1899,13 @@ panicBtn.MouseButton1Click:Connect(function()
     emergencyEnabled = true
     antiRagdollEnabled = true
     stopChams()
-    godBtn.Text = "⬜ GODMODE (V) - INACTIVE"
+    godBtn.Text = "⬜ GODMODE - INACTIVE"
     godBtn.BackgroundColor3 = Color3.fromRGB(45, 35, 85)
     emergencyToggleBtn.Text = "🚨 EMERGENCY TP - ACTIVE"
     emergencyToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
     statusLabel.Text = "⚡ PANIC RESET - ALL OFF"
     showModernToast("PANIC RESET - All features disabled", Color3.fromRGB(255, 0, 0), 2)
 end)
-
-activateBtn.MouseButton1Click:Connect(activate)
-deactivateBtn.MouseButton1Click:Connect(stopAllActions)
 
 -- INITIALIZATION
 refreshTargetList()
@@ -1956,7 +1926,6 @@ createQuickPanel("SETTINGS", 850, 100, settingsQuickButtons)
 task.spawn(function()
     while screenGui and screenGui.Parent do
         task.wait(1)
-        -- Update VISUAL quick panel labels
         if quickPanels["VISUALS"] then
             for _, btn in ipairs(quickPanels["VISUALS"].buttons) do
                 if btn and btn.Text then
@@ -1970,7 +1939,6 @@ task.spawn(function()
                 end
             end
         end
-        -- Update MOVEMENT quick panel labels
         if quickPanels["MOVEMENT"] then
             for _, btn in ipairs(quickPanels["MOVEMENT"].buttons) do
                 if btn and btn.Text then
@@ -1986,7 +1954,6 @@ task.spawn(function()
                 end
             end
         end
-        -- Update DEFENSE quick panel labels
         if quickPanels["DEFENSE"] then
             for _, btn in ipairs(quickPanels["DEFENSE"].buttons) do
                 if btn and btn.Text then
@@ -2044,13 +2011,10 @@ UserInputService.InputBegan:Connect(function(input, gp)
         stopAllActions()
     elseif input.KeyCode == Enum.KeyCode.V then
         toggleGodMode()
-        godBtn.Text = godMode and "✅ GODMODE (V) - ACTIVE" or "⬜ GODMODE (V) - INACTIVE"
+        godBtn.Text = godMode and "✅ GODMODE - ACTIVE" or "⬜ GODMODE - INACTIVE"
         godBtn.BackgroundColor3 = godMode and Color3.fromRGB(100, 100, 255) or Color3.fromRGB(45, 35, 85)
     elseif input.KeyCode == Enum.KeyCode.E then
-        currentEsp = not currentEsp
-        espOn = currentEsp
         toggleESP()
-        showModernToast("ESP " .. (currentEsp and "ON" or "OFF"), currentEsp and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(180, 50, 50), 1)
     elseif input.KeyCode == Enum.KeyCode.M then
         toggleMinimize()
     elseif input.KeyCode == Enum.KeyCode.T then
@@ -2070,7 +2034,7 @@ end)
 -- PLAYER EVENTS
 Players.PlayerAdded:Connect(function(p)
     task.wait(0.5)
-    if currentEsp then buildESPForPlayer(p) end
+    if espOn then buildESPForPlayer(p) end
     refreshTargetList()
 end)
 Players.PlayerRemoving:Connect(refreshTargetList)
@@ -2079,7 +2043,7 @@ LocalPlayer.CharacterAdded:Connect(function()
     if godMode then task.wait(0.2) toggleGodMode() end
     if speedHack then startSpeedBoost() end
     if noClip then runNoclipLoop() end
-    if currentEsp then
+    if espOn then
         task.wait(0.5)
         for _, p in ipairs(Players:GetPlayers()) do
             if p ~= LocalPlayer then
@@ -2096,15 +2060,14 @@ end)
 
 -- STARTUP MESSAGE
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🚨 REDZBROCOLI // COMPLETE ULTIMATE EDITION (ALL FEATURES + AUTO UPDATE LABEL) 🚨")
+print("🚨 REDZBROCOLI // COMPLETE ULTIMATE EDITION (FIXED - GUI READY) 🚨")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("✅ FITUR LENGKAP:")
 print("   • Combat Mode: SOLO | ORBIT | FEET")
-print("   • Visual: ESP | CHAMS X-RAY | NEON GLOW | RAINBOW MODE")
+print("   • Visual: ESP | CHAMS X-RAY")
 print("   • Movement: SPEED HACK | NO CLIP | INFINITE JUMP | TELEPORT TO TARGET")
 print("   • Defense: GODMODE | EMERGENCY HIGH GROUND TP (AUTO at 25% HP) | ANTI-RAGDOLL")
 print("   • GUI: GLASSMORPHISM | ANIMATED BORDER | PARTICLE BACKGROUND | MODERN TOGGLE")
-print("   • Effects: LIGHTNING STRIKE (random 30-90s) | QUICK ACTION PANELS | AUTO LABEL UPDATE")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("📌 KEYBINDS:")
 print("   • INSERT → ACTIVATE SYSTEM")
@@ -2115,5 +2078,6 @@ print("   • M → MINIMIZE GUI")
 print("   • T → MANUAL TELEPORT TO HIGHEST GROUND")
 print("   • R → TOGGLE ANTI-RAGDOLL")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🎨 QUICK PANELS: Drag to move | Click '-' to minimize | Labels auto-update every 1 second")
+print("🎨 QUICK PANELS: Drag to move | Click '-' to minimize | Labels auto-update")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("✅ GUI SHOULD APPEAR NOW! ✅")
